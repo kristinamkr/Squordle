@@ -1,0 +1,2 @@
+# Squordle
+ Pokemon Wordle Games
