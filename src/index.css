@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.NavSandwich {
+  background: none;
+  border: none;
+  padding-top: 12px;
+  padding-left: 12px;
+}
