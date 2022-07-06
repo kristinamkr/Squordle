@@ -12,9 +12,54 @@ code {
     monospace;
 }
 
-.NavSandwich {
+.MenuBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #808080;
+}
+
+.LeftMenu {
   background: none;
   border: none;
-  padding-top: 12px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.NavSandwich {
+  display: flex;
+  background: inherit;
+  border: inherit;
   padding-left: 12px;
 }
+
+.HelpButton {
+  display: flex;
+  background: inherit;
+  border: inherit;
+}
+
+.GameTitle {
+  padding-top: 6px;
+}
+
+.RightMenu {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 4px;
+}
+
+
+
+
+
+.Keyboard {
+  display: flex;
+}
+
+.KeyRow {
+  display: flex;
+}
+
