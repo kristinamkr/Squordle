@@ -1,0 +1,33 @@
+.shuckleDisplay{
+	z-index: 2;
+	border-radius: 8px;
+	background-color:#ffffff;
+	width: 400px;
+	justify-content: center;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	position: fixed;
+	top: 20vh;
+}
+
+.regularDisplay{
+	z-index: 2;
+	border-radius: 8px;
+	background-color:#ffffff;
+	width: 400px;
+	justify-content: center;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	position: fixed;
+	top: 20vh;
+}
+
+.listRow{
+
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+	padding-top: 20px;
+}

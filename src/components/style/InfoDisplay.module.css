@@ -1,0 +1,28 @@
+.InfoDisplay {
+	z-index: 2;
+	border-radius: 8px;
+	background-color:#ffffff;
+	width: 400px;
+	justify-content: center;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	position: fixed;
+	top: 20vh;
+}
+
+.listRow {
+	align-items: center;
+	justify-content: space-between;
+	display: flex;
+	flex-direction: row;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 20px;
+}
+
+img.pokeBullet {
+    width: 14px;
+    height: 100%;
+    padding-right: 10px;
+}

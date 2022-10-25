@@ -1,0 +1,12 @@
+.PoffinStorage{
+	z-index: 1;
+	position: relative;
+	top:100px;
+	left:-380px;
+}
+
+.expansionArrow{
+	position: relative;
+	top:96px;
+	left:-345px;
+}

@@ -1,11 +1,11 @@
 function Navbar() {
-	return (
-
-	<div className="AppHeader-menuLeft">
-    	<button type="button" id="AppHeader-navsandwich" className="AppHeader-navsandwich">
-        </button>
-    </div>
-
+    return (
+        <div className = "AppHeader-menuLeft">
+            <button type = "button" 
+             id = "AppHeader-navsandwich" 
+             className = "AppHeader-navsandwich">
+            </button>
+        </div>
 	);
 }
 

@@ -17,7 +17,9 @@ code {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   border-bottom: 2px solid #808080;
+  padding: 8px;
 }
 
 .LeftMenu {
@@ -43,6 +45,7 @@ code {
 
 .GameTitle {
   padding-top: 6px;
+  padding-right: 124px;
 }
 
 .RightMenu {
@@ -51,15 +54,7 @@ code {
   padding-right: 4px;
 }
 
-
-
-
-
-.Keyboard {
-  display: flex;
-}
-
-.KeyRow {
-  display: flex;
+.Spacer {
+  padding-top: 20px;
 }
 

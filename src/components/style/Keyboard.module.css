@@ -1,0 +1,8 @@
+.Keyboard {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  padding-top: 24px;
+  max-width: 600px;
+}
