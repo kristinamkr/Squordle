@@ -9,9 +9,9 @@ import spriteLink from  "../functions/SpriteLink.js";
 function WinDisplay(props)
 {
 	var setDisplayState = props.setDisplayState;
-	var gamespace = props.gamespace;
+	var gameSpace = props.gameSpace;
 
-	var answer = gamespace[0].pokemon;
+	var answer = gameSpace[0].pokemon;
     var spriteRef = spriteLink(answer);
 
 	function reload()
@@ -24,7 +24,7 @@ function WinDisplay(props)
 	}
 
 	return (
-		<div className = {classes.WinDisplay}>
+        <div className = {classes.WinDisplay}>
 			<p/>
 			<img style = {{width: "80%"}} 
                  src = {require("../assets/WinTextLight.png")}/>

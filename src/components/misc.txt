@@ -1,0 +1,275 @@
+
+            {(is_expanded && poffinRealized.spicyRealized) && 
+                <img id = "spicyPoffin" 
+                     style = {{cursor: "move", 
+                               position: "relative", 
+                               opacity: "0", 
+                               top: "-307", 
+                               left: "-324px", 
+                               zIndex: "0"}} 
+                     src = {require("../assets/spicyPoffin.png")} 
+                     decoding = "async" 
+                     width = "64" 
+                     height = "64"/>
+            }
+
+            {(is_expanded && poffinRealized.sweetRealized) &&
+                 <img id = "sweetPoffin" 
+                      style = {{cursor: "move", 
+                                position: "relative", 
+                                opacity: "0", 
+                                top: "-303", 
+                                left: "-324px", 
+                                zIndex: "0"}} 
+                      src = {require("../assets/sweetPoffin.png")} 
+                      decoding = "async" 
+                      width = "64" 
+                      height = "64"/>
+            }
+
+            {(is_expanded && poffinRealized.bitterRealized) && 
+                <img id = "bitterPoffin" 
+                     style = {{cursor: "move", 
+                               position: "relative", 
+                               opacity: "0", 
+                               top: "-299.5", 
+                               left: "-324px", 
+                               zIndex: "0"}} 
+                     src = {require("../assets/bitterPoffin.png")} 
+                     decoding = "async" 
+                     width = "64" 
+                     height = "64"/>
+            }
+
+	        {(is_expanded && poffinRealized.goldRealized) &&
+                 <img id = "goldPoffin" 
+                      style = {{cursor: "move", 
+                                position: "relative", 
+                                opacity: "0", 
+                                top: "-296", 
+                                left: "-324px", 
+                                zIndex:"0"}} 
+                      src = {require("../assets/goldPoffin.png")} 
+                      decoding = "async" 
+                      width = "64" 
+                      height = "64"/>
+            }
+
+            {(is_expanded && poffinRealized.lemonadeRealized) && 
+                <img id = "lemonade" 
+                     style = {{cursor: "move", 
+                               position: "relative", 
+                               opacity: "0", 
+                               top: "-293", 
+                               left: "-324px", 
+                               zIndex: "0"}} 
+                     src = {require("../assets/lemonade.png")} 
+                     decoding="async" 
+                     width="64" 
+                     height="64"/>
+            }
+            {(is_expanded && poffinRealized.sweetRealized) &&
+
+			{(is_expanded || poffinRealized.sweetRealized) && 
+                <img id = "sweetPoffin" 
+                     style = {{cursor:"move", 
+                               // position: poffinPos.sweetPos[0], 
+                               // top: poffinPos.sweetPos[1], 
+                               // left: poffinPos.sweetPos[2], 
+                               // zIndex: poffinPos.sweetPos[3]}} 
+                             }}
+                     onClick = {realizeSweet} 
+                     src = {require("../assets/sweetPoffin.png")} 
+                     decoding = "async" 
+                     width = "64" 
+                     height = "64"/>
+            }
+			{(is_expanded || poffinRealized.bitterRealized) && 
+                <img id = "bitterPoffin" 
+                     style = {{cursor: "move", 
+                               // position: poffinPos.bitterPos[0], 
+                               // top: poffinPos.bitterPos[1], 
+                               // left: poffinPos.bitterPos[2], 
+                               // zIndex: poffinPos.bitterPos[3]}} 
+                             }}
+                     onClick = {realizeBitter} 
+                     src = {require("../assets/bitterPoffin.png")} 
+                     decoding = "async" 
+                     width = "64" 
+                     height = "64"/>
+            }
+			{(is_expanded || poffinRealized.goldRealized) && 
+                <img id = "goldPoffin" 
+                     style = {{cursor: "move", 
+                               // position: poffinPos.goldPos[0], 
+                               // top: poffinPos.goldPos[1], 
+                               // left: poffinPos.goldPos[2], 
+                               // zIndex: poffinPos.goldPos[3]}} 
+                             }}
+                     onClick = {realizeGold} 
+                     src = {require("../assets/goldPoffin.png")} 
+                     decoding = "async" 
+                     width = "64" 
+                     height = "64"/>
+            }
+			{(is_expanded || poffinRealized.lemonadeRealized) && 
+                <img id = "lemonade" 
+                     style = {{cursor: "move", 
+                               //position: poffinPos.lemonadePos[0], 
+                               //top: poffinPos.lemonadePos[1], 
+                               // left: poffinPos.lemonadePos[2], 
+                               // zIndex: poffinPos.lemonadePos[3]}} 
+                            }}
+                     onClick = {realizeLemonade} 
+                     src = {require("../assets/lemonade.png")} 
+                     decoding = "async" 
+                     width = "64" 
+                     height = "64"/>
+            }
+
+	function realizeSpicy()
+    {
+		if (window.localStorage.spicyPoffin > 0 && 
+                !poffinRealized.spicyRealized) {
+			window.localStorage.spicyPoffin = Number(window.localStorage.spicyPoffin) - 1;
+			setPoffinRealized({...poffinRealized, spicyRealized: true});
+			if(itemPos[3] === "1")
+			 	expandPoffins();
+		}
+		// setPoffinMoving({...poffinMoving, 
+        //                 spicyMoving: !poffinMoving.spicyMoving});
+	}
+
+	function derealizeSpicy()
+    {
+		setPoffinRealized({...poffinRealized, spicyRealized: false});
+		// setPoffinPos({...poffinPos, 
+        //               spicyPos: ["relative", "-307px", "-324px", "1"]});
+	}
+
+	function realizeSweet()
+    {
+		if (window.localStorage.sweetPoffin > 0 && 
+                !poffinRealized.sweetRealized) {
+			window.localStorage.sweetPoffin = Number(window.localStorage.sweetPoffin) - 1;
+			setPoffinRealized({...poffinRealized, sweetRealized: true});
+			// if(poffinPos.sweetPos[3] === "1")
+			// 	expandPoffins();
+		}
+		// setPoffinMoving({...poffinMoving,
+        //                 sweetMoving: !poffinMoving.sweetMoving});
+	}
+
+	function derealizeSweet()
+    {
+		setPoffinRealized({...poffinRealized, sweetRealized: false});
+		// setPoffinPos({...poffinPos,
+        //               sweetPos: ["relative", "-303px", "-324px", "1"]});
+	}
+
+	function realizeBitter()
+    {
+		if (window.localStorage.bitterPoffin > 0 && 
+                !poffinRealized.bitterRealized) {
+			window.localStorage.bitterPoffin = Number(window.localStorage.bitterPoffin) - 1;
+			setPoffinRealized({...poffinRealized, bitterRealized: true});
+			// if (poffinPos.bitterPos[3] === "1")
+			//	expandPoffins();
+		}
+		// setPoffinMoving({...poffinMoving,
+        //                  bitterMoving: !poffinMoving.bitterMoving});
+	}
+
+	function derealizeBitter()
+    {
+		setPoffinRealized({...poffinRealized, bitterRealized: false});
+		// setPoffinPos({...poffinPos, 
+        //               bitterPos: ["relative", "-299.5px", "-324px", "1"]});
+	}
+
+	function realizeGold()
+    {
+		if (window.localStorage.goldPoffin > 0 && 
+                !poffinRealized.goldRealized) {
+			window.localStorage.goldPoffin = Number(window.localStorage.goldPoffin) - 1;
+			setPoffinRealized({...poffinRealized, goldRealized: true});	
+			// if (poffinPos.goldPos[3] === "1") 
+			//	expandPoffins();
+		}
+		// setPoffinMoving({...poffinMoving, 
+        //                  goldMoving: !poffinMoving.goldMoving})
+	}
+
+	function derealizeGold()
+    {
+		setPoffinRealized({...poffinRealized, goldRealized: false});
+		// setPoffinPos({...poffinPos, goldPos: ["relative", "-296px", "-324px", "1"]});
+	}
+
+	function realizeLemonade()
+    {
+		if (window.localStorage.lemonade > 0 && 
+                !poffinRealized.lemonadeRealized) {
+			window.localStorage.lemonade = Number(window.localStorage.lemonade) - 1;
+			setPoffinRealized({...poffinRealized, lemonadeRealized: true});	
+			// if (poffinPos.lemonadePos[3] === "1")
+			// 	expandPoffins();
+		}
+		// setPoffinMoving({...poffinMoving,
+        //                  lemonadeMoving: !poffinMoving.lemonadeMoving})
+	}
+
+	function derealizeLemonade()
+    {
+		setPoffinRealized({...poffinRealized, lemonadeRealized: false});
+		// setPoffinPos({...poffinPos, 
+        //               lemonadePos: ["relative", "-293px", "-324px", "1"]});
+	}
+
+
+        /*
+			if (poffinRealized.spicyRealized && poffinMoving.spicyMoving) {
+				// setPoffinPos({...poffinPos,
+                //              spicyPos: ["absolute",
+                //                          String(mousePos[0]) + "px",
+                //                          String(mousePos[1]) + "px",
+                //                          "0"]});
+				// setShuckleDir([mousePos[1], mousePos[0], 1]);
+				// setDerealizePoffin([derealizeSpicy, 1]);
+			}
+			else if (poffinRealized.sweetRealized && poffinMoving.sweetMoving) {
+				// setPoffinPos({...poffinPos,
+                //              sweetPos: ["absolute",
+                //                        String(mousePos[0]) + "px",
+                //                         String(mousePos[1]) + "px",
+                //                         "0"]});
+				// setShuckleDir([mousePos[1], mousePos[0], 1]);
+				// setDerealizePoffin([derealizeSweet, 2]);
+			}
+			else if (poffinRealized.bitterRealized && poffinMoving.bitterMoving) {
+				// setPoffinPos({...poffinPos,
+                //               bitterPos: ["absolute",
+                //                          String(mousePos[0]) + "px",
+                //                          String(mousePos[1]) + "px",
+                //                          "0"]});
+				// setShuckleDir([mousePos[1], mousePos[0], 1]);
+				// setDerealizePoffin([derealizeBitter, 3]);
+			}
+			else if (poffinRealized.goldRealized && poffinMoving.goldMoving) {
+				// setPoffinPos({...poffinPos,
+                //              goldPos: ["absolute",
+                //                        String(mousePos[0]) + "px",
+                //                        String(mousePos[1]) + "px",
+                //                        "0"]});
+				// setShuckleDir([mousePos[1], mousePos[0], 1]);
+				// setDerealizePoffin([derealizeGold,4]);
+			}
+            else if (poffinRealized.lemonadeRealized && poffinMoving.lemonadeMoving) {
+				// setPoffinPos({...poffinPos,
+                //              lemonadePos: ["absolute",
+                //                            String(mousePos[0]) + "px",
+                //                            String(mousePos[1]) + "px",
+                //                           "0"]});
+				// setShuckleDir([mousePos[1], mousePos[0], 2])
+				// setDerealizePoffin([derealizeLemonade, 5]);
+			}

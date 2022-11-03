@@ -1,12 +1,30 @@
-.PoffinStorage{
+.PoffinStorage {
 	z-index: 1;
 	position: relative;
 	top:100px;
 	left:-380px;
 }
 
-.expansionArrow{
+.expansionArrow {
 	position: relative;
 	top:96px;
 	left:-345px;
+}
+
+.PoffinStorage {
+    width: 125.08px;
+    position: auto;
+    text-align: center;
+    background: #e090a8;
+    border: 3px solid #925E6D;
+    border-radius: 10px;
+}
+
+.header {
+    background: #EBB7C6; 
+    border-top-left-radius: 5px;
+}
+
+.item {
+    background: #ffffff;
 }

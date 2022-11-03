@@ -12,7 +12,7 @@ function KeyRow(props)
 		if (letterStates.correctGuess.has(id))
 			return "correct";
 		else if (letterStates.inWord.has(id))
-			return "in_word";
+			return "inWord";
 		else if (letterStates.notInWord.has(id))
 			return "incorrect";
 		else
@@ -24,16 +24,13 @@ function KeyRow(props)
              style = {{paddingLeft: props.padding, 
                        paddingRight: props.padding, 
                        gridTemplateColumns: "1fr ".repeat(props.keys.length)}}>
-        {
-            props.keys.map((item) => 
-                (<KeyBox key = {item}
-                         id = {item}
-                         handler = {props.handler}
-                         gamespace = {props.gamespace}
-                         setGamespace = {props.setGamespace}
-                         state = {keyInWord(props.letterStates, item)} 
-                />))
-        }
+            { props.keys.map((item) => 
+                    (<KeyBox key = {item}
+                             id = {item}
+                             handler = {props.handler}
+                             gameSpace = {props.gameSpace}
+                             setGameSpace = {props.setGameSpace}
+                             state = {keyInWord(props.letterStates, item)}/>))}
 		</div>
 	)
 };

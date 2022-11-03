@@ -9,9 +9,9 @@ import spriteLink from  "../functions/SpriteLink.js";
 function LoseDisplay(props)
 {
 	var setDisplayState = props.setDisplayState;
-	var gamespace = props.gamespace;
+	var gameSpace = props.gameSpace;
 
-	var answer = gamespace[0].pokemon;
+	var answer = gameSpace[0].pokemon;
     var spriteRef = spriteLink(answer);
 
 	function reload()

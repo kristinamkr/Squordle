@@ -17,27 +17,22 @@ function GameRow(props)
 
 	return (
 		<div className = {classes.GameRow}
-             style = {{gridTemplateColumns: "1fr ".repeat(props.length+2)}}>
-			<img style={{width: "64px", 
+             style = {{gridTemplateColumns: "1fr ".repeat(props.length + 2)}}>
+			<img style = {{width: "64px",
                          height: "48px",
                          position: "relative",
                          top: props.upDownPos}} 
-                 src={spriteRef}/>
-			{
-                props.boxes.map((box) => 
-                    (<GuessBox
-				        key = {box.id}
-				        id = {box.id} 
-				        delay = {box.delay}
-				        state = {box.state}
-				        letter = {box.letter}
-				    />))
-			}
+                 src = {spriteRef}/>
+			{ props.boxes.map((box) => (<GuessBox key = {box.id}
+	       	                                      id = {box.id} 
+		    	                                  delay = {box.delay}
+			                                      state = {box.state}
+				                                  letter = {box.letter}/>))}
 			<img style = {{width: "64px",
                            height: "48px",
                            position: "relative",
-                           top: -props.upDownPos-10}} 
-                 src={spriteRef}/>
+                           top: -props.upDownPos - 10}} 
+                 src = {spriteRef}/>
         </div>
 	)
 }

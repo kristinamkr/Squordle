@@ -2,334 +2,189 @@
  * PoffinStorage.js
 */
 
-import classes from "./style/PoffinStorage.module.css";
 import {useState, useEffect} from 'react';
+import classes from "./style/PoffinStorage.module.css";
+import Poffin from './Poffin.js';
 import ShuckleCursor from './ShuckleCursor.js';
 
 function PoffinStorage(props)
 {
-	const [is_expanded, setIs_expanded] = useState(false);
-
-	const [arrowSrc, setArrowSrc] = 
-        useState("https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-down-01-512.png")
-
-	const [poffinRealized, setPoffinRealized] = 
-        useState({spicyRealized:    false,
-                  sweetRealized:    false,
-                  bitterRealized:   false,
-                  goldRealized:     false,
-                  lemonadeRealized: false})
-
-	const [poffinPos, setPoffinPos] = 
-        useState({spicyPos:    ["relative",   "-307px",   "-324px", "1"],
-                  sweetPos:    ["relative",   "-303px",   "-324px", "1"],
-                  bitterPos:   ["relative", "-299.5px",   "-324px", "1"],
-                  goldPos:     ["relative",   "-296px",   "-324px", "1"],
-                  lemonadePos: ["relative",   "-293px",   "-324px", "1"]});
-
-	const [poffinMoving, setPoffinMoving] = 
-        useState({spicyMoving:    false,
-                  sweetMoving:    false,
-                  bitterMoving:   false,
-                  goldMoving:     false,
-                  lemonadeMoving: false})
-	
-	// first item is X pos of poffin, second item is Y pos of poffin, 
-    // third item in the array is either 1 or 0 and references "poffinMoving"
-	const [shuckleDir, setShuckleDir] = useState([0, 0, 0])
+    // MOUSE EVENTS ------------------------------------------------------------
 	const [mousePos, setMousePos] = useState([0, 0]);
 
-	//first item is which derealizePoffin function to use, 
-    // second is the reference to poffin so shuckle knows which 
-    // behavior to perform.
-	const [derealizePoffin, setDerealizePoffin] = useState([null, 0])
-
-	function changeMousePos(e)
+    function changeMousePos(e) 
     {
-		setMousePos([e.pageY - 32, e.pageX - 32])
-	}
+        setMousePos([e.pageY - 32, e.pageX - 32]);
+    }
 
 	useEffect(() => {
-            document.addEventListener("mousemove", changeMousePos);
-            return () => document.removeEventListener("mousemove", changeMousePos);
+        document.addEventListener("mousemove", changeMousePos);
+        return () => document.removeEventListener("mousemove", changeMousePos);
     });
+
+    // INVENTORY ---------------------------------------------------------------
+
+    let pokeLink = "https://cdn3.iconfinder.com/data/icons/faticons/32/";
+	const [arrowSrc, setArrowSrc] = 
+        useState(pokeLink + "arrow-down-01-512.png")
+
+	const [isExpanded, setIsExpanded] = useState(false);
 
 	function expandPoffins()
     {
-		if (!is_expanded)
-			setArrowSrc("https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-up-01-512.png");
+		if (!isExpanded)
+			setArrowSrc(pokeLink + "arrow-up-01-512.png");
 		else
-			setArrowSrc("https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-down-01-512.png");
-		setIs_expanded(!is_expanded);
+			setArrowSrc(pokeLink + "arrow-down-01-512.png");
+		setIsExpanded(!isExpanded);
 	}
 
-    /*
-    function realizePoffin(poffin)
+    // -------------------------------------------------------------------------
+
+    const [selectedItem, setSelectedItem] = useState('');
+	const [itemPos, setItemPos] = 
+            useState(['', '', '', '', '']);
+
+    // MOVE TO SHUCKLE --------------------------------------------------------- 
+	const [poffinRealized, setPoffinRealized] = useState(false); 
+	// const [poffinMoving, setPoffinMoving] = useState(false);
+
+    //first item is which derealizePoffin function to use, 
+    // second is the reference to poffin so shuckle knows which 
+    // behavior to perform.
+	const [poffinDerealized, setPoffinDerealized] = useState('');
+
+	// first item is X pos of poffin, second item is Y pos of poffin, 
+    // third item in the array is either 1 or 0 and references "poffinMoving"
+	const [shuckleDir, setShuckleDir] = useState([0, 0, 0]);
+
+    function selectItem(e)
     {
-        if (window.localStorage.
+        var nodes = Array.prototype.slice.call(e.currentTarget.children);
+        const item = nodes[0].name;
+        const itemCount = localStorage.getItem(item);
+
+        if (itemCount > 0) {
+            setSelectedItem(item);
+            setItemPos(["relative", 
+                        String(mousePos[0]) + "px", 
+                        String(mousePos[1]) + "px", 
+                        "1"]);
+        }
     }
-    */
 
-	function realizeSpicy()
+    function deselectItem(e)
     {
-		if (window.localStorage.spicyPoffin > 0 && 
-                !poffinRealized.spicyRealized) {
-			window.localStorage.spicyPoffin = Number(window.localStorage.spicyPoffin) - 1;
-			setPoffinRealized({...poffinRealized, spicyRealized: true});
-			if(poffinPos.spicyPos[3] === "1")
-				expandPoffins();
-		}
-		setPoffinMoving({...poffinMoving, 
-                         spicyMoving: !poffinMoving.spicyMoving});
-	}
+          
+    }
 
-	function derealizeSpicy()
+    function realize(item)
     {
-		setPoffinRealized({...poffinRealized, spicyRealized: false});
-		setPoffinPos({...poffinPos, 
-                      spicyPos: ["relative", "-307px", "-324px", "1"]});
-	}
-
-	function realizeSweet()
+        const itemCount = localStorage.getItem(item);
+        if (itemCount > 0 &&
+                !poffinRealized) {
+            localStorage.setItem(item, itemCount - 1);
+            setPoffinRealized(true);
+            if (itemPos[3] === '1')
+               expandPoffins();
+        }
+    }
+    
+    function derealize(item)
     {
-		if (window.localStorage.sweetPoffin > 0 && 
-                !poffinRealized.sweetRealized) {
-			window.localStorage.sweetPoffin = Number(window.localStorage.sweetPoffin) - 1;
-			setPoffinRealized({...poffinRealized, sweetRealized: true});
-			if(poffinPos.sweetPos[3] === "1")
-				expandPoffins();
-		}
-		setPoffinMoving({...poffinMoving,
-                         sweetMoving: !poffinMoving.sweetMoving});
-	}
-
-	function derealizeSweet()
-    {
-		setPoffinRealized({...poffinRealized, sweetRealized: false});
-		setPoffinPos({...poffinPos,
-                      sweetPos: ["relative", "-303px", "-324px", "1"]});
-	}
-
-	function realizeBitter()
-    {
-		if (window.localStorage.bitterPoffin > 0 && 
-                !poffinRealized.bitterRealized) {
-			window.localStorage.bitterPoffin = Number(window.localStorage.bitterPoffin) - 1;
-			setPoffinRealized({...poffinRealized, bitterRealized: true});
-			if (poffinPos.bitterPos[3] === "1")
-				expandPoffins();
-		}
-		setPoffinMoving({...poffinMoving,
-                         bitterMoving: !poffinMoving.bitterMoving});
-	}
-
-	function derealizeBitter()
-    {
-		setPoffinRealized({...poffinRealized, bitterRealized: false});
-		setPoffinPos({...poffinPos, 
-                      bitterPos: ["relative", "-299.5px", "-324px", "1"]});
-	}
-
-	function realizeGold()
-    {
-		if (window.localStorage.goldPoffin > 0 && 
-                !poffinRealized.goldRealized) {
-			window.localStorage.goldPoffin = Number(window.localStorage.goldPoffin) - 1;
-			setPoffinRealized({...poffinRealized, goldRealized: true});	
-			if (poffinPos.goldPos[3] === "1") 
-				expandPoffins();
-		}
-		setPoffinMoving({...poffinMoving, 
-                         goldMoving: !poffinMoving.goldMoving})
-	}
-
-	function derealizeGold()
-    {
-		setPoffinRealized({...poffinRealized, goldRealized: false});
-		setPoffinPos({...poffinPos, goldPos: ["relative", "-296px", "-324px", "1"]});
-	}
-
-	function realizeLemonade()
-    {
-		if (window.localStorage.lemonade > 0 && 
-                !poffinRealized.lemonadeRealized) {
-			window.localStorage.lemonade = Number(window.localStorage.lemonade) - 1;
-			setPoffinRealized({...poffinRealized, lemonadeRealized: true});	
-			if (poffinPos.lemonadePos[3] === "1")
-				expandPoffins();
-		}
-		setPoffinMoving({...poffinMoving,
-                         lemonadeMoving: !poffinMoving.lemonadeMoving})
-	}
-
-	function derealizeLemonade()
-    {
-		setPoffinRealized({...poffinRealized, lemonadeRealized: false});
-		setPoffinPos({...poffinPos, 
-                      lemonadePos: ["relative", "-293px", "-324px", "1"]});
-	}
+        console.log("wtf");
+		setPoffinRealized(false);
+        const extremis = document.getElementById("draggable_item"); 
+        extremis.remove();
+    }
 
 	useEffect(() => {		
 		setTimeout(() => {
-			if (poffinRealized.spicyRealized && poffinMoving.spicyMoving) {
-				setPoffinPos({...poffinPos,
-                              spicyPos: ["absolute",
-                                          String(mousePos[0]) + "px",
-                                          String(mousePos[1]) + "px",
-                                          "0"]});
+            if (selectedItem && poffinRealized) {
+                setItemPos(["absolute",
+                            String(mousePos[0]) + "px",
+                            String(mousePos[1]) + "px",
+                            "0"]);
 				setShuckleDir([mousePos[1], mousePos[0], 1]);
-				setDerealizePoffin([derealizeSpicy, 1]);
-			}
-			else if (poffinRealized.sweetRealized && poffinMoving.sweetMoving) {
-				setPoffinPos({...poffinPos,
-                              sweetPos: ["absolute",
-                                         String(mousePos[0]) + "px",
-                                         String(mousePos[1]) + "px",
-                                         "0"]});
-				setShuckleDir([mousePos[1], mousePos[0], 1]);
-				setDerealizePoffin([derealizeSweet, 2]);
-			}
-			else if (poffinRealized.bitterRealized && poffinMoving.bitterMoving) {
-				setPoffinPos({...poffinPos,
-                              bitterPos: ["absolute",
-                                          String(mousePos[0]) + "px",
-                                          String(mousePos[1]) + "px",
-                                          "0"]});
-				setShuckleDir([mousePos[1], mousePos[0], 1]);
-				setDerealizePoffin([derealizeBitter, 3]);
-			}
-			else if (poffinRealized.goldRealized && poffinMoving.goldMoving) {
-				setPoffinPos({...poffinPos,
-                              goldPos: ["absolute",
-                                        String(mousePos[0]) + "px",
-                                        String(mousePos[1]) + "px",
-                                        "0"]});
-				setShuckleDir([mousePos[1], mousePos[0], 1]);
-				setDerealizePoffin([derealizeGold,4]);
-			}
-            else if (poffinRealized.lemonadeRealized && poffinMoving.lemonadeMoving) {
-				setPoffinPos({...poffinPos,
-                              lemonadePos: ["absolute",
-                                            String(mousePos[0]) + "px",
-                                            String(mousePos[1]) + "px",
-                                            "0"]});
-				setShuckleDir([mousePos[1], mousePos[0], 2])
-				setDerealizePoffin([derealizeLemonade, 5]);
-			}
+				setPoffinDerealized(derealize(selectedItem));
+            }
             else
-				setShuckleDir([shuckleDir[0], shuckleDir[1], 0])
-			}, 16);
-        });
-
+				setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);
+        }, 16);
+    });
 
 	return (
 		<div style = {{width: "0px", height: "0px"}}>
 			<ShuckleCursor keyDownHandler = {props.keyDownHandler} 
                            validKeys = {props.validKeys} 
                            shuckleDir = {shuckleDir} 
-                           derealizePoffin = {derealizePoffin}/>
-			<table className = {classes.PoffinStorage} 
-                   style = {{width: "125.08px", 
-                             positionMargin: "auto", 
-                             textAlign: "center", 
-                             background: "#e090a8", 
-                             border: "3px solid #925E6D", 
-                             borderRadius: "10px"}}>
-				<tbody>
-                <tr>
-					<th style = {{background: "#EBB7C6", 
-                                  borderTopLeftRadius: "5px"}}>
-                        Flavor
-					</th>
-					<th style = {{background: "#EBB7C6", 
-                                  width: "66px", 
-                                  borderTopRightRadius: "5px"}}>
-                        Items
-					</th>
+                           derealizePoffin = {poffinDerealized}/>
+
+			<table className = {classes.PoffinStorage}>
+
+			    <tbody>
+
+                <tr className = {classes.header}>
+					<th> Flavor </th>
+					<th style = {{width: "66px"}}> Items </th>
 				</tr>
-				{ is_expanded && <tr style = {{background:"#fff"}}>
-                    <th style = {{background:"#F08030"}}>
+
+                { isExpanded && <tr className = {classes.item}>
+                    <th style = {{background: "#F08030"}}>
                         Spicy
-                    <div>
-                        {window.localStorage.spicyPoffin}
-                    </div>
+                        <div> {window.localStorage.spicyPoffin} </div>
                     </th>
-                    <td>
-                        <img style = {{cursor: "move"}} 
-                             src = {require("../assets/Spicy-Sour_Poffin.png")}
-                             decoding = "async" 
-                             width="64" 
-                             height="64"/>
+                    <td onClick = {selectItem}>
+                        <Poffin item = "spicyPoffin"/> 
                     </td>
-                    </tr>
-				}
-                { is_expanded && <tr style = {{background: "#fff"}}>
+                </tr> } 
+
+                { isExpanded && <tr className = {classes.item}>
                     <th style = {{background:"#F85888"}}>
                         Sweet
-                    <div>
-                        {window.localStorage.sweetPoffin}
-                    </div>
+                        <div> {window.localStorage.sweetPoffin} </div>
                     </th>
-                    <td>
-                        <img style = {{cursor: "move"}} 
-                             src = {require("../assets/Sweet-Sour_Poffin.png")}
-                             decoding = "async" 
-                             width = "64" 
-                             height = "64"/>
+                    <td name = "sweetPoffin" 
+                        onClick = {selectItem}>
+                        <Poffin item = "sweetPoffin"/> 
                     </td>
-					</tr>
-				}
-                { is_expanded && <tr style = {{background: "#fff"}}>
+                </tr> }
+
+                { isExpanded && <tr className = {classes.item}>
                     <th style = {{background: "#78C850"}}>
                         Bitter
-                    <div>
-                        {window.localStorage.bitterPoffin}
-                    </div>
+                        <div> {window.localStorage.bitterPoffin} </div>
                     </th>
-                    <td>
-                        <img style = {{cursor: "move"}} 
-                             src = {require("../assets/Bitter-Sour_Poffin.png")} 
-                             decoding = "async" 
-                             width="64" 
-                             height="64"/>
+                    <td name = "bitterPoffin" 
+                        onClick = {selectItem}>
+                        <Poffin item = "bitterPoffin"/>
                     </td>
-					</tr>
-				}
-                { is_expanded && <tr style = {{background: "#fff"}}>
-                    <th style = {{background: "#F8D030", 
-                                  borderBottomLeftRadius: "5px"}}>
+                </tr> }
+
+                { isExpanded && <tr className = {classes.item}>
+                    <th style = {{background: "#F8D030"}}> 
                         Gold
-                    <div>
-                        {window.localStorage.goldPoffin}
-                    </div>
+                        <div> {window.localStorage.goldPoffin} </div>
                     </th>
-                    <td style = {{borderBottomRightRadius: "5px"}}>
-                        <img style = {{cursor: "move"}} 
-                             src = {require("../assets/Mild_Poffin.png")} 
-                             decoding = "async" 
-                             width = "64" 
-                             height = "64"/>
+                    <td name = "goldPoffin" 
+                        onClick = {selectItem}>
+                        <Poffin item = "goldPoffin"/> 
                     </td>
-                    </tr>
-				}
-                { is_expanded && <tr style = {{background: "#fff"}}>
-                    <th style = {{background: "#6890F0", borderBottomLeftRadius: "5px"}}>
+                </tr> }
+
+                { isExpanded && <tr className = {classes.item}>
+                    <th style = {{background: "#6890F0"}}> 
                         Juice
-                    <div>
-                        {window.localStorage.lemonade}
-                    </div>
+                        <div> {window.localStorage.lemonade} </div>
                     </th>
-                    <td style = {{borderBottomRightRadius: "5px"}}>
-                        <img style = {{cursor: "move"}} 
-                             src = {require("../assets/Lemonade.png")} 
-                             decoding = "async" 
-                             width = "64" 
-                             height = "64"/>
+                    <td name = "lemonade" 
+                        onClick = {selectItem}>
+                        <Poffin item = "lemonade"/> 
                     </td>
-					</tr>
-				}
+                </tr> }
 				</tbody>
 			</table>
+
 			<button style = {{background: "none", border: "none"}} 
                     className = {classes.expansionArrow} 
                     onClick = {expandPoffins}>
@@ -337,135 +192,18 @@ function PoffinStorage(props)
                      src = {arrowSrc}>
                 </img>
 			</button>
-			{(is_expanded || poffinRealized.spicyRealized) &&
-                 <img id = "spicyPoffin" 
-                      style = {{cursor: "move", 
-                                position: poffinPos.spicyPos[0], 
-                                top: poffinPos.spicyPos[1], 
-                                left: poffinPos.spicyPos[2], 
-                                zIndex: poffinPos.spicyPos[3]}} 
-                      onClick = {realizeSpicy} 
-                      src = {require("../assets/Spicy-Sour_Poffin.png")} 
-                      decoding = "async" 
-                      width = "64" 
-                      height="64"/>
-            }
-            {(is_expanded && poffinRealized.spicyRealized) && 
-                <img id = "spicyPoffin" 
-                     style = {{cursor: "move", 
-                               position: "relative", 
-                               opacity: "0", 
-                               top: "-307", 
-                               left: "-324px", 
-                               zIndex: "0"}} 
-                     src = {require("../assets/Spicy-Sour_Poffin.png")} 
-                     decoding = "async" 
-                     width = "64" 
-                     height = "64"/>
-            }
-			{(is_expanded || poffinRealized.sweetRealized) && 
-                <img id = "sweetPoffin" 
-                     style = {{cursor:"move", 
-                               position: poffinPos.sweetPos[0], 
-                               top: poffinPos.sweetPos[1], 
-                               left: poffinPos.sweetPos[2], 
-                               zIndex: poffinPos.sweetPos[3]}} 
-                     onClick = {realizeSweet} 
-                     src = {require("../assets/Sweet-Sour_Poffin.png")} 
-                     decoding = "async" 
-                     width = "64" 
-                     height = "64"/>
-            }
-            {(is_expanded && poffinRealized.sweetRealized) &&
-                 <img id = "sweetPoffin" 
-                      style = {{cursor: "move", 
-                                position: "relative", 
-                                opacity: "0", 
-                                top: "-303", 
-                                left: "-324px", 
-                                zIndex: "0"}} 
-                      src = {require("../assets/Sweet-Sour_Poffin.png")} 
-                      decoding = "async" 
-                      width = "64" 
-                      height = "64"/>
-            }
-			{(is_expanded || poffinRealized.bitterRealized) && 
-                <img id = "bitterPoffin" 
-                     style = {{cursor: "move", 
-                               position: poffinPos.bitterPos[0], 
-                               top: poffinPos.bitterPos[1], 
-                               left: poffinPos.bitterPos[2], 
-                               zIndex: poffinPos.bitterPos[3]}} 
-                     onClick = {realizeBitter} 
-                     src = {require("../assets/Bitter-Sour_Poffin.png")} 
-                     decoding = "async" 
-                     width = "64" 
-                     height = "64"/>
-            }
-            {(is_expanded && poffinRealized.bitterRealized) && 
-                <img id = "bitterPoffin" 
-                     style = {{cursor: "move", 
-                               position: "relative", 
-                               opacity: "0", 
-                               top: "-299.5", 
-                               left: "-324px", 
-                               zIndex: "0"}} 
-                     src = {require("../assets/Bitter-Sour_Poffin.png")} 
-                     decoding = "async" 
-                     width = "64" 
-                     height = "64"/>
-            }
-			{(is_expanded || poffinRealized.goldRealized) && 
-                <img id = "goldPoffin" 
-                     style = {{cursor: "move", 
-                               position: poffinPos.goldPos[0], 
-                               top: poffinPos.goldPos[1], 
-                               left: poffinPos.goldPos[2], 
-                               zIndex: poffinPos.goldPos[3]}} 
-                     onClick = {realizeGold} 
-                     src = {require("../assets/Mild_Poffin.png")} 
-                     decoding = "async" 
-                     width = "64" 
-                     height = "64"/>
-            }
-	        {(is_expanded && poffinRealized.goldRealized) &&
-                 <img id = "goldPoffin" 
-                      style = {{cursor: "move", 
-                                position: "relative", 
-                                opacity: "0", 
-                                top: "-296", 
-                                left: "-324px", 
-                                zIndex:"0"}} 
-                      src = {require("../assets/Mild_Poffin.png")} 
-                      decoding = "async" 
-                      width = "64" 
-                      height = "64"/>
-            }
-			{(is_expanded || poffinRealized.lemonadeRealized) && 
-                <img id = "lemonade" 
-                     style = {{cursor: "move", 
-                               position: poffinPos.lemonadePos[0], 
-                               top: poffinPos.lemonadePos[1], 
-                               left: poffinPos.lemonadePos[2], 
-                               zIndex: poffinPos.lemonadePos[3]}} 
-                     onClick = {realizeLemonade} 
-                     src = {require("../assets/Lemonade.png")} 
-                     decoding = "async" 
-                     width = "64" 
-                     height = "64"/>
-            }
-            {(is_expanded && poffinRealized.lemonadeRealized) && 
-                <img id = "lemonade" 
-                     style = {{cursor: "move", 
-                               position: "relative", 
-                               opacity: "0", 
-                               top: "-293", 
-                               left: "-324px", 
-                               zIndex: "0"}} 
-                     src = {require("../assets/Lemonade.png")} 
-                     decoding="async" 
-                     width="64" 
-                     height="64"/>
+
+            { selectedItem && !poffinRealized &&
+                <img id = "draggable_item"
+                     className = {classes.Poffin}
+                     src = {require("../assets/" + selectedItem + ".png")}
+                     style = {{cursor: "move",
+                               position: itemPos[0],
+                               top: itemPos[1],
+                               left: itemPos[2],
+                               zIndex: itemPos[3]}}
+                     onClick = {realize(selectedItem)}
+                     decoding = "async"/>
             }
 		</div>
 	)

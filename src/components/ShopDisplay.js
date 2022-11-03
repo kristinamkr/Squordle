@@ -11,14 +11,17 @@ function ShopDisplay(props)
 	var dollarHandler = props.dollarHandler;
 
 	var shopText = ["Would you like to adopt a Shuckle?",
-		"Please adopt him! Look! He's so lonely.",
-		"Please! I'm begging you!",
-		"Okay. I understand. It's not your fault.",
-		"It's just that our clientele has been dwindling and we can't afford to feed our family much longer.",
-		"We love our Shuckle so much, but maybe we can buy ourselves more time if someone would adopt him.",
-		"If you know anyone who can help, please send them our way.",
-		"Thank you! Please take this poffin as well. If you come back again, we will have items to sell you.",
-		"Welcome back! Feel free to browse."]
+                    "Please adopt him! Look! He's so lonely.",
+                    "Please! I'm begging you!",
+                    "Okay. I understand. It's not your fault.",
+                    "It's just that our clientele has been dwindling and "
+                     + "we can't afford to feed our family much longer.",
+                    "We love our Shuckle so much, but maybe we can buy " 
+                     + "ourselves more time if someone would adopt him.",
+                    "If you know anyone who can help, please send them our way.",
+                    "Thank you! Please take this poffin as well. " 
+                     + "If you come back again, we will have items to sell you.",
+                    "Welcome back! Feel free to browse."]
 
 	var emotionDict = {0: "Happy",
                        1: "Sad",
@@ -53,7 +56,7 @@ function ShopDisplay(props)
 
 	function shuckleAdopter()
     {
-		if (Number(window.localStorage.pokedollars) >= 1000) {
+		if (Number(window.localStorage.pokeDollars) >= 1000) {
 			window.localStorage.adoptedShuckle = true;
 			window.localStorage.shopState = 7;
 			window.localStorage.spicyPoffin = 1;
@@ -69,7 +72,7 @@ function ShopDisplay(props)
                                flexDirection: "row",
                                fontSize: "2rem"}}>
 					<img style = {{height:"26px"}} 
-                         src={require("../assets/pokedollarLight.png")}/>
+                         src={require("../assets/pokeDollarLight.png")}/>
                     {" "}{1000}
 	          	</div>
 			<button onClick = {shuckleAdopter}>
@@ -90,7 +93,7 @@ function ShopDisplay(props)
                                        flexDirection: "row",
                                         fontSize: "2rem"}}>
 							<img style = {{height: "26px"}}
-                                 src = {require("../assets/pokedollarLight.png")}/>
+                                 src = {require("../assets/pokeDollarLight.png")}/>
 				          	{" "}{price}
 			          	</div>
                         <button onClick = {buyFunc}>
@@ -105,25 +108,25 @@ function ShopDisplay(props)
 	var spicyImage = (
 		<div style = {{display:"flex", flexDirection:"column"}}>
 			<img style = {{width:"68px"}} 
-                 src = {require("../assets/Spicy-Sour_Poffin.png")}/>
+                 src = {require("../assets/spicyPoffin.png")}/>
 		</div>
     );
 	var sweetImage = (
 		<div style = {{display:"flex", flexDirection:"column"}}>
 			<img style = {{width:"68px"}} 
-                 src = {require("../assets/Sweet-Sour_Poffin.png")}/>
+                 src = {require("../assets/sweetPoffin.png")}/>
 		</div>
     );
 	var bitterImage = (
 		<div style = {{display:"flex", flexDirection:"column"}}>
 			<img style = {{width:"68px"}} 
-                 src = {require("../assets/Bitter-Sour_Poffin.png")}/>
+                 src = {require("../assets/bitterPoffin.png")}/>
 		</div>
     );
 	var goldImage = (
 		<div style = {{display:"flex", flexDirection:"column"}}>
 			<img style={{width:"68px"}} 
-                 src={require("../assets/Mild_Poffin.png")}/>
+                 src={require("../assets/goldPoffin.png")}/>
 		</div>
     );
 	var lemonadeImage = (
@@ -132,13 +135,13 @@ function ShopDisplay(props)
                            paddingRight: "6px",
                            width: "56px",
                            height: "100%"}} 
-                 src={require("../assets/Lemonade.png")}/>
+                 src={require("../assets/lemonade.png")}/>
 		</div>
     );
 
 	function spicyBuyer()
     {
-		if (Number(window.localStorage.pokedollars) >= 250){
+		if (Number(window.localStorage.pokeDollars) >= 250){
 			window.localStorage.spicyPoffin = 
                 Number(window.localStorage.spicyPoffin) + 1
 			dollarHandler(-250);
@@ -147,7 +150,7 @@ function ShopDisplay(props)
 
 	function sweetBuyer()
     {
-		if (Number(window.localStorage.pokedollars) >= 400){
+		if (Number(window.localStorage.pokeDollars) >= 400){
 			window.localStorage.sweetPoffin = 
                 Number(window.localStorage.sweetPoffin) + 1
 			dollarHandler(-400);
@@ -156,7 +159,7 @@ function ShopDisplay(props)
     
 	function bitterBuyer() 
     {
-		if (Number(window.localStorage.pokedollars) >= 200){
+		if (Number(window.localStorage.pokeDollars) >= 200){
 			window.localStorage.bitterPoffin = 
                 Number(window.localStorage.bitterPoffin) + 1
 			dollarHandler(-200);
@@ -165,7 +168,7 @@ function ShopDisplay(props)
 
 	function goldBuyer() 
     {
-		if (Number(window.localStorage.pokedollars) >= 1000) {
+		if (Number(window.localStorage.pokeDollars) >= 1000) {
 			window.localStorage.goldPoffin 
                 = Number(window.localStorage.goldPoffin)+1
 			dollarHandler(-1000);
@@ -174,7 +177,7 @@ function ShopDisplay(props)
 
 	function lemonadeBuyer()
     {
-		if (Number(window.localStorage.pokedollars) >= 100) {
+		if (Number(window.localStorage.pokeDollars) >= 100) {
 			window.localStorage.lemonade = 
                 Number(window.localStorage.lemonade)+1;
 			dollarHandler(-100);
