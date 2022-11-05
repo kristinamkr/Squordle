@@ -14,17 +14,36 @@ import ShuckleDisplay from "./ShuckleDisplay.js";
 import ShinyDisplay from "./ShinyDisplay.js";
 import PoffinStorage from "./PoffinStorage.js";
 
+import gameInit from "../functions/gameInit.js";
+import pokeList from "./pokelist.js"
 import { useState, useEffect } from 'react';
 
 function GSDiv(props) 
 {
+
+    if (!window.localStorage.region) {
+        window.localStorage.region = "kanto"
+    };
+
+    var regionList = pokeList; //TO BE EXPANDED INTO FUNCTION WHICH RETURNS REGIONAL POKELIST
+
+    var inits = gameInit(regionList);
+
+    var gsInit = inits.gsInit;
+    var lsInit = inits.lsInit;
+    var wordLength = inits.wordLength;
+    var validKeys = inits.validKeys;
+    var validKeysSet = new Set(validKeys);
+    var pokeList = inits.pokeList;
+    var pokemonSet = new Set(pokeList);
+
 	useEffect(() => {
         document.addEventListener("keydown", keyDownHandler);
   		return () => document.removeEventListener("keydown", keyDownHandler);
     });
 
-	const [gameSpace, setGameSpace] = useState(props.rows);
-	const [letterStates, setLetterStates] = useState(props.letterStates);
+	const [gameSpace, setGameSpace] = useState(gsInit);
+	const [letterStates, setLetterStates] = useState(lsInit);
 	const [displayState, setDisplayState] = 
            useState({"showShop": false,
                      "showInfo": false,
@@ -83,12 +102,6 @@ function GSDiv(props)
     //Seems redundant but as soon as state changes come into play its as though
     // (generally) neither of the previous two sections exist, only the state.
     window.localStorage.pokeDollars = pokeDollars; 
-
-	var wordLength = props.wordLength;
-  	var validKeys = props.validKeys;
-  	var validKeysSet = new Set(validKeys);
-  	var pokeList = props.pokeList;
-  	var pokemonSet = new Set(pokeList);
 
   	function findFocus(gameSpace) 
     {
@@ -262,7 +275,7 @@ function GSDiv(props)
         <div className = {classes.GSDiv}>
 			{window.localStorage.adoptedShuckle === "true" && 
                  <PoffinStorage keyDownHandler = {keyDownHandler}
-                                validKeys = {props.validKeys}/>}
+                                validKeys = {validKeys}/>}
 			<header className = "MenuBar">
         	<div style = {{fontSize: "3rem",
                            position: "relative",
@@ -362,14 +375,14 @@ function GSDiv(props)
       		<div className = "Spacer"/>
                 <GameSpace id = "gameSpace"
                            gameSpace = {gameSpace}
-                           wordLength = {props.wordLength}
-                           pokeList = {props.pokeList}/>
+                           wordLength = {wordLength}
+                           pokeList = {pokeList}/>
                 <Keyboard id = "keyboard" 
                           letterStates = {letterStates} 
                           handler = {keyDownHandler}
                           gameSpace = {gameSpace}
                           setGameSpace = {setGameSpace} 
-                          validKeys = {props.validKeys}/>
+                          validKeys = {validKeys}/>
 
                 {displayState["showBackdrop"] && <Backdrop/>}
                 {displayState["showWinPage"] && 

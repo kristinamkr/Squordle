@@ -43,10 +43,10 @@ function ShopDisplay(props)
 	function shopDialogue()
     {
 		if (window.localStorage.adoptedShuckle === "false" 
-                && window.localStorage.shopState ==='6')
+                && window.localStorage.shopState === '6')
 			props.shopHandler();
 		else if (window.localStorage.adoptedShuckle === "true" 
-                && window.localStorage.shopState==='7') {
+                && window.localStorage.shopState === '7') {
 			shopAdvance();
 			props.shopHandler();
 		}
