@@ -7,25 +7,40 @@ import { useState , useEffect } from 'react';
 
 function ShuckleCursor(props)
 {
+    //  MOUSE EVENTS -----------------------------------------------------------
+	const [mousePos, setMousePos] = useState([0, 0])
+
+	function changeMousePos(e)
+    {
+		setMousePos([e.pageX - 20, e.pageY - 20, 0]);
+	}
+
+	useEffect(() => {
+  		document.addEventListener("mousemove", changeMousePos);
+  		return () => document.removeEventListener("mousemove", changeMousePos);
+    });
+    // -------------------------------------------------------------------------
+
+	const [shuckleDir, setShuckleDir] = useState([0, 0, 0])
 	const [shucklePos, setShucklePos] = useState([0, 0]);
+	const [shuckleAction, setShuckleAction] = useState('followMouse');
+
 	const [nearMouse, setNearMouse] = useState(false);
 	const [nearGoal, setNearGoal] = useState(false);
-	const [shuckleAction, setShuckleAction] = useState('followMouse');
+
 	const [actFrame, setActFrame] = useState(0);
 	const [actNum, setActNum] = useState(0);
 
-    // duplicate?
-	const [shuckleDir, setShuckleDir] = useState([0, 0, 0])
-	const [mousePos, setMousePos] = useState([0, 0])
-
 	const [angerIcon, setAngerIcon] = useState(0);
+	const [enemyKey, setEnemyKey] = useState(0)
 	const [remainingKeys, setRemainingKeys] = 
         useState(["Backspace","Enter"].concat(props.validKeys));
-	const [enemyKey, setEnemyKey] = useState(0)
+
 	const [justAte, setJustAte] = useState(false);
 	const [shuckleThought, setShuckleThought] = useState("");
 	const [obfuscation, setObfuscation] = useState(0);
 
+    // eating animation...
 	var biteFrameList = [[4,  44,   "1"], 
                          [10, 38,   "1"], 
                          [16, 32,   "1"], 
@@ -33,6 +48,7 @@ function ShuckleCursor(props)
                          [16, 32, "0.3"],
                          [16, 32,   "0"]];
 
+    // key attack animation
 	var slashFrameList = [["0",   "1"],
                           ["1",   "1"],
                           ["2",   "1"],
@@ -54,7 +70,7 @@ function ShuckleCursor(props)
 	// var poffinEaten = props.derealizePoffin[1];     // numbered behavior
 	var poffinEaten = 0; 
 
-    // what does this do
+    // slice from da right, slice from da left 
 	function slashAlt()
     {
 		if (actNum % 2 === 0)
@@ -103,21 +119,11 @@ function ShuckleCursor(props)
 		setRemainingKeys(remainingKeys.filter(key => key !== enemyKey.id));
 	}
 
-	function changeMousePos(e)
-    {
-		setMousePos([e.pageX - 20, e.pageY - 20, 0]);
-	}
-
 	function isNearGoal()
     {
 		return(Math.abs(shuckleDir[0] - shucklePos[0]) < 25 && 
                Math.abs(shuckleDir[1] - shucklePos[1]) < 25);
 	}
-
-	useEffect(() => {
-  		document.addEventListener("mousemove", changeMousePos);
-  		return () => document.removeEventListener("mousemove", changeMousePos);
-    });
 
 	// This renders away the shininess cloud cover
     // if turning shiny is cancelled by juice
@@ -175,20 +181,6 @@ function ShuckleCursor(props)
 					}
 					changeShucklePos(shuckleDir);
 				}, 16);
-			}
-            else {
-				/*setTimeout(() => {
-					var ra`ndomDirections = [-10,-4,-4,-2,-2,-1,-1,-1,0,0,0,0,1,1,1,2,2,4,4,10];
-
-					var dirSelection = Math.floor(Math.random()*randomDirections.length);
-					var xDelta = randomDirections[dirSelection];
-
-					var dirSelection = Math.floor(Math.random()*randomDirections.length);
-					var yDelta = randomDirections[dirSelection];
-
-					setShucklePos([shucklePos[0]+xDelta,shucklePos[1]+yDelta])
-				}, 64);
-				*/
 			}
 		}
         else if (shuckleAction === "layEgg") {
@@ -357,6 +349,7 @@ function ShuckleCursor(props)
 			}, 2500);
     });
 
+    // RENDER ------------------------------------------------------------------
 	return (
 		<div>
 			{shuckleAction === "followMouse" && nearGoal && (
@@ -375,7 +368,7 @@ function ShuckleCursor(props)
                          style = {{position: "absolute",
                                    left: String(shucklePos[0] + 13) + "px",
                                    top: String(shucklePos[1] - 10) + "px"}} 
-                         src = {require("../assets/shuckleLove.gif")}/>
+                        src = {require("../assets/shuckleLove.gif")}/>
 				</div>
             )}
 			{shuckleAction === "behaveAngrily" && (

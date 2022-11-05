@@ -45,18 +45,18 @@ function PoffinStorage(props)
 	const [itemPos, setItemPos] = 
             useState(['', '', '', '', '']);
 
-    // MOVE TO SHUCKLE --------------------------------------------------------- 
 	const [poffinRealized, setPoffinRealized] = useState(false); 
 	// const [poffinMoving, setPoffinMoving] = useState(false);
-
-    //first item is which derealizePoffin function to use, 
-    // second is the reference to poffin so shuckle knows which 
-    // behavior to perform.
 	const [poffinDerealized, setPoffinDerealized] = useState('');
 
 	// first item is X pos of poffin, second item is Y pos of poffin, 
     // third item in the array is either 1 or 0 and references "poffinMoving"
 	const [shuckleDir, setShuckleDir] = useState([0, 0, 0]);
+
+    // if !(selectedItem)
+    //      selectItem(e) 
+    // else 
+    //      if 
 
     function selectItem(e)
     {
@@ -78,41 +78,43 @@ function PoffinStorage(props)
           
     }
 
+    // way to reactify this i just know it...
     function realize(item)
     {
         const itemCount = localStorage.getItem(item);
-        if (itemCount > 0 &&
-                !poffinRealized) {
+        if (itemCount > 0 && !(poffinRealized)) {
             localStorage.setItem(item, itemCount - 1);
+            // NEED onClick event... only way
             setPoffinRealized(true);
-            if (itemPos[3] === '1')
-               expandPoffins();
         }
     }
     
+    /*
     function derealize(item)
     {
-        console.log("wtf");
+        // const extremis = document.getElementById("draggable_item"); 
+        // extremis.remove();
+
 		setPoffinRealized(false);
-        const extremis = document.getElementById("draggable_item"); 
-        extremis.remove();
     }
+    */
 
 	useEffect(() => {		
 		setTimeout(() => {
-            if (selectedItem && poffinRealized) {
+            if (selectedItem ) { // && poffinRealized) {
                 setItemPos(["absolute",
                             String(mousePos[0]) + "px",
                             String(mousePos[1]) + "px",
                             "0"]);
 				setShuckleDir([mousePos[1], mousePos[0], 1]);
-				setPoffinDerealized(derealize(selectedItem));
+				// setPoffinDerealized(derealize(selectedItem));
             }
             else
 				setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);
         }, 16);
     });
 
+    // RENDER ------------------------------------------------------------------
 	return (
 		<div style = {{width: "0px", height: "0px"}}>
 			<ShuckleCursor keyDownHandler = {props.keyDownHandler} 
@@ -193,7 +195,7 @@ function PoffinStorage(props)
                 </img>
 			</button>
 
-            { selectedItem && !poffinRealized &&
+            { selectedItem && !(poffinRealized) &&
                 <img id = "draggable_item"
                      className = {classes.Poffin}
                      src = {require("../assets/" + selectedItem + ".png")}
@@ -202,7 +204,7 @@ function PoffinStorage(props)
                                top: itemPos[1],
                                left: itemPos[2],
                                zIndex: itemPos[3]}}
-                     onClick = {realize(selectedItem)}
+                     // onClick = {realize(selectedItem)}
                      decoding = "async"/>
             }
 		</div>
