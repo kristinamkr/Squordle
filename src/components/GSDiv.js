@@ -258,22 +258,6 @@ function GSDiv(props)
                         });
   	}
 
-  	function shuckleHandler()
-    {
-        setDisplayState({...displayState,
-                         "showShucklePage": !displayState["showShucklePage"],
-                         "showBackdrop": !displayState["showBackdrop"]
-                        });
-  	}
-
-  	function shinyHandler()
-    {
-  		setDisplayState({...displayState,
-                         "showShinyPage": !displayState["showShinyPage"],
-                         "showBackdrop": !displayState["showBackdrop"]
-                        });
-  	}
-
 	return (
         <div className = {classes.GSDiv}>
 			{window.localStorage.adoptedShuckle === "true" && 
