@@ -8,22 +8,22 @@ import Keyboard from "./Keyboard.js";
 import Backdrop from "./Backdrop.js";
 import WinDisplay from "./WinDisplay.js";
 import LoseDisplay from "./LoseDisplay.js";
-import InfoDisplay from "./InfoDisplay.js";
+import InfoDisplay from "./InfoDisplay.js";   
 import ShopDisplay from "./ShopDisplay.js";
 import ShuckleDisplay from "./ShuckleDisplay.js";
 import ShinyDisplay from "./ShinyDisplay.js";
 import PoffinStorage from "./PoffinStorage.js";
 
+import pokeList from "./pokelist.js";
 import gameInit from "../functions/gameInit.js";
-import pokeList from "./pokelist.js"
+import loadSave from "../functions/loadSave,js";
+import keyDownHandler from "..functions/keyDownHandler"
 import { useState, useEffect } from 'react';
 
 function GSDiv(props) 
 {
 
-    if (!window.localStorage.region) {
-        window.localStorage.region = "kanto"
-    };
+    loadSave()
 
     var regionList = pokeList; //TO BE EXPANDED INTO FUNCTION WHICH RETURNS REGIONAL POKELIST
 
@@ -52,49 +52,6 @@ function GSDiv(props)
                      "showBackdrop": false,
                      "showShucklePage": false,
                      "showShinyPage": false});
-
-    if (window.localStorage.length !== 13)
-    {
-	    if (!(window.localStorage.pokeDollars)) {
-            window.localStorage.pokeDollars = 0;
-	  	}
-	   if (!(window.localStorage.adoptedShuckle)) {
-	      	window.localStorage.adoptedShuckle = false;
-	    }
-	    if (!(window.localStorage.shopState)) {
-	    	window.localStorage.shopState = 0;
-	    }  
-	    if (!(window.localStorage.spicyPoffin)) {
-	    	window.localStorage.spicyPoffin = 0;
-	    }
-	    if (!(window.localStorage.sweetPoffin)) {
-	      	window.localStorage.sweetPoffin = 0;
-	    }  
-	    if (!(window.localStorage.bitterPoffin)) {
-	      	window.localStorage.bitterPoffin = 0;
-	    }  
-	    if (!(window.localStorage.goldPoffin)) {
-	      	window.localStorage.goldPoffin = 0;
-	    }  
-	    if (!(window.localStorage.lemonade)) {
-	      	window.localStorage.lemonade = 0;
-	    }  
-	    if (!(window.localStorage.shuckleShiny)) {
-	      	window.localStorage.shuckleShiny = 0;
-	    }  
-	    if (!(window.localStorage.shuckleSpicy)) {
-	      	window.localStorage.shuckleSpicy = 0;
-	    }  
-	    if (!(window.localStorage.shuckleSweet)) {
-	      	window.localStorage.shuckleSweet = 0;
-	    }  
-	    if (!(window.localStorage.shuckleBitter)) {
-	      	window.localStorage.shuckleBitter = 0;
-	    }  
-	    if (!(window.localStorage.shuckleChildren)) {
-	      	window.localStorage.shuckleChildren = [];
-	    }
-	}
 
     const [pokeDollars, setPokeDollars] = 
            useState(Number(window.localStorage.pokeDollars));
