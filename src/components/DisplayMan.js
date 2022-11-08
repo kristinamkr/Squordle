@@ -28,7 +28,7 @@ function DisplayMan(props)
                 <InfoDisplay infoHandler = {infoHandler}/>}
             {displayState["showShop"] && 
                 <ShopDisplay dollarHandler = {dollarHandler} 
-                    shopHandler = {shopHandler}/>}/>}
+                    shopHandler = {shopHandler}/>}
         </div>
     )
 }
