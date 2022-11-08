@@ -72,7 +72,7 @@ function ShopDisplay(props)
                                flexDirection: "row",
                                fontSize: "2rem"}}>
 					<img style = {{height:"26px"}} 
-                         src={require("../assets/pokeDollarLight.png")}/>
+                         src={require("../assets/pokedollarLight.png")}/>
                     {" "}{1000}
 	          	</div>
 			<button onClick = {shuckleAdopter}>
@@ -93,7 +93,7 @@ function ShopDisplay(props)
                                        flexDirection: "row",
                                         fontSize: "2rem"}}>
 							<img style = {{height: "26px"}}
-                                 src = {require("../assets/pokeDollarLight.png")}/>
+                                 src = {require("../assets/pokedollarLight.png")}/>
 				          	{" "}{price}
 			          	</div>
                         <button onClick = {buyFunc}>

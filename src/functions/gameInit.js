@@ -4,7 +4,7 @@
 
 function gameInit(pokeList)
 {
-	Object.freeze(pokeList); 
+	Object.freeze(pokeList);
 
 	var selectionNumber = Math.floor(Math.random() * pokeList.length);
 
@@ -44,6 +44,8 @@ function gameInit(pokeList)
 	    };
 
 	var validKeys = "qwertyuiopasdfghjklzxcvbnm".split('');
+
+	var guessList = pokeList; //TO BE REGIONIZED
 
 	var inits = {
 			lsInit : lsInit,

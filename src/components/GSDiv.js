@@ -5,25 +5,17 @@
 import classes from "./style/GSDiv.module.css";
 import GameSpace from "./GameSpace.js";
 import Keyboard from "./Keyboard.js";
-import Backdrop from "./Backdrop.js";
-import WinDisplay from "./WinDisplay.js";
-import LoseDisplay from "./LoseDisplay.js";
-import InfoDisplay from "./InfoDisplay.js";   
-import ShopDisplay from "./ShopDisplay.js";
-import ShuckleDisplay from "./ShuckleDisplay.js";
-import ShinyDisplay from "./ShinyDisplay.js";
 import PoffinStorage from "./PoffinStorage.js";
-
-import pokeList from "./pokelist.js";
+import DisplayMan from "./DisplayMan.js";
+import pokeList from "./PokeList.js";
 import gameInit from "../functions/gameInit.js";
-import loadSave from "../functions/loadSave,js";
-import keyDownHandler from "..functions/keyDownHandler"
+import loadSave from "../functions/loadSave.js";
 import { useState, useEffect } from 'react';
 
 function GSDiv(props) 
 {
 
-    loadSave()
+    loadSave();
 
     var regionList = pokeList; //TO BE EXPANDED INTO FUNCTION WHICH RETURNS REGIONAL POKELIST
 
@@ -52,6 +44,8 @@ function GSDiv(props)
                      "showBackdrop": false,
                      "showShucklePage": false,
                      "showShinyPage": false});
+
+
 
     const [pokeDollars, setPokeDollars] = 
            useState(Number(window.localStorage.pokeDollars));
@@ -239,7 +233,7 @@ function GSDiv(props)
                            left: "20px",
                            width: "240px"}}>
                 <img style = {{height:"35px"}} 
-                     src = {require("../assets/pokeDollarLight.png")}/>
+                     src = {require("../assets/pokedollarLight.png")}/>
           		{" "}{pokeDollars}
             </div>
         	<div className = "GameTitle">
@@ -331,32 +325,23 @@ function GSDiv(props)
       		</header>
       		<div className = "Spacer"/>
                 <GameSpace id = "gameSpace"
-                           gameSpace = {gameSpace}
-                           wordLength = {wordLength}
-                           pokeList = {pokeList}/>
+                        gameSpace = {gameSpace}
+                        wordLength = {wordLength}
+                        pokeList = {pokeList}/>
                 <Keyboard id = "keyboard" 
-                          letterStates = {letterStates} 
-                          handler = {keyDownHandler}
-                          gameSpace = {gameSpace}
-                          setGameSpace = {setGameSpace} 
-                          validKeys = {validKeys}/>
+                        letterStates = {letterStates} 
+                        handler = {keyDownHandler}
+                        gameSpace = {gameSpace}
+                        setGameSpace = {setGameSpace} 
+                        validKeys = {validKeys}/>
+                <DisplayMan id = "displayMan"
+                        displayState = {displayState}
+                        setDisplayState = {setDisplayState}
+                        gameSpace = {gameSpace}
+                        infoHandler = {infoHandler}
+                        dollarHandler = {dollarHandler}
+                        shopHandler = {shopHandler}/>
 
-                {displayState["showBackdrop"] && <Backdrop/>}
-                {displayState["showWinPage"] && 
-                     <WinDisplay setDisplayState = {setDisplayState}
-                                 gameSpace = {gameSpace}/>}
-                {displayState["showLosePage"] && 
-                     <LoseDisplay setDisplayState = {setDisplayState} 
-                                  gameSpace = {gameSpace}/>}
-                {displayState["showInfo"] && 
-                    <InfoDisplay infoHandler = {infoHandler}/>}
-                {displayState["showShop"] && 
-                    <ShopDisplay dollarHandler = {dollarHandler} 
-                                 shopHandler = {shopHandler}/>}
-                {displayState["showShucklePage"] && 
-                    <ShuckleDisplay ShuckleHandler = {shuckleHandler}/>}
-                {displayState["showShinyPage"] && 
-                    <ShinyDisplay ShinyHandler = {shinyHandler}/>}
             </div>
 	)
 }
