@@ -1,5 +1,3 @@
-import ShinyDisplay from "./ShinyDisplay.js";
-import ShuckleDisplay from "./ShuckleDisplay.js";
 import Backdrop from "./Backdrop.js";
 import WinDisplay from "./WinDisplay.js";
 import LoseDisplay from "./LoseDisplay.js";

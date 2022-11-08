@@ -1,4 +1,4 @@
-var pokeList = ["edward","wyrdeer","kleavor","ursaluna","sneasler",
+const PokeList = ["edward","wyrdeer","kleavor","ursaluna","sneasler",
       "overqwil","enamorus",'absol', 'accelgor', 'aggron', 
       'aipom', 'alakazam', 'alcremie', 'altaria', 'amaura', 
       'ambipom', 'ampharos', 'anorith', 'appletun', 'applin', 
@@ -130,4 +130,4 @@ var pokeList = ["edward","wyrdeer","kleavor","ursaluna","sneasler",
       'zarude', 'zekrom', 'zeraora', 'zoroark', 'zorua', 'zubat', 
       'zweilous', 'zygarde'];
 
-      export default pokeList;
+export default PokeList;

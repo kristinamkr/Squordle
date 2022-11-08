@@ -7,7 +7,7 @@ import GameSpace from "./GameSpace.js";
 import Keyboard from "./Keyboard.js";
 import PoffinStorage from "./PoffinStorage.js";
 import DisplayMan from "./DisplayMan.js";
-import pokeList from "./PokeList.js";
+import PokeList from "./PokeList.js";
 import gameInit from "../functions/gameInit.js";
 import loadSave from "../functions/loadSave.js";
 import { useState, useEffect } from 'react';
@@ -17,7 +17,7 @@ function GSDiv(props)
 
     loadSave();
 
-    var regionList = pokeList; //TO BE EXPANDED INTO FUNCTION WHICH RETURNS REGIONAL POKELIST
+    var regionList = PokeList; //TO BE EXPANDED INTO FUNCTION WHICH RETURNS REGIONAL POKELIST
 
     var inits = gameInit(regionList);
 
