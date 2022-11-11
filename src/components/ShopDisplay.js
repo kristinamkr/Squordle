@@ -9,11 +9,19 @@ import { useState, useEffect } from 'react';
 
 function ShopDisplay(props)
 {
-	const emotion = { NEUTRAL: 0,
+	/*const emotion = { NEUTRAL: 0,
                       HAPPY:   1,
                       SAD:     2,
                       WEEPY:   3};
-    Object.freeze(emotion);
+    Object.freeze(emotion);*/
+
+	var emotionDict = {0: "Happy",
+                   1: "Sad",
+                   2: "Weepy",
+                   3: "Neutral",
+                   4: "Neutral",
+                   5: "Neutral",
+                   6: "Neutral"};
 
 	var shopText = ["Would you like to adopt a Shuckle?",
                     "Please adopt him! Look! He's so lonely.",
@@ -76,19 +84,22 @@ function ShopDisplay(props)
 		}
 	}
 
-	var currentEmotion = emotion.HAPPY;
-	if (Number(window.localStorage.shopState) <= 6)
-		currentEmotion = Number(window.localStorage.shopState);
+	var currentEmotion = "Happy";
+
+	if (Number(window.localStorage.shopState) <=6 )
+		currentEmotion = emotionDict[Number(window.localStorage.shopState)];
+	else
+		currentEmotion = "Happy";
 
 	var sellingShuckle = (
-		<div> <p/>
+		<div className = {classes.shuckleDisplay}> <p/>
 			<img className = {classes.header}
                  src = {require("../assets/shopHeaderLight.png")}/>
 			<div className = {classes.subheader}>
                 {shopText[Number(window.localStorage.shopState)]}
             </div>
 			<img style = {{width: "80%"}} 
-                 src = {require("../assets/Shuckle.png")}/>
+                 src = {require("../assets/213Shuckle" + currentEmotion + ".png")}/>
 
 			<div className = {classes.shuckleFormat}> 
 				{window.localStorage.adoptedShuckle === "false" && 
@@ -125,7 +136,7 @@ function ShopDisplay(props)
     }
 
 	var regularShop = (
-		<div> <p/>
+		<div className = {classes.regularDisplay}> <p/>
 			<img className = {classes.header}
                  src = {require("../assets/shopHeaderLight.png")}/>
 			<div className = {classes.subheader}>
