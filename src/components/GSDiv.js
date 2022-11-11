@@ -341,8 +341,7 @@ function GSDiv(props)
                         infoHandler = {infoHandler}
                         dollarHandler = {dollarHandler}
                         shopHandler = {shopHandler}/>
-
-            </div>
+        </div>
 	)
 }
 
