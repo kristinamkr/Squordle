@@ -5,26 +5,37 @@
 import classes from "./style/GSDiv.module.css";
 import GameSpace from "./GameSpace.js";
 import Keyboard from "./Keyboard.js";
-import Backdrop from "./Backdrop.js";
-import WinDisplay from "./WinDisplay.js";
-import LoseDisplay from "./LoseDisplay.js";
-import InfoDisplay from "./InfoDisplay.js";
-import ShopDisplay from "./ShopDisplay.js";
-import ShuckleDisplay from "./ShuckleDisplay.js";
-import ShinyDisplay from "./ShinyDisplay.js";
 import PoffinStorage from "./PoffinStorage.js";
-
+import DisplayMan from "./DisplayMan.js";
+import PokeList from "./PokeList.js";
+import gameInit from "../functions/gameInit.js";
+import loadSave from "../functions/loadSave.js";
 import { useState, useEffect } from 'react';
 
 function GSDiv(props) 
 {
+
+    loadSave();
+
+    var regionList = PokeList; //TO BE EXPANDED INTO FUNCTION WHICH RETURNS REGIONAL POKELIST
+
+    var inits = gameInit(regionList);
+
+    var gsInit = inits.gsInit;
+    var lsInit = inits.lsInit;
+    var wordLength = inits.wordLength;
+    var validKeys = inits.validKeys;
+    var validKeysSet = new Set(validKeys);
+    var pokeList = inits.pokeList;
+    var pokemonSet = new Set(pokeList);
+
 	useEffect(() => {
         document.addEventListener("keydown", keyDownHandler);
   		return () => document.removeEventListener("keydown", keyDownHandler);
     });
 
-	const [gameSpace, setGameSpace] = useState(props.rows);
-	const [letterStates, setLetterStates] = useState(props.letterStates);
+	const [gameSpace, setGameSpace] = useState(gsInit);
+	const [letterStates, setLetterStates] = useState(lsInit);
 	const [displayState, setDisplayState] = 
            useState({"showShop": false,
                      "showInfo": false,
@@ -34,48 +45,7 @@ function GSDiv(props)
                      "showShucklePage": false,
                      "showShinyPage": false});
 
-    if (window.localStorage.length !== 13)
-    {
-	    if (!(window.localStorage.pokeDollars)) {
-            window.localStorage.pokeDollars = 0;
-	  	}
-	   if (!(window.localStorage.adoptedShuckle)) {
-	      	window.localStorage.adoptedShuckle = false;
-	    }
-	    if (!(window.localStorage.shopState)) {
-	    	window.localStorage.shopState = 0;
-	    }  
-	    if (!(window.localStorage.spicyPoffin)) {
-	    	window.localStorage.spicyPoffin = 0;
-	    }
-	    if (!(window.localStorage.sweetPoffin)) {
-	      	window.localStorage.sweetPoffin = 0;
-	    }  
-	    if (!(window.localStorage.bitterPoffin)) {
-	      	window.localStorage.bitterPoffin = 0;
-	    }  
-	    if (!(window.localStorage.goldPoffin)) {
-	      	window.localStorage.goldPoffin = 0;
-	    }  
-	    if (!(window.localStorage.lemonade)) {
-	      	window.localStorage.lemonade = 0;
-	    }  
-	    if (!(window.localStorage.shuckleShiny)) {
-	      	window.localStorage.shuckleShiny = 0;
-	    }  
-	    if (!(window.localStorage.shuckleSpicy)) {
-	      	window.localStorage.shuckleSpicy = 0;
-	    }  
-	    if (!(window.localStorage.shuckleSweet)) {
-	      	window.localStorage.shuckleSweet = 0;
-	    }  
-	    if (!(window.localStorage.shuckleBitter)) {
-	      	window.localStorage.shuckleBitter = 0;
-	    }  
-	    if (!(window.localStorage.shuckleChildren)) {
-	      	window.localStorage.shuckleChildren = [];
-	    }
-	}
+
 
     const [pokeDollars, setPokeDollars] = 
            useState(Number(window.localStorage.pokeDollars));
@@ -83,12 +53,6 @@ function GSDiv(props)
     //Seems redundant but as soon as state changes come into play its as though
     // (generally) neither of the previous two sections exist, only the state.
     window.localStorage.pokeDollars = pokeDollars; 
-
-	var wordLength = props.wordLength;
-  	var validKeys = props.validKeys;
-  	var validKeysSet = new Set(validKeys);
-  	var pokeList = props.pokeList;
-  	var pokemonSet = new Set(pokeList);
 
   	function findFocus(gameSpace) 
     {
@@ -262,14 +226,14 @@ function GSDiv(props)
         <div className = {classes.GSDiv}>
 			{window.localStorage.adoptedShuckle === "true" && 
                  <PoffinStorage keyDownHandler = {keyDownHandler}
-                                validKeys = {props.validKeys}/>}
+                                validKeys = {validKeys}/>}
 			<header className = "MenuBar">
         	<div style = {{fontSize: "3rem",
                            position: "relative",
                            left: "20px",
                            width: "240px"}}>
                 <img style = {{height:"35px"}} 
-                     src = {require("../assets/pokeDollarLight.png")}/>
+                     src = {require("../assets/pokedollarLight.png")}/>
           		{" "}{pokeDollars}
             </div>
         	<div className = "GameTitle">
@@ -361,32 +325,23 @@ function GSDiv(props)
       		</header>
       		<div className = "Spacer"/>
                 <GameSpace id = "gameSpace"
-                           gameSpace = {gameSpace}
-                           wordLength = {props.wordLength}
-                           pokeList = {props.pokeList}/>
+                        gameSpace = {gameSpace}
+                        wordLength = {wordLength}
+                        pokeList = {pokeList}/>
                 <Keyboard id = "keyboard" 
-                          letterStates = {letterStates} 
-                          handler = {keyDownHandler}
-                          gameSpace = {gameSpace}
-                          setGameSpace = {setGameSpace} 
-                          validKeys = {props.validKeys}/>
+                        letterStates = {letterStates} 
+                        handler = {keyDownHandler}
+                        gameSpace = {gameSpace}
+                        setGameSpace = {setGameSpace} 
+                        validKeys = {validKeys}/>
+                <DisplayMan id = "displayMan"
+                        displayState = {displayState}
+                        setDisplayState = {setDisplayState}
+                        gameSpace = {gameSpace}
+                        infoHandler = {infoHandler}
+                        dollarHandler = {dollarHandler}
+                        shopHandler = {shopHandler}/>
 
-                {displayState["showBackdrop"] && <Backdrop/>}
-                {displayState["showWinPage"] && 
-                     <WinDisplay setDisplayState = {setDisplayState}
-                                 gameSpace = {gameSpace}/>}
-                {displayState["showLosePage"] && 
-                     <LoseDisplay setDisplayState = {setDisplayState} 
-                                  gameSpace = {gameSpace}/>}
-                {displayState["showInfo"] && 
-                    <InfoDisplay infoHandler = {infoHandler}/>}
-                {displayState["showShop"] && 
-                    <ShopDisplay dollarHandler = {dollarHandler} 
-                                 shopHandler = {shopHandler}/>}
-                {displayState["showShucklePage"] && 
-                    <ShuckleDisplay ShuckleHandler = {shuckleHandler}/>}
-                {displayState["showShinyPage"] && 
-                    <ShinyDisplay ShinyHandler = {shinyHandler}/>}
             </div>
 	)
 }

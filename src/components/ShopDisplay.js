@@ -43,10 +43,10 @@ function ShopDisplay(props)
 	function shopDialogue()
     {
 		if (window.localStorage.adoptedShuckle === "false" 
-                && window.localStorage.shopState ==='6')
+                && window.localStorage.shopState === '6')
 			props.shopHandler();
 		else if (window.localStorage.adoptedShuckle === "true" 
-                && window.localStorage.shopState==='7') {
+                && window.localStorage.shopState === '7') {
 			shopAdvance();
 			props.shopHandler();
 		}
@@ -72,7 +72,7 @@ function ShopDisplay(props)
                                flexDirection: "row",
                                fontSize: "2rem"}}>
 					<img style = {{height:"26px"}} 
-                         src={require("../assets/pokeDollarLight.png")}/>
+                         src={require("../assets/pokedollarLight.png")}/>
                     {" "}{1000}
 	          	</div>
 			<button onClick = {shuckleAdopter}>
@@ -93,7 +93,7 @@ function ShopDisplay(props)
                                        flexDirection: "row",
                                         fontSize: "2rem"}}>
 							<img style = {{height: "26px"}}
-                                 src = {require("../assets/pokeDollarLight.png")}/>
+                                 src = {require("../assets/pokedollarLight.png")}/>
 				          	{" "}{price}
 			          	</div>
                         <button onClick = {buyFunc}>

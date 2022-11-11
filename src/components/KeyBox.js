@@ -16,7 +16,7 @@ function KeyBox(props)
 	if (props.id == "Enter") {
 		return (
 			<button id = {props.id} 
-                    className = {classes.KeyBoxLong} 
+                    className = {classes.KeyBox_long} 
                     style = {{zIndex: "1", fontSize: "24px"}} 
                     value = {props.id} 
                     onClick = {props.handler}>
@@ -27,7 +27,7 @@ function KeyBox(props)
 	else if (props.id == "Backspace") {
 		return (
 			<button id = {props.id} 
-                    className = {classes.KeyBoxLong} 
+                    className = {classes.KeyBox_long} 
                     style = {{zIndex: "1"}} 
                     value = {props.id} 
                     onClick = {props.handler}>
