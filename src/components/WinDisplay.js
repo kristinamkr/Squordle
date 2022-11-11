@@ -11,7 +11,7 @@ function WinDisplay(props)
 	var setDisplayState = props.setDisplayState;
 	var gameSpace = props.gameSpace;
 
-	var answer = gameSpace[0].pokemon;
+	var answer = props.pokeAnswer;
     var spriteRef = spriteLink(answer);
 
 	function reload()

@@ -12,23 +12,23 @@ import gameInit from "../functions/gameInit.js";
 import loadSave from "../functions/loadSave.js";
 import { useState, useEffect } from 'react';
 
+var inits = gameInit();
+loadSave();
+
+// var regionList = PokeList; //TO BE EXPANDED INTO FUNCTION WHICH RETURNS REGIONAL POKELIST
+
+// problematic ?
+var gsInit = inits.gsInit;
+var lsInit = inits.lsInit;
+var pokeAnswer = inits.pokeAnswer;
+var wordLength = pokeAnswer.length;
+
+var validKeys = inits.validKeys;
+var validKeysSet = new Set(validKeys);
+var pokemonSet = new Set(PokeList);
+
 function GSDiv(props) 
 {
-
-    loadSave();
-
-    var regionList = PokeList; //TO BE EXPANDED INTO FUNCTION WHICH RETURNS REGIONAL POKELIST
-
-    var inits = gameInit(regionList);
-
-    var gsInit = inits.gsInit;
-    var lsInit = inits.lsInit;
-    var wordLength = inits.wordLength;
-    var validKeys = inits.validKeys;
-    var validKeysSet = new Set(validKeys);
-    var pokeList = inits.pokeList;
-    var pokemonSet = new Set(pokeList);
-
 	useEffect(() => {
         document.addEventListener("keydown", keyDownHandler);
   		return () => document.removeEventListener("keydown", keyDownHandler);
@@ -44,41 +44,34 @@ function GSDiv(props)
                      "showBackdrop": false,
                      "showShucklePage": false,
                      "showShinyPage": false});
-
-
-
     const [pokeDollars, setPokeDollars] = 
            useState(Number(window.localStorage.pokeDollars));
-
-    //Seems redundant but as soon as state changes come into play its as though
-    // (generally) neither of the previous two sections exist, only the state.
     window.localStorage.pokeDollars = pokeDollars; 
 
-  	function findFocus(gameSpace) 
+    function findFocus(gameSpace) 
     {
-	    for (var i = 0; i < gameSpace.length; i++) {
+        for (var i = 0; i < gameSpace.length; i++) {
             if (gameSpace[i].state === "empty") {
                 for (var k = 0; k < gameSpace[i].boxes.length; k++) {
                     if (gameSpace[i].boxes[k].state === "empty")
                         return [i, k];
+                    }
+                    return [i, -1];
                 }
-                return [i, -1];
             }
-	    }
-	    return 0;
-	}
+        return 0;
+    }
 
-	function checkAnswer(row, letterStates, setLetterStates)
+	function checkAnswer(row)
     {
-        var word = row.pokemon;
-	    var wordSet = word.split('');
+	    var wordSet = pokeAnswer.split('');
 	    var isWinner = true;
 
 	    var lsChange = letterStates;
 
-	    for (var i = 0; i < word.length; i++) {
+	    for (var i = 0; i < pokeAnswer.length; i++) {
             var letter = row.boxes[i].letter;
-            if (letter === word[i]) {
+            if (letter === pokeAnswer[i]) {
                 row.boxes[i].state = "correct";
                 lsChange["correctGuess"].add(letter);
                 setLetterStates(lsChange);
@@ -93,7 +86,7 @@ function GSDiv(props)
                 isWinner = false;
 	    }
 
-	    for (var i = 0; i < word.length; i++) {
+	    for (var i = 0; i < pokeAnswer.length; i++) {
             if (row.boxes[i].state === "correct")
                 continue;
 
@@ -123,7 +116,7 @@ function GSDiv(props)
 	        row.winnings += 200;
 	    }
         else {
-            for (var i = 0; i < word.length; i++) {
+            for (var i = 0; i < pokeAnswer.length; i++) {
                 if (row.boxes[i].state === "correct")
 	    			row.winnings += 20;
                 else if(row.boxes[i].state === "inWord")
@@ -147,10 +140,12 @@ function GSDiv(props)
 	    for (var i = 0; i < wordLength; i++)
             guess = guess + gameChange[foc[0]].boxes[i].letter;
 	    var isPokemon = pokemonSet.has(guess);
+        console.log("guess = " + guess);
 
 	    if (foc[1] === -1 && input === "Enter" && isPokemon) {
+            console.log("hallo");
 	        var rowChange = 
-                checkAnswer(gameChange[foc[0]], letterStates, setLetterStates);
+                checkAnswer(gameChange[foc[0]]);
             gameChange[foc[0]] = rowChange;
 
 	        if (gameChange[foc[0]].state !== "winner")
@@ -172,10 +167,13 @@ function GSDiv(props)
             gameChange[foc[0]].boxes[foc[1]].state = "filled"
 	    }
 
-	    console.log(gameChange[0].pokemon);
+        console.log("foc - " + foc[1]);
+
 	    dollarHandler(gameChange[foc[0]].winnings)
 	    showComplete(gameChange);
         setGameSpace([...gameChange]);
+
+	    console.log(pokeAnswer);
     }
 
 	function infoHandler()
@@ -326,8 +324,7 @@ function GSDiv(props)
       		<div className = "Spacer"/>
                 <GameSpace id = "gameSpace"
                         gameSpace = {gameSpace}
-                        wordLength = {wordLength}
-                        pokeList = {pokeList}/>
+                        wordLength = {wordLength}/>
                 <Keyboard id = "keyboard" 
                         letterStates = {letterStates} 
                         handler = {keyDownHandler}
@@ -340,7 +337,8 @@ function GSDiv(props)
                         gameSpace = {gameSpace}
                         infoHandler = {infoHandler}
                         dollarHandler = {dollarHandler}
-                        shopHandler = {shopHandler}/>
+                        shopHandler = {shopHandler}
+                        pokeAnswer = {pokeAnswer}/>
         </div>
 	)
 }

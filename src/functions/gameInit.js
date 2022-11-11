@@ -1,18 +1,19 @@
 /*
  *gameInit.js
 */
+import PokeList from "../components/PokeList.js";
 
 function gameInit(pokeList)
 {
-	Object.freeze(pokeList);
+	var validKeys = "qwertyuiopasdfghjklzxcvbnm".split('');
 
-	var selectionNumber = Math.floor(Math.random() * pokeList.length);
+	// var guessList = pokeList; //TO BE REGIONIZED
 
+	var selectionNumber = Math.floor(Math.random() * PokeList.length);
 	if (selectionNumber === 0)  // avoid Edward case
 	    selectionNumber = 1;
 
-	var selection = pokeList[selectionNumber];
-
+	var selection = PokeList[selectionNumber];
 	var wordLength = selection.length;
 
 	var gsInit = Array(6);
@@ -21,7 +22,6 @@ function gameInit(pokeList)
 	    row.id = "r" + i;
 	    row.state = "empty";
 	    row.length = wordLength;
-	    row.pokemon = selection;
 	    row.boxes = Array(wordLength);
 	    row.guess = "";
 	    row.winnings = 0;
@@ -43,16 +43,11 @@ function gameInit(pokeList)
 	        notInWord : new Set()
 	    };
 
-	var validKeys = "qwertyuiopasdfghjklzxcvbnm".split('');
-
-	var guessList = pokeList; //TO BE REGIONIZED
-
 	var inits = {
 			lsInit : lsInit,
 			gsInit : gsInit,
-			wordLength : wordLength,
+            pokeAnswer: selection,
 			validKeys : validKeys,
-			guessList : guessList
 		};
 
 	return inits;

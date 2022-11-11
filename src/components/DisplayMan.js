@@ -14,13 +14,15 @@ function DisplayMan(props)
     var infoHandler = props.infoHandler
     var dollarHandler = props.dollarHandler
     var shopHandler = props.shopHandler
+    var pokeAnswer = props.pokeAnswer;
 
     return (
         <div className = {classes.DisplayMan}>
             {displayState["showBackdrop"] && <Backdrop/>}
             {displayState["showWinPage"] && 
                 <WinDisplay setDisplayState = {setDisplayState}
-                    gameSpace = {gameSpace}/>}
+                    gameSpace = {gameSpace}
+                    pokeAnswer = {pokeAnswer} />}
             {displayState["showLosePage"] && 
                 <LoseDisplay setDisplayState = {setDisplayState} 
                     gameSpace = {gameSpace}/>}
