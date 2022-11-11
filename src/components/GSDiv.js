@@ -269,7 +269,7 @@ function GSDiv(props)
                            left: "20px",
                            width: "240px"}}>
                 <img style = {{height:"35px"}} 
-                     src = {require("../assets/pokeDollarLight.png")}/>
+                     src = {require("../assets/pokedollarLight.png")}/>
           		{" "}{pokeDollars}
             </div>
         	<div className = "GameTitle">
@@ -383,10 +383,6 @@ function GSDiv(props)
                 {displayState["showShop"] && 
                     <ShopDisplay dollarHandler = {dollarHandler} 
                                  shopHandler = {shopHandler}/>}
-                {displayState["showShucklePage"] && 
-                    <ShuckleDisplay ShuckleHandler = {shuckleHandler}/>}
-                {displayState["showShinyPage"] && 
-                    <ShinyDisplay ShinyHandler = {shinyHandler}/>}
             </div>
 	)
 }
