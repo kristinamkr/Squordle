@@ -20,7 +20,6 @@ function GameSpace(props)
         <div className = {classes.GameSpace} 
                  style = {{gridTemplateRows: "1fr ".repeat(6)}}>
             { props.gameSpace.map((row) => (<GameRow key = {row.id}
-                                                     id = {row.id}
                                                      state = {row.state}
                                                      length = {row.length}
                                                      boxes = {row.boxes}

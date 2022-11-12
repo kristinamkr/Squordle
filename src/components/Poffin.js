@@ -5,16 +5,15 @@
 import {useState, useEffect} from 'react';
 import classes from "./style/Poffin.module.css";
 
-function Poffin(prop) 
+function Poffin(props) 
 {
-    function getName() { return prop.item; }
+    const { name, price, tag } = props;
 
     return (
-        <img name = {prop.item}
+        <img name = {name}
              className = {classes.poffin}
-             src = {require("../assets/" + prop.item + ".png")}
+             src = {require("../assets/" + name + ".png")}
              decoding = "async"
-             onClick = {() => getName()}
         />
     );
 }

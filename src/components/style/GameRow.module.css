@@ -1,10 +1,15 @@
 .GameRow {
-  display: grid;
-  align-items: center;
-  flex-wrap: nowrap;
-  grid-gap: 5px;
-  width: 100%;
-  height: 100%;
-  justify-items: center;
+    display: grid;
+    align-items: center;
+    flex-wrap: nowrap;
+    grid-gap: 5px;
+    width: 100%;
+    height: 100%;
+    justify-items: center;
+}
 
+img.pokeSprite {
+    width: 64px;
+    height: 48px;
+    position: relative;
 }

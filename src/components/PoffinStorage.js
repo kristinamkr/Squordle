@@ -2,66 +2,55 @@
  * PoffinStorage.js
 */
 
-import {useState, useEffect} from 'react';
 import classes from "./style/PoffinStorage.module.css";
-import Poffin from './Poffin.js';
-import ShuckleCursor from './ShuckleCursor.js';
+import inventory from './Inventory.js';
+
+import {useState, useEffect} from 'react';
 
 function PoffinStorage(props)
 {
     // MOUSE EVENTS ------------------------------------------------------------
-	const [mousePos, setMousePos] = useState([0, 0]);
+    const [mousePos, setMousePos] = useState([0, 0]);
 
     function changeMousePos(e) 
     {
         setMousePos([e.pageY - 32, e.pageX - 32]);
     }
 
-	useEffect(() => {
+    useEffect(() => {
         document.addEventListener("mousemove", changeMousePos);
         return () => document.removeEventListener("mousemove", changeMousePos);
     });
 
     // INVENTORY ---------------------------------------------------------------
-
     let pokeLink = "https://cdn3.iconfinder.com/data/icons/faticons/32/";
-	const [arrowSrc, setArrowSrc] = 
+    const [arrowSrc, setArrowSrc] = 
         useState(pokeLink + "arrow-down-01-512.png")
 
-	const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
-	function expandPoffins()
+    function expandPoffins()
     {
-		if (!isExpanded)
-			setArrowSrc(pokeLink + "arrow-up-01-512.png");
-		else
-			setArrowSrc(pokeLink + "arrow-down-01-512.png");
-		setIsExpanded(!isExpanded);
-	}
-
+        if (!isExpanded)
+            setArrowSrc(pokeLink + "arrow-up-01-512.png");
+        else
+            setArrowSrc(pokeLink + "arrow-down-01-512.png");
+        setIsExpanded(!isExpanded);
+    }
     // -------------------------------------------------------------------------
 
     const [selectedItem, setSelectedItem] = useState('');
-	const [itemPos, setItemPos] = 
-            useState(['', '', '', '', '']);
+    const [itemPos, setItemPos] = useState(['', '', '', '', '']);
 
-	const [poffinRealized, setPoffinRealized] = useState(false); 
-	// const [poffinMoving, setPoffinMoving] = useState(false);
-	const [poffinDerealized, setPoffinDerealized] = useState('');
-
-	// first item is X pos of poffin, second item is Y pos of poffin, 
-    // third item in the array is either 1 or 0 and references "poffinMoving"
-	const [shuckleDir, setShuckleDir] = useState([0, 0, 0]);
-
-    // if !(selectedItem)
-    //      selectItem(e) 
-    // else 
-    //      if 
+    const [itemRealized, setItemRealized] = useState(false); 
+    const [itemDerealized, setItemDerealized] = useState('');
+    const [isItemVisible, setItemVisibility] = useState(false);
 
     function selectItem(e)
     {
         var nodes = Array.prototype.slice.call(e.currentTarget.children);
         const item = nodes[0].name;
+        console.log("ITEM SELECTED - " + item);
         const itemCount = localStorage.getItem(item);
 
         if (itemCount > 0) {
@@ -71,131 +60,94 @@ function PoffinStorage(props)
                         String(mousePos[1]) + "px", 
                         "1"]);
         }
+
+        setItemVisibility(true);
     }
 
     function deselectItem(e)
     {
-          
+        console.log("hello");
+        if (e.key === 'Escape' && selectedItem && isItemVisible) {
+            setItemVisibility(false);
+            setSelectedItem('');
+        }
     }
 
-    // way to reactify this i just know it...
     function realize(item)
     {
         const itemCount = localStorage.getItem(item);
-        if (itemCount > 0 && !(poffinRealized)) {
-            localStorage.setItem(item, itemCount - 1);
-            // NEED onClick event... only way
-            setPoffinRealized(true);
+        if (itemCount > 0 && !(itemRealized)) {
+            localStorage.setItem(item, Number(itemCount) - 1);
+            setItemRealized(true);
         }
     }
     
-    /*
     function derealize(item)
     {
-        // const extremis = document.getElementById("draggable_item"); 
-        // extremis.remove();
+        const extremis = document.getElementById("draggable_item"); 
+        extremis.remove();
 
-		setPoffinRealized(false);
+        setItemRealized(false);
+        setSelectedItem('');
+        setItemVisibility(false);
     }
-    */
 
-	useEffect(() => {		
-		setTimeout(() => {
-            if (selectedItem ) { // && poffinRealized) {
+    useEffect(() => {       
+        setTimeout(() => {
+            if (selectedItem) {
                 setItemPos(["absolute",
                             String(mousePos[0]) + "px",
                             String(mousePos[1]) + "px",
                             "0"]);
-				setShuckleDir([mousePos[1], mousePos[0], 1]);
-				// setPoffinDerealized(derealize(selectedItem));
+                // setShuckleDir([mousePos[1], mousePos[0], 1]);
+                // setPoffinDerealized(derealize(selectedItem));
             }
-            else
-				setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);
+            // else
+                // setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);
         }, 16);
     });
 
+    function itemPreview(item, bg_color)
+    {
+        return (
+            <tr className = {classes.item}>
+                <th style = {{background: bg_color}}>
+                    {item.props.tag} 
+                    <div> {localStorage.getItem(item.props.name)} </div>
+                </th>
+                <td onClick = {selectItem}>
+                    {item}
+                </td>
+            </tr> 
+        )
+    }
+
     // RENDER ------------------------------------------------------------------
-	return (
-		<div style = {{width: "0px", height: "0px"}}>
-			<ShuckleCursor keyDownHandler = {props.keyDownHandler} 
-                           validKeys = {props.validKeys} 
-                           shuckleDir = {shuckleDir} 
-                           derealizePoffin = {poffinDerealized}/>
-
-			<table className = {classes.PoffinStorage}>
-
-			    <tbody>
-
+    return (
+        <div style = {{width: "0px", height: "0px"}}>
+            <table className = {classes.PoffinStorage}>
+                <tbody>
                 <tr className = {classes.header}>
-					<th> Flavor </th>
-					<th style = {{width: "66px"}}> Items </th>
-				</tr>
+                    <th> Flavor </th>
+                    <th style = {{width: "66px"}}> Items </th>
+                </tr>
+                { isExpanded && itemPreview(inventory[0], "#F08030") } 
+                { isExpanded && itemPreview(inventory[1], "#F85888") }
+                { isExpanded && itemPreview(inventory[2], "#78C850") }
+                { isExpanded && itemPreview(inventory[3], "#F8D030") }
+                { isExpanded && itemPreview(inventory[4], "#6890F0") }
+                </tbody>
+            </table>
 
-                { isExpanded && <tr className = {classes.item}>
-                    <th style = {{background: "#F08030"}}>
-                        Spicy
-                        <div> {window.localStorage.spicyPoffin} </div>
-                    </th>
-                    <td onClick = {selectItem}>
-                        <Poffin item = "spicyPoffin"/> 
-                    </td>
-                </tr> } 
-
-                { isExpanded && <tr className = {classes.item}>
-                    <th style = {{background:"#F85888"}}>
-                        Sweet
-                        <div> {window.localStorage.sweetPoffin} </div>
-                    </th>
-                    <td name = "sweetPoffin" 
-                        onClick = {selectItem}>
-                        <Poffin item = "sweetPoffin"/> 
-                    </td>
-                </tr> }
-
-                { isExpanded && <tr className = {classes.item}>
-                    <th style = {{background: "#78C850"}}>
-                        Bitter
-                        <div> {window.localStorage.bitterPoffin} </div>
-                    </th>
-                    <td name = "bitterPoffin" 
-                        onClick = {selectItem}>
-                        <Poffin item = "bitterPoffin"/>
-                    </td>
-                </tr> }
-
-                { isExpanded && <tr className = {classes.item}>
-                    <th style = {{background: "#F8D030"}}> 
-                        Gold
-                        <div> {window.localStorage.goldPoffin} </div>
-                    </th>
-                    <td name = "goldPoffin" 
-                        onClick = {selectItem}>
-                        <Poffin item = "goldPoffin"/> 
-                    </td>
-                </tr> }
-
-                { isExpanded && <tr className = {classes.item}>
-                    <th style = {{background: "#6890F0"}}> 
-                        Juice
-                        <div> {window.localStorage.lemonade} </div>
-                    </th>
-                    <td name = "lemonade" 
-                        onClick = {selectItem}>
-                        <Poffin item = "lemonade"/> 
-                    </td>
-                </tr> }
-				</tbody>
-			</table>
-
-			<button style = {{background: "none", border: "none"}} 
+            <button style = {{background: "none", border: "none"}} 
                     className = {classes.expansionArrow} 
                     onClick = {expandPoffins}>
-				<img style = {{width: "40px", height: "40px"}} 
+                <img style = {{width: "40px", height: "40px"}} 
                      src = {arrowSrc}>
                 </img>
-			</button>
+            </button>
 
-            { selectedItem && !(poffinRealized) &&
+            { selectedItem && isItemVisible &&
                 <img id = "draggable_item"
                      className = {classes.Poffin}
                      src = {require("../assets/" + selectedItem + ".png")}
@@ -204,11 +156,10 @@ function PoffinStorage(props)
                                top: itemPos[1],
                                left: itemPos[2],
                                zIndex: itemPos[3]}}
-                     // onClick = {realize(selectedItem)}
-                     decoding = "async"/>
-            }
-		</div>
-	)
+                     onClick = {() => realize(selectedItem)}
+                     decoding = "async"/> }
+        </div>
+    )
 }
 
 export default PoffinStorage;

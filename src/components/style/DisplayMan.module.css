@@ -4,3 +4,17 @@
 	display: flex;
 	flex-direction: column;
 };
+
+.icon {
+    width: 100px;
+    padding-right: 10px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+button.icon {
+    cursor: pointer;
+    background: none;
+    border: none;
+}

@@ -11,30 +11,32 @@ import React from 'react';
 
 function GameRow(props)
 {
-    var upDownPos = props.upDownPos;
     var guess = props.guess;
     var spriteRef = spriteLink(guess);
 
 	return (
 		<div className = {classes.GameRow}
              style = {{gridTemplateColumns: "1fr ".repeat(props.length + 2)}}>
-			<img style = {{width: "64px",
-                         height: "48px",
-                         position: "relative",
-                         top: props.upDownPos}} 
+			<img className = {classes.pokeSprite} 
+                 style = {{top: props.upDownPos}}
                  src = {spriteRef}/>
 			{ props.boxes.map((box) => (<GuessBox key = {box.id}
-	       	                                      id = {box.id} 
 		    	                                  delay = {box.delay}
 			                                      state = {box.state}
 				                                  letter = {box.letter}/>))}
-			<img style = {{width: "64px",
-                           height: "48px",
-                           position: "relative",
-                           top: -props.upDownPos - 10}} 
+			<img className = {classes.pokeSprite} 
+                 style = {{top: -props.upDownPos - 10}}
                  src = {spriteRef}/>
         </div>
 	)
 }
 
 export default GameRow;
+/*
+                <img className = "shuckle" 
+                     style = {{position: "absolute",
+                               left: shucklePos[0] + "px",
+                               top: shucklePos[1] + "px"}} 
+                     src = {require("../assets/shuckle.gif")}/> }
+
+*/

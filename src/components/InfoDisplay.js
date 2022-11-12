@@ -13,20 +13,20 @@ function InfoDisplay(props)
 			<img style = {{width:"80%"}} 
                  src = {require("../assets/howtoplayLight.png")}/>
 			<div className = {classes.listRow}>
-                <img class = {classes.pokeBullet} 
+                <img className = {classes.pokeBullet} 
                      src = {require("../assets/BulletPointLight.png")}/>
                 You have six tries to guess the name of the Pokémon.
 			</div>
 
 			<div className = {classes.listRow}>
-                <img class = {classes.pokeBullet} 
+                <img className = {classes.pokeBullet} 
                      src = {require("../assets/BulletPointLight.png")}/>
                 Each guess must be a real Pokémon. 
                 Hit enter to submit your guess.
 			</div>
 
 			<div className = {classes.listRow}>
-                <img class = {classes.pokeBullet} 
+                <img className = {classes.pokeBullet} 
                      src = {require("../assets/BulletPointLight.png")}/>
                 Green letters are in the correct spot,
                 yellow letters are in the wrong spot, 
@@ -34,7 +34,7 @@ function InfoDisplay(props)
 			</div>
 
 			<div className = {classes.listRow}>
-                <img class = {classes.pokeBullet} 
+                <img className = {classes.pokeBullet} 
                      src = {require("../assets/BulletPointLight.png")}/>
                 Win 5 Pokédollars for each yellow letter, 
                 20 for each green letter, 
@@ -42,7 +42,7 @@ function InfoDisplay(props)
 			</div>
 
 			<div className = {classes.listRow} style={{paddingBottom: "20px"}}>
-                <img class = {classes.pokeBullet} 
+                <img className = {classes.pokeBullet} 
                      src = {require("../assets/BulletPointLight.png")}/>
                 This project was made by&nbsp; 
                 <a style = {{display:"inline-block"}} 
