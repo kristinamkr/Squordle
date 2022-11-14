@@ -1,4 +1,3 @@
-import Backdrop from "./Backdrop.js";
 import WinLoseDisplay from "./WinLoseDisplay.js";
 import InfoDisplay from "./InfoDisplay.js";   
 import ShopDisplay from "./ShopDisplay.js";
@@ -8,20 +7,23 @@ import { useState, useEffect } from 'react';
 import { ReactComponent as ShopIcon } from "../assets/shopIcon.svg";
 import { ReactComponent as InfoIcon } from "../assets/infoIcon.svg";
 
+function Backdrop(props)
+{
+  return <div className = {classes.Backdrop}/>
+}
+
 function DisplayMan(props)
 {
-    var gameSpace = props.gameSpace
-    var dollarHandler = props.dollarHandler
+    var gameSpace = props.gameSpace;
+    var dollarHandler = props.dollarHandler;
     var pokeAnswer = props.pokeAnswer;
+    var isGameOver = props.isGameOver;
 
 	const [displayState, setDisplayState] = 
            useState({"showShop": false,
                      "showInfo": false,
-                     "showWinPage": false,
-                     "showLosePage": false,
-                     "showBackdrop": false,
-                     "showShucklePage": false,
-                     "showShinyPage": false});
+                     "showWinLose": false,
+                     "showBackdrop": false});
 
 	function infoHandler()
     {
@@ -39,29 +41,12 @@ function DisplayMan(props)
                         });
   	}
 
-  	function showComplete(gameSpace)
+  	function winLoseHandler()
     {
-        var isWinner = false;
-  		for (var i = 0; i < gameSpace.length; i++) {
-      		if (gameSpace[i].state === "winner") {
-                isWinner = true;
-	        	setDisplayState({...displayState,
-                                 "showWinPage": true,
-                                 "showBackdrop": true
-                                });
-	        	break;
-      		}
-    	}
-
-        /*
-     	if (findFocus(gameSpace) === 0 && !isWinner) {
-            console.log(gameSpace[0].pokemon);
-	    	setDisplayState({...displayState,
-                             "showLosePage": true,
-                             "showBackdrop":true
-                            });
-        }
-        */
+        setDisplayState({...displayState,
+                         "showWinLose": true,
+                         "showBackdrop": true
+                        });
   	}   
 
     return (
@@ -83,7 +68,7 @@ function DisplayMan(props)
 
         <div className = {classes.DisplayMan}>
             {displayState["showBackdrop"] && <Backdrop/>}
-            {displayState["showWinLosePage"] && 
+            {displayState["showWinLose"] && 
                 <WinLoseDisplay setDisplayState = {setDisplayState}
                     gameSpace = {gameSpace}
                     pokeAnswer = {pokeAnswer} />}

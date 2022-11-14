@@ -1,11 +1,9 @@
 /*
  * GameSpace.js
- * looks cool & good
 */
 
-import classes from "./style/GameSpace.module.css";
 import GameRow from "./GameRow.js";
-
+import classes from "./style/GameSpace.module.css";
 import { useState, useEffect } from 'react';
 
 function GameSpace(props)

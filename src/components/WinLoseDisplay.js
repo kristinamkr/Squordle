@@ -57,6 +57,7 @@ function WinLoseDisplay(props)
     // return proper img path & text
     function winOrLose()
     {
+        console.log(props.isWinner)
 
     }
 

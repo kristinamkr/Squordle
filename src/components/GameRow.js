@@ -1,6 +1,5 @@
 /*
  * GameRow.js
- * cool
 */ 
 
 import classes from "./style/GameRow.module.css";
@@ -32,11 +31,13 @@ function GameRow(props)
 }
 
 export default GameRow;
-/*
-                <img className = "shuckle" 
-                     style = {{position: "absolute",
-                               left: shucklePos[0] + "px",
-                               top: shucklePos[1] + "px"}} 
-                     src = {require("../assets/shuckle.gif")}/> }
 
+/*
+    return (
+        <div className = {classes.GuessBox} 
+                 id = {props.id} 
+                 style = {{backgroundColor: bgColors[props.state]}}>
+            {props.letter}
+        </div>
+    )
 */

@@ -1,6 +1,5 @@
 /*
  * GuessBox.js
- * looks cool & normal
 */
 
 import classes from "./style/GuessBox.module.css";
@@ -18,7 +17,7 @@ function GuessBox(props)
     return (
         <div className = {classes.GuessBox} 
                  id = {props.id} 
-                 style = {{backgroundColor:bgColors[props.state]}}>
+                 style = {{backgroundColor: bgColors[props.state]}}>
             {props.letter}
         </div>
     )
