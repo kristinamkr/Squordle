@@ -5,10 +5,17 @@
 import classes from "./style/PoffinStorage.module.css";
 import inventory from './Inventory.js';
 
+import ShuckleCursor from './ShuckleCursor.js';
+
 import {useState, useEffect} from 'react';
 
 function PoffinStorage(props)
 {
+    // TO BE REMOVED ALONG W SHUCKLECURSOR INSTANTIATION
+    // x-coord, y-coord, poffinMoving
+    // poffinMoving == -1, no itemSelected
+	const [shuckleDir, setShuckleDir] = useState([0, 0, -1])
+
     // MOUSE EVENTS ------------------------------------------------------------
     const [mousePos, setMousePos] = useState([0, 0]);
 
@@ -41,9 +48,10 @@ function PoffinStorage(props)
 
     const [selectedItem, setSelectedItem] = useState('');
     const [itemPos, setItemPos] = useState(['', '', '', '', '']);
+    const [poffinMoving, setPoffinMoving] = useState(false);
 
     const [itemRealized, setItemRealized] = useState(false); 
-    const [itemDerealized, setItemDerealized] = useState('');
+    const [derealizeItem, setDerealizeItem] = useState([null, -1]);
     const [isItemVisible, setItemVisibility] = useState(false);
 
     function selectItem(e)
@@ -55,13 +63,13 @@ function PoffinStorage(props)
 
         if (itemCount > 0) {
             setSelectedItem(item);
-            setItemPos(["relative", 
+            setItemVisibility(true);
+            setItemPos(["absolute", 
                         String(mousePos[0]) + "px", 
                         String(mousePos[1]) + "px", 
                         "1"]);
+            setPoffinMoving(true);
         }
-
-        setItemVisibility(true);
     }
 
     function deselectItem(e)
@@ -75,35 +83,45 @@ function PoffinStorage(props)
 
     function realize(item)
     {
+        console.log("clicked whilst selected");
         const itemCount = localStorage.getItem(item);
         if (itemCount > 0 && !(itemRealized)) {
             localStorage.setItem(item, Number(itemCount) - 1);
+            // derealize(item);
+            setPoffinMoving(false);
             setItemRealized(true);
+
         }
     }
     
-    function derealize(item)
+    function derealize()
     {
-        const extremis = document.getElementById("draggable_item"); 
-        extremis.remove();
-
+        console.log("MOVING - " + poffinMoving);
+        setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);  // poffin NOT  moving
         setItemRealized(false);
-        setSelectedItem('');
-        setItemVisibility(false);
+        // setSelectedItem('');
+        // setItemVisibility(false);
+    }
+
+    function getPoffinId(name)
+    {
+        for (let i = 0; i < inventory.length; i++) {
+            if (inventory[i].props.name === name)
+                return inventory[i].props.id;
+        }
     }
 
     useEffect(() => {       
         setTimeout(() => {
-            if (selectedItem) {
+            if (selectedItem && poffinMoving) {
                 setItemPos(["absolute",
                             String(mousePos[0]) + "px",
                             String(mousePos[1]) + "px",
                             "0"]);
-                // setShuckleDir([mousePos[1], mousePos[0], 1]);
-                // setPoffinDerealized(derealize(selectedItem));
+                setShuckleDir([mousePos[1], mousePos[0], 1]);  // poffin moving
+                setDerealizeItem([derealize, 
+                                  Number(getPoffinId(selectedItem))]);
             }
-            // else
-                // setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);
         }, 16);
     });
 
@@ -125,6 +143,12 @@ function PoffinStorage(props)
     // RENDER ------------------------------------------------------------------
     return (
         <div style = {{width: "0px", height: "0px"}}>
+            <ShuckleCursor keyDownHandler = {props.keyDownHandler}
+                           validKeys = {props.validKeys}
+                           shuckleDir = {shuckleDir}
+                           itemRealized = {itemRealized}
+                           derealizeItem = {derealizeItem} />
+
             <table className = {classes.PoffinStorage}>
                 <tbody>
                 <tr className = {classes.header}>

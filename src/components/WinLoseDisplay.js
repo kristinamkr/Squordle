@@ -1,6 +1,5 @@
 /*
- * WinDisplay.js 
- * cool
+ * WinLoseDisplay.js 
 */
 
 import classes from "./style/WinDisplay.module.css";
@@ -9,7 +8,6 @@ import spriteLink from  "../functions/SpriteLink.js";
 function WinLoseDisplay(props)
 {
 	var setDisplayState = props.setDisplayState;
-	var gameSpace = props.gameSpace;
 
 	var answer = props.pokeAnswer;
     var spriteRef = spriteLink(answer);
@@ -54,22 +52,18 @@ function WinLoseDisplay(props)
         )
     }
 
-    // return proper img path & text
     function winOrLose()
     {
-        console.log(props.isWinner)
-
+        if (props.isGameOver[1] === 'win')
+            return winDisplay();
+        return loseDisplay();
     }
 
 	return (
-        <div className = {classes.WinLoseDisplay}>
-			<p/>
-            {winDisplay}
-			<button onClick = {reload}>
-                Play Again?
-            </button>
-			<p/>
-		</div>
+        <div className={classes.WinLoseDisplay}> <p/>
+            {winOrLose()}
+			<button onClick = {reload}> Play Again? </button>
+			<p/> </div>
 	);
 }
 

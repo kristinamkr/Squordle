@@ -1,11 +1,17 @@
+/*
+ * DisplayMan.js
+*/
+
+import classes from "./style/DisplayMan.module.css";
+
 import WinLoseDisplay from "./WinLoseDisplay.js";
 import InfoDisplay from "./InfoDisplay.js";   
 import ShopDisplay from "./ShopDisplay.js";
 
-import classes from "./style/DisplayMan.module.css";
-import { useState, useEffect } from 'react';
 import { ReactComponent as ShopIcon } from "../assets/shopIcon.svg";
 import { ReactComponent as InfoIcon } from "../assets/infoIcon.svg";
+
+import { useState, useEffect } from 'react';
 
 function Backdrop(props)
 {
@@ -14,11 +20,6 @@ function Backdrop(props)
 
 function DisplayMan(props)
 {
-    var gameSpace = props.gameSpace;
-    var dollarHandler = props.dollarHandler;
-    var pokeAnswer = props.pokeAnswer;
-    var isGameOver = props.isGameOver;
-
 	const [displayState, setDisplayState] = 
            useState({"showShop": false,
                      "showInfo": false,
@@ -68,15 +69,16 @@ function DisplayMan(props)
 
         <div className = {classes.DisplayMan}>
             {displayState["showBackdrop"] && <Backdrop/>}
-            {displayState["showWinLose"] && 
-                <WinLoseDisplay setDisplayState = {setDisplayState}
-                    gameSpace = {gameSpace}
-                    pokeAnswer = {pokeAnswer} />}
+
             {displayState["showInfo"] && 
                 <InfoDisplay infoHandler = {infoHandler}/>}
             {displayState["showShop"] && 
-                <ShopDisplay dollarHandler = {dollarHandler} 
+                <ShopDisplay dollarHandler = {props.dollarHandler} 
                     shopHandler = {shopHandler}/>}
+            {props.isGameOver[0] && 
+                <WinLoseDisplay isGameOver = {props.isGameOver}
+                                gameSpace = {props.gameSpace}
+                                pokeAnswer = {props.pokeAnswer} />}
         </div>
     </>
     )

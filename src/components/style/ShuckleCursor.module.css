@@ -2,6 +2,57 @@
 
 }
 
+.Shuckle {
+    position: absolute;
+}
+
+
 .underbite {
 	transform: rotate(180deg);
 }
+
+.love {
+     position: absolute;
+}
+
+.chomp {
+    position: absolute;
+    z-index: 2;
+}
+
+.angry {
+    position: absolute;
+    height: 32px;
+    width: 32px;
+}
+
+.slash {
+    position: absolute;
+    height: 36px;
+    width: 36px;    
+    z-index: 2;
+}
+
+.cloudCover {
+    position: absolute;
+    height: 64px;
+    z-index: 1;
+}
+
+/*
+<img className = "heart" 
+     style = {{position: "absolute",
+               left: String(shucklePos[0]) + "px",
+               top: String(shucklePos[1]) + "px"}} 
+     src = {require("../assets/shuckleLove.gif")}/>
+<img className = "heart" 
+     style = {{position:"absolute",
+               left: String(shucklePos[0] + 28) + "px",
+               top: String(shucklePos[1]-6)+"px"}} 
+     src = {require("../assets/shuckleLove.gif")}/>
+<img className = "heart" 
+     style = {{position: "absolute",
+               left: String(shucklePos[0] + 13) + "px",
+               top: String(shucklePos[1] - 10) + "px"}} 
+    src = {require("../assets/shuckleLove.gif")}/>
+*/

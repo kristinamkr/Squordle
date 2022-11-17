@@ -35,7 +35,7 @@ function GSDiv(props)
 
 	const [gameSpace, setGameSpace] = useState(gsInit);
 	const [letterStates, setLetterStates] = useState(lsInit);
-    const [isGameOver, setGameOver] = useState(false);
+    const [isGameOver, setGameOver] = useState([false, '']);
     const [pokeDollars, setPokeDollars] = 
            useState(Number(window.localStorage.pokeDollars));
     window.localStorage.pokeDollars = pokeDollars; 
@@ -72,10 +72,14 @@ function GSDiv(props)
 
         if (isWinner(row)) {
             row.state = "winner";
+            setGameOver([true, 'win']);
             pointsWon += 200;
         }
-        else
+        else {
+            if (focus[0] === 5 && focus[1] === pokeAnswer.length)
+                setGameOver([true, 'loss']);
             row.state = "filled";
+        }
 
 	    dollarHandler(pointsWon)
         row.winnings += pointsWon;
@@ -122,6 +126,10 @@ function GSDiv(props)
             gameSpace[focus[0]].boxes[focus[1]].state = "empty";
             gameSpace[focus[0]].boxes[focus[1]].letter = '';
 	    }
+        else if (input === "Escape")
+        {
+
+        } 
 	    else if (focus[1] < pokeAnswer.length &&  // default 
                  validKeySet.has(input)) { 
             gameSpace[focus[0]].boxes[focus[1]].letter = input;
@@ -136,7 +144,7 @@ function GSDiv(props)
 	return (
         <div className = {classes.GSDiv}>
             { window.localStorage.adoptedShuckle === "true" &&
-                <ShuckleMechanics /> } 
+                <ShuckleMechanics validKeys = {validKeys}/> } 
 
 			<header className = "MenuBar">
                 <div className = {classes.header}>
@@ -149,6 +157,7 @@ function GSDiv(props)
                 </div>
                 <DisplayMan id = "displayMan"
                         gameSpace = {gameSpace}
+                        isGameOver = {isGameOver}
                         dollarHandler = {dollarHandler}
                         pokeAnswer = {pokeAnswer} />
       		</header>

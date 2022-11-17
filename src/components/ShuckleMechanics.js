@@ -14,9 +14,7 @@ function ShuckleMechanics(props)
         <>
             <PoffinStorage keyDownHandler = {props.keyDownHandler}
                             validKeys = {props.validKeys}/>
-             <ShuckleCursor keyDownHandler = {props.keyDownHandler}
-                            validKeys = {props.validKeys}
-                            shuckleDir = {shuckleDir}/>
+
         </>
     )
 }
