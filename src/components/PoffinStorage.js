@@ -11,11 +11,6 @@ import {useState, useEffect} from 'react';
 
 function PoffinStorage(props)
 {
-    // TO BE REMOVED ALONG W SHUCKLECURSOR INSTANTIATION
-    // x-coord, y-coord, poffinMoving
-    // poffinMoving == -1, no itemSelected
-	const [shuckleDir, setShuckleDir] = useState([0, 0, -1])
-
     // MOUSE EVENTS ------------------------------------------------------------
     const [mousePos, setMousePos] = useState([0, 0]);
 
@@ -46,13 +41,14 @@ function PoffinStorage(props)
     }
     // -------------------------------------------------------------------------
 
-    const [selectedItem, setSelectedItem] = useState('');
-    const [itemPos, setItemPos] = useState(['', '', '', '', '']);
-    const [poffinMoving, setPoffinMoving] = useState(false);
+    // [0] - itemName, [1] - itemVisibility
+    const [selectedItem, setSelectedItem] = useState(['', false]);
+    // [0] - absolute/relative ?, [1] - xPos, [2] - yPos, 
+    // [3] - zIndex, [4] - isMoving?
+    const [itemPos, setItemPos] = useState(['', 0, 0, 0, false]);
 
-    const [itemRealized, setItemRealized] = useState(false); 
+    const [realizeItem, setRealizeItem] = useState(false); 
     const [derealizeItem, setDerealizeItem] = useState([null, -1]);
-    const [isItemVisible, setItemVisibility] = useState(false);
 
     function selectItem(e)
     {
@@ -62,43 +58,40 @@ function PoffinStorage(props)
         const itemCount = localStorage.getItem(item);
 
         if (itemCount > 0) {
-            setSelectedItem(item);
-            setItemVisibility(true);
+            setSelectedItem([item, true]);
             setItemPos(["absolute", 
-                        String(mousePos[0]) + "px", 
-                        String(mousePos[1]) + "px", 
-                        "1"]);
-            setPoffinMoving(true);
+                        mousePos[0], 
+                        mousePos[1], 
+                        1,
+                        true]);
         }
     }
 
     function deselectItem(e)
     {
         console.log("hello");
-        if (e.key === 'Escape' && selectedItem && isItemVisible) {
-            setItemVisibility(false);
-            setSelectedItem('');
-        }
+        if (e.key === 'Escape' && selectedItem[1])  // check [0] ?
+            setSelectedItem(['', false]);
     }
 
     function realize(item)
     {
         console.log("clicked whilst selected");
         const itemCount = localStorage.getItem(item);
-        if (itemCount > 0 && !(itemRealized)) {
+        if (itemCount > 0 && !(realizeItem)) {
             localStorage.setItem(item, Number(itemCount) - 1);
             // derealize(item);
-            setPoffinMoving(false);
-            setItemRealized(true);
+            setItemPos([itemPos[0], itemPos[1], itemPos[2], itemPos[3], false]);
+            setRealizeItem(true);
 
         }
     }
     
     function derealize()
     {
-        console.log("MOVING - " + poffinMoving);
-        setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);  // poffin NOT  moving
-        setItemRealized(false);
+        console.log("MOVING - " + itemPos[4]);
+        // setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);  // poffin NOT  moving
+        setRealizeItem(false);
         // setSelectedItem('');
         // setItemVisibility(false);
     }
@@ -113,12 +106,13 @@ function PoffinStorage(props)
 
     useEffect(() => {       
         setTimeout(() => {
-            if (selectedItem && poffinMoving) {
+            if (selectedItem && itemPos[4]) {
                 setItemPos(["absolute",
-                            String(mousePos[0]) + "px",
-                            String(mousePos[1]) + "px",
-                            "0"]);
-                setShuckleDir([mousePos[1], mousePos[0], 1]);  // poffin moving
+                            mousePos[0],
+                            mousePos[1],
+                            0,
+                            true]);
+                // setShuckleDir([mousePos[1], mousePos[0], 1]);  // poffin moving
                 setDerealizeItem([derealize, 
                                   Number(getPoffinId(selectedItem))]);
             }
@@ -143,12 +137,6 @@ function PoffinStorage(props)
     // RENDER ------------------------------------------------------------------
     return (
         <div style = {{width: "0px", height: "0px"}}>
-            <ShuckleCursor keyDownHandler = {props.keyDownHandler}
-                           validKeys = {props.validKeys}
-                           shuckleDir = {shuckleDir}
-                           itemRealized = {itemRealized}
-                           derealizeItem = {derealizeItem} />
-
             <table className = {classes.PoffinStorage}>
                 <tbody>
                 <tr className = {classes.header}>
@@ -171,15 +159,15 @@ function PoffinStorage(props)
                 </img>
             </button>
 
-            { selectedItem && isItemVisible &&
+            { selectedItem[0] && selectedItem[1] &&
                 <img id = "draggable_item"
                      className = {classes.Poffin}
-                     src = {require("../assets/" + selectedItem + ".png")}
+                     src = {require("../assets/" + selectedItem[0] + ".png")}
                      style = {{cursor: "move",
                                position: itemPos[0],
-                               top: itemPos[1],
-                               left: itemPos[2],
-                               zIndex: itemPos[3]}}
+                               top: String(itemPos[1]) + "px",
+                               left: String(itemPos[2]) + "px",
+                               zIndex: String(itemPos[3])}}
                      onClick = {() => realize(selectedItem)}
                      decoding = "async"/> }
         </div>

@@ -8,13 +8,15 @@ import { useState , useEffect } from 'react';
 
 function ShuckleMechanics(props)
 {
-	const [shuckleDir, setShuckleDir] = useState([0, 0, 0])
+	const [shuckleDir, setShuckleDir] = useState([0, 0, -1])
 
     return (
         <>
             <PoffinStorage keyDownHandler = {props.keyDownHandler}
-                            validKeys = {props.validKeys}/>
-
+                            validKeys = {props.validKeys} />
+            <ShuckleCursor keyDownHandler = {props.keyDownHandler}
+                           validKeys = {props.validKeys}
+                           shuckleDir = {shuckleDir} />
         </>
     )
 }
