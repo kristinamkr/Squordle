@@ -5,8 +5,6 @@
 import classes from "./style/PoffinStorage.module.css";
 import inventory from './Inventory.js';
 
-import ShuckleCursor from './ShuckleCursor.js';
-
 import {useState, useEffect} from 'react';
 
 function PoffinStorage(props)
@@ -103,7 +101,7 @@ function PoffinStorage(props)
                 return inventory[i].props.id;
         }
     }
-
+    
     useEffect(() => {       
         setTimeout(() => {
             if (selectedItem && itemPos[4]) {

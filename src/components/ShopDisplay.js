@@ -146,7 +146,6 @@ function ShopDisplay(props)
                 </div>
                 <div className = {classes.rowDisplay}>
                     {display(inventory[4])}
-
 					<div className = {classes.buttonWrapper}>
 						<button className = {classes.leave}
                                 onClick = {props.shopHandler}>
