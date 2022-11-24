@@ -5,30 +5,16 @@
 import classes from "./style/ShuckleCursor.module.css";
 import { useState , useEffect } from 'react';
 
-function ShuckleCursor(props)
+function ShuckleCursor(props)  // offset = - 20
 {
-    //  MOUSE EVENTS -----------------------------------------------------------
-	const [mousePos, setMousePos] = useState([0, 0])
-
-	function changeMousePos(e)
-    {
-		setMousePos([e.pageX - 20, e.pageY - 20, 0]);
-	}
-
-	useEffect(() => {
-  		document.addEventListener("mousemove", changeMousePos);
-  		return () => document.removeEventListener("mousemove", changeMousePos);
-    });
-    // -------------------------------------------------------------------------
-
     const focus = { MOUSE: 0,
                     ITEM:  1,
                     KEY:   2};
     Object.freeze(focus);
 
 	const action = { NONPLUSSED: 0, 
-                     HAPPY:      2,
                      ANGRY:      1,
+                     HAPPY:      2,
                      CONFUSED:   3,
                      SURPRISED:  4,
                      SICK:       5,
@@ -36,37 +22,34 @@ function ShuckleCursor(props)
                      LAY_EGG:    7};
     Object.freeze(action);
 
-	const [shuckleDir, setShuckleDir] = useState([0, 0, 0])
+    const mousePos = props.mousePos;
+	const [shuckleDir, setShuckleDir] = [props.shuckleDir, props.setShuckleDir];
 	const [shucklePos, setShucklePos] = useState([0, 0]);
 
+    const itemEaten = props.derealizeItem; 
+    // [0] - focus, [1] - targetReached
 	const [shuckleTarget, setShuckleTarget] = useState([0, false]);
 	const [shuckleAction, setShuckleAction] = useState(0);
 
-	// const [angerIcon, setAngerIcon] = useState(0);
 	const [remainingKeys, setRemainingKeys] = 
         useState(["Backspace", "Enter"].concat(props.validKeys));
 	const [enemyKey, setEnemyKey] = useState(0)
 
-    const [itemEaten, setItemEaten] = useState(-1);  // numbered behavior
-	const [obfuscation, setObfuscation] = useState(0);
-
 	function changeShucklePos(Pos)
     {
-		var mouseX = Pos[0];
-  		var mouseY = Pos[1];
-  		var shuckleX = shucklePos[0];
-  		var shuckleY = shucklePos[1];
+		const [mouseX, mouseY] = [Pos[1], Pos[0]];  // idk why flipped
+  		const [shuckleX, shuckleY] = [shucklePos[0], shucklePos[1]];
 
-  		var xdir = Math.max(Math.min(0.03 * (mouseX-shuckleX), 3.5), -3.5);
-  		var ydir = Math.max(Math.min(0.03 * (mouseY-shuckleY), 3.5), -3.5);
+  		const xdir = Math.max(Math.min(0.03 * (mouseX - shuckleX), 3.5), -3.5);
+  		const ydir = Math.max(Math.min(0.03 * (mouseY - shuckleY), 3.5), -3.5);
 
   		setShucklePos([xdir + shuckleX, ydir + shuckleY]);
 	}
 
-	function isNearTarget()
+	function isNearTarget()  // idk why flipped pt 2
     {
-		return (Math.abs(shuckleDir[0] - shucklePos[0]) < 25 && 
-                Math.abs(shuckleDir[1] - shucklePos[1]) < 25);
+		return (Math.abs(shuckleDir[0] - shucklePos[1]) < 25 && 
+                Math.abs(shuckleDir[1] - shucklePos[0]) < 25);
 	}
 
 	function chooseKey()
@@ -81,7 +64,7 @@ function ShuckleCursor(props)
 		var position = element.getBoundingClientRect();
 
 		setShuckleDir([position.left, position.top, 0]);
-		setEnemyKey(document.getElementById(key));
+		setEnemyKey(element);
 	}
 
 	function destroyKey()
@@ -90,58 +73,45 @@ function ShuckleCursor(props)
 		var damageSelection = Math.floor(Math.random() * damageList.length);
 		var damage = damageList[damageSelection];
 
-		// enemyKey.style.background = damage;
-		// enemyKey.style.pointerEvents = "none";
+		enemyKey.style.background = damage;
+		enemyKey.style.pointerEvents = 'none';
 		setRemainingKeys(remainingKeys.filter(key => key !== enemyKey.id));
 	}
 
+	useEffect(() => {
+        if (props.realizeItem) {
+            props.derealize();
+            console.log("just ate poffin # " + itemEaten);
+        }
+    });
+
     // --- TARGET LOCKING MECHANISM --------------------------------------------
 	useEffect(() => {
-        if (props.itemRealized) {
-            (props.derealizeItem[0])();
-            setItemEaten(props.derealizeItem[1]);  // numbered behavior
-            //setJustAte(true);
-        }
-
 		if (shuckleTarget[0] === focus.MOUSE &&
             shuckleAction !== action.ANGRY) {
 			setTimeout(() => {
                 setShuckleTarget([shuckleTarget[0], isNearTarget()]);
-				setShuckleDir(mousePos);
-				changeShucklePos(mousePos);
-
-				if (props.shuckleDir[2] === 0) {  // if poffin NOT moving
+				if (shuckleDir[2] === 0) {  // if poffin NOT moving
 					setShuckleTarget([focus.ITEM, false]);
                 }
+				setShuckleDir(mousePos);
+				changeShucklePos(mousePos);
 		    }, 16);  // controls shuckle speed (frightening)
 		}
 
         else if (shuckleTarget[0] === focus.ITEM &&
                  shuckleAction !== action.ANGRY) {
 			setTimeout(() => {
-				setShuckleDir(props.shuckleDir);
-				changeShucklePos([shuckleDir[0] + 15, shuckleDir[1]]);
                 if (isNearTarget())
                     setShuckleTarget([shuckleTarget[0], true]);
+				setShuckleDir(props.shuckleDir);
+				changeShucklePos([shuckleDir[0] + 15, shuckleDir[1]]);
 			}, 16);
 		}
     });
+    // -------------------------------------------------------------------------
 
-	//This useEffect acts on shuckle regarding goal based behaviors
-	useEffect(() => {
-        if (itemEaten != -1 && shuckleTarget[1]) {
-            setTimeout(() => {
-                setShuckleAction(itemEaten); 
-
-                if (shuckleAction === 0) { // ANGRY
-                    chooseKey();
-                    destroyKey();
-                } 
-            }, 2500);
-            setItemEaten(-1);
-        }
-    }, [itemEaten, shuckleTarget[1]]);
-
+    // can be further encapsulated
     // RENDER ------------------------------------------------------------------
 	return (
 		<div>
@@ -170,8 +140,8 @@ function ShuckleCursor(props)
              shuckleAction !== action.ANGRY && (
                 <div>
                 <img className = {classes.chomp}
-                     style = {{left: String(shuckleDir[0]) + "px",
-                               top: String(shuckleDir[1]) + "px"}} 
+                     style = {{left: String(shuckleDir[1] - 31) + "px",
+                               top: String(shuckleDir[0] - 31) + "px"}} 
                      src = {require("../assets/chomp.gif")}/>
                 </div>
             )}
@@ -192,16 +162,6 @@ function ShuckleCursor(props)
                                top: String(shuckleDir[1] + 5) + "px"}} 
                      src = {require("../assets/slash.gif")} /> 
                 </div>
-            )}
-
-			{obfuscation !== 0 && (
-				<div>
-				<img className = {classes.cloudCover} 
-                     style = {{opacity: String(obfuscation),
-                               left: String(shucklePos[0] - 10) + "px",
-                               top: String(shucklePos[1] - 5) + "px"}} 
-                     src = {require("../assets/cloudCover.png")}/>
-				</div>
             )}
 		</div>
     )

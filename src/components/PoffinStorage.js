@@ -5,23 +5,10 @@
 import classes from "./style/PoffinStorage.module.css";
 import inventory from './Inventory.js';
 
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 
-function PoffinStorage(props)
+function PoffinStorage(props) 
 {
-    // MOUSE EVENTS ------------------------------------------------------------
-    const [mousePos, setMousePos] = useState([0, 0]);
-
-    function changeMousePos(e) 
-    {
-        setMousePos([e.pageY - 32, e.pageX - 32]);
-    }
-
-    useEffect(() => {
-        document.addEventListener("mousemove", changeMousePos);
-        return () => document.removeEventListener("mousemove", changeMousePos);
-    });
-
     // INVENTORY ---------------------------------------------------------------
     let pokeLink = "https://cdn3.iconfinder.com/data/icons/faticons/32/";
     const [arrowSrc, setArrowSrc] = 
@@ -39,83 +26,32 @@ function PoffinStorage(props)
     }
     // -------------------------------------------------------------------------
 
-    // [0] - itemName, [1] - itemVisibility
-    const [selectedItem, setSelectedItem] = useState(['', false]);
-    // [0] - absolute/relative ?, [1] - xPos, [2] - yPos, 
-    // [3] - zIndex, [4] - isMoving?
-    const [itemPos, setItemPos] = useState(['', 0, 0, 0, false]);
-
-    const [realizeItem, setRealizeItem] = useState(false); 
-    const [derealizeItem, setDerealizeItem] = useState([null, -1]);
+    const selectedItem = props.selectedItem;
+    const setItem = props.setItem;
+    const itemPos = props.itemPos; 
 
     function selectItem(e)
     {
         var nodes = Array.prototype.slice.call(e.currentTarget.children);
         const item = nodes[0].name;
-        console.log("ITEM SELECTED - " + item);
         const itemCount = localStorage.getItem(item);
-
         if (itemCount > 0) {
-            setSelectedItem([item, true]);
-            setItemPos(["absolute", 
-                        mousePos[0], 
-                        mousePos[1], 
-                        1,
-                        true]);
+            setItem(item);
+            props.setItemPos(["absolute", 
+                              props.mousePos[0], 
+                              props.mousePos[1], 
+                              1]);
+            props.setMoving(true);
         }
     }
 
     function deselectItem(e)
     {
         console.log("hello");
-        if (e.key === 'Escape' && selectedItem[1])  // check [0] ?
-            setSelectedItem(['', false]);
+        if (e.key === 'Escape')  // check [0] ?
+            console.log("ESC ESC ESC");
+            setItem('');
     }
-
-    function realize(item)
-    {
-        console.log("clicked whilst selected");
-        const itemCount = localStorage.getItem(item);
-        if (itemCount > 0 && !(realizeItem)) {
-            localStorage.setItem(item, Number(itemCount) - 1);
-            // derealize(item);
-            setItemPos([itemPos[0], itemPos[1], itemPos[2], itemPos[3], false]);
-            setRealizeItem(true);
-
-        }
-    }
-    
-    function derealize()
-    {
-        console.log("MOVING - " + itemPos[4]);
-        // setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);  // poffin NOT  moving
-        setRealizeItem(false);
-        // setSelectedItem('');
-        // setItemVisibility(false);
-    }
-
-    function getPoffinId(name)
-    {
-        for (let i = 0; i < inventory.length; i++) {
-            if (inventory[i].props.name === name)
-                return inventory[i].props.id;
-        }
-    }
-    
-    useEffect(() => {       
-        setTimeout(() => {
-            if (selectedItem && itemPos[4]) {
-                setItemPos(["absolute",
-                            mousePos[0],
-                            mousePos[1],
-                            0,
-                            true]);
-                // setShuckleDir([mousePos[1], mousePos[0], 1]);  // poffin moving
-                setDerealizeItem([derealize, 
-                                  Number(getPoffinId(selectedItem))]);
-            }
-        }, 16);
-    });
 
     function itemPreview(item, bg_color)
     {
@@ -157,19 +93,19 @@ function PoffinStorage(props)
                 </img>
             </button>
 
-            { selectedItem[0] && selectedItem[1] &&
+            { !(selectedItem === '') &&
                 <img id = "draggable_item"
                      className = {classes.Poffin}
-                     src = {require("../assets/" + selectedItem[0] + ".png")}
+                     src = {require("../assets/" + selectedItem + ".png")}
                      style = {{cursor: "move",
                                position: itemPos[0],
                                top: String(itemPos[1]) + "px",
                                left: String(itemPos[2]) + "px",
                                zIndex: String(itemPos[3])}}
-                     onClick = {() => realize(selectedItem)}
+                     onClick = {() => props.realize(selectedItem)}
                      decoding = "async"/> }
         </div>
-    )
+    );
 }
 
 export default PoffinStorage;
