@@ -29,7 +29,7 @@ function ShuckleMechanics(props)
     const [isMoving, setMoving] = useState(false);
     const [realizeItem, setRealizeItem] = useState(false); 
     const [derealizeItem, setDerealizeItem] = useState(-1);
-	const [shuckleDir, setShuckleDir] = useState([0, 0, -1])
+	const [itemLoc, setItemLoc] = useState([0, 0, -1])
 
     useEffect(() => {       
         setTimeout(() => {
@@ -38,7 +38,7 @@ function ShuckleMechanics(props)
                             mousePos[0] - 32,  // offset - better way?
                             mousePos[1] - 32,
                             0]);
-                setShuckleDir([mousePos[1], mousePos[0], 1]);  // poffin moving
+                setItemLoc([mousePos[1], mousePos[0], 1]);  // poffin moving
                 setDerealizeItem(Number(getPoffinId(selectedItem)));
             }
         }, 16);
@@ -47,7 +47,7 @@ function ShuckleMechanics(props)
     function realize(item)
     {
         const itemCount = localStorage.getItem(item);
-        if (itemCount > 0) {
+        if (itemCount > 0 && isMoving) {
             localStorage.setItem(item, Number(itemCount) - 1);
             setMoving(false);
             setRealizeItem(true);
@@ -56,7 +56,7 @@ function ShuckleMechanics(props)
     
     function derealize()
     {
-        setShuckleDir([shuckleDir[0], shuckleDir[1], 0]);  // poffin NOT  moving
+        setItemLoc([itemLoc[0], itemLoc[1], 0]);  // poffin NOT  moving
         setRealizeItem(false);
         // setItem('');
         // setItemVisibility(false);
@@ -81,7 +81,6 @@ function ShuckleMechanics(props)
     return (
         <>
             <PoffinStorage keyDownHandler = {props.keyDownHandler}
-                           validKeys = {props.validKeys}
                            mousePos = {mousePos}
                            selectedItem = {selectedItem}
                            setItem = {setItem}
@@ -92,8 +91,8 @@ function ShuckleMechanics(props)
             <ShuckleCursor keyDownHandler = {props.keyDownHandler}
                            validKeys = {props.validKeys}
                            mousePos = {mousePos}
-                           shuckleDir = {shuckleDir}
-                           setShuckleDir = {setShuckleDir}
+                           targetPos = {itemLoc}
+                           setTargetPos = {setItemLoc}
                            realizeItem = {realizeItem} 
                            derealize = {derealize}
                            derealizeItem = {derealizeItem} />
