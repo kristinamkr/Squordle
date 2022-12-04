@@ -1,8 +1,23 @@
-.PoffinStorage {
+.storageWrapper {
+    width: 0px;
+    height: 0px;
+}
+
+.storageWrapper button {
+    background: none;
+    border: none;
+}
+
+.header {
+    background: #EBB7C6; 
+    border-top-left-radius: 5px;
+}
+
+.poffinStorage {
 	z-index: 1;
 	position: relative;
-	top: 100px;
-	left: -380px;
+	top: 95px;
+	left: -375px;
 
     width: 125.08px;
     text-align: center;
@@ -11,17 +26,21 @@
     border-radius: 10px;
 }
 
-.expansionArrow {
-	position: relative;
-	top:96px;
-	left:-345px;
-}
-
-.header {
-    background: #EBB7C6; 
-    border-top-left-radius: 5px;
+.poffin {
+    composes: poffin from "./Poffin.module.css";
 }
 
 .item {
     background: #ffffff;
+}
+
+.expansionArrow {
+	position: relative;
+	top:96px;
+	left: -342px;
+}
+
+.expansionArrow img {
+    width: 40px;
+    height: 40px;
 }

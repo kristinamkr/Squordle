@@ -1,14 +1,16 @@
-.InfoDisplay {
-	z-index: 2;
-	border-radius: 8px;
-	background-color:#ffffff;
-	width: 400px;
-	justify-content: center;
-	align-items: center;
-	display: flex;
-	flex-direction: column;
-	position: fixed;
-	top: 20vh;
+/*
+ * InfoDisplay.module.css
+*/
+
+.infoDisplay {
+    composes: display from "./DisplayMan.module.css";
+    width: 450px;
+    top: 25%;
+    left: 17.5%;
+}
+
+.infoDisplay img {
+    width: 80%;
 }
 
 .listRow {
@@ -19,6 +21,14 @@
 	padding-left: 15px;
 	padding-right: 15px;
 	padding-top: 20px;
+}
+
+.listRow a {
+    display: inline-block;
+}
+
+.listRow:last-of-type {
+     padding-bottom: 20px;
 }
 
 img.pokeBullet {

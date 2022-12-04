@@ -14,30 +14,21 @@ function GameRow(props)
     var spriteRef = spriteLink(guess);
 
 	return (
-		<div className = {classes.GameRow}
+		<div className = {classes.gameRow}
              style = {{gridTemplateColumns: "1fr ".repeat(props.length + 2)}}>
 			<img className = {classes.pokeSprite} 
                  style = {{top: props.upDownPos}}
-                 src = {spriteRef}/>
-			{ props.boxes.map((box) => (<GuessBox key = {box.id}
-		    	                                  delay = {box.delay}
-			                                      state = {box.state}
-				                                  letter = {box.letter}/>))}
+                 src = {spriteRef} />
+
+			{props.boxes.map((box) => (<GuessBox key = {box.id}
+			                                     state = {box.state}
+			                                     letter = {box.letter}/>))}
+
 			<img className = {classes.pokeSprite} 
                  style = {{top: -props.upDownPos - 10}}
-                 src = {spriteRef}/>
+                 src = {spriteRef} />
         </div>
 	)
 }
 
 export default GameRow;
-
-/*
-    return (
-        <div className = {classes.GuessBox} 
-                 id = {props.id} 
-                 style = {{backgroundColor: bgColors[props.state]}}>
-            {props.letter}
-        </div>
-    )
-*/

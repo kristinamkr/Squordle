@@ -12,9 +12,9 @@ import { ReactComponent as ShopIcon } from "../assets/shopIcon.svg";
 import { ReactComponent as InfoIcon } from "../assets/infoIcon.svg";
 import { useState, useEffect } from 'react';
 
-function Backdrop(props) 
+function Backdrop() 
 {
-    return <div className = {classes.backdrop} />
+    return <div className = {classes.backdrop}/>
 }
 
 function DisplayMan(props)
@@ -25,16 +25,6 @@ function DisplayMan(props)
                      "showWinLose": false,
                      "showBackdrop": false
                     });
-
-	function reload()
-    {
-		setDisplayState({"showInfo": false,
-                         "showWinpage": false,
-                         "showLosepage": false,
-                         "showBackdrop": false
-                        });
-		window.location.reload();
-	}
 
 	function infoHandler()
     {
@@ -60,33 +50,40 @@ function DisplayMan(props)
                         });
   	}   
 
+	function reload()
+    {
+		setDisplayState({"showInfo": false,
+                         "showWinLose": false,
+                         "showBackdrop": false
+                        });
+		window.location.reload();
+    }
+
     return (
         <>
         	<div className = {classes.icon}>
                 <button onClick = {shopHandler}>
-                    <ShopIcon className = {classes.shopIcon} />
+                    <ShopIcon className = {classes.shopIcon}/>
                 </button>
             </div>
 
             <div className = {classes.icon}>
                 <button onClick = {infoHandler}>
-                    <InfoIcon className = {classes.infoIcon} />
+                    <InfoIcon className = {classes.infoIcon}/>
                 </button>
             </div>
 
-            <div className = {classes.displayMan}>
-                {displayState["showBackdrop"] && <Backdrop/>}
+            {displayState["showBackdrop"] && <Backdrop/>}
 
-                {displayState["showInfo"] && 
-                    <InfoDisplay infoHandler = {infoHandler}/>}
-                {displayState["showShop"] && 
-                    <ShopDisplay dollarHandler = {props.dollarHandler} 
-                                 shopHandler = {shopHandler}/>}
-                {props.isGameOver[0] &&  
-                    <WinLoseDisplay isGameOver = {props.isGameOver}
-                                    reload = {reload}
-                                    pokeAnswer = {props.pokeAnswer} />}
-            </div>
+            {displayState["showInfo"] && 
+                <InfoDisplay infoHandler = {infoHandler}/>}
+            {displayState["showShop"] && 
+                <ShopDisplay dollarHandler = {props.dollarHandler} 
+                             shopHandler = {shopHandler}/>}
+            {props.isGameOver[0] && 
+                <WinLoseDisplay isGameOver = {props.isGameOver}
+                                reload = {reload}
+                                pokeAnswer = {props.pokeAnswer}/>}
         </>
     )
 }

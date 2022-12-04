@@ -13,40 +13,61 @@ var bgColors = {
 
 function KeyBox(props)
 {
-	if (props.id == "Enter") {
-		return (
-			<button id = {props.id} 
-                    className = {classes.KeyBox_long} 
-                    style = {{zIndex: "1", fontSize: "24px"}} 
+    /*
+    function createKey(keyID) 
+    {
+        let classID = "keyBox";
+        if (keyID === "Backspace" || keyID === "Enter") 
+            classID = "keyBoxLong";
+
+        return (
+            <button id = {keyID} 
+                    className = {classes[classID]} 
+                    value = {keyID} 
+                    onClick = {props.handler}>
+                {keyChar}
+            </button>
+        )
+    }
+
+    return (
+        <div>
+        { createKey(props.id) } 
+        </div>
+    )
+    */
+    if (props.id == "Enter") {
+        return (
+            <button id = {props.id} 
+                    className = {classes.keyBoxLong} 
+                    style = {{fontSize: "24px"}} 
                     value = {props.id} 
                     onClick = {props.handler}>
                 {'↵'}
-			</button>
-		);
-	}
-	else if (props.id == "Backspace") {
-		return (
-			<button id = {props.id} 
-                    className = {classes.KeyBox_long} 
-                    style = {{zIndex: "1"}} 
+            </button>
+        );
+    }
+    else if (props.id == "Backspace") {
+        return (
+            <button id = {props.id} 
+                    className = {classes.keyBoxLong} 
                     value = {props.id} 
                     onClick = {props.handler}>
                 {"BACK"}
-			</button>
-		);
-	}
-	else {
-		return (
-			<button id = {props.id}
-                    className = {classes.KeyBox} 
-                    style = {{zIndex: "1", 
-                              backgroundColor: bgColors[props.state]}} 
+            </button>
+        );
+    }
+    else {
+        return (
+            <button id = {props.id}
+                    className = {classes.keyBox} 
+                    style = {{backgroundColor: bgColors[props.state]}} 
                     value = {props.id} 
                     onClick = {props.handler}>
                 {props.id}
-			</button>
-		);
-	}
+            </button>
+        );
+    }
 }
 
 export default KeyBox;

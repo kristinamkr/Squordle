@@ -1,14 +1,28 @@
-.display {
-	z-index: 2;
-	border-radius: 8px;
-	background-color: #ffffff;
-	width: 400px;
-	justify-content: center;
-	align-items: center;
-	display: flex;
-	flex-direction: column;
-	position: fixed;
-	top: 20vh;
+.shopDisplay {
+    composes: display from "./DisplayMan.module.css";
+    width: 550px;
+    height: 400px;
+    top: 25%;
+    left: 17.5%;
+}
+
+.header {
+    width: 80%;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #808080;
+}
+
+.subheader {
+    width: 80%;
+    text-align: center;
+    padding-top: 10px;
+}
+
+.menu {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .rowDisplay {

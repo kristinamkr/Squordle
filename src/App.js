@@ -14,9 +14,7 @@ function App()
     }, true);
 
     return (
-        <div id = "header">
-            <GSDiv id = "gsVar"/>
-        </div>
+        <> <GSDiv id = "gsVar"/> </>
     );
 }
 

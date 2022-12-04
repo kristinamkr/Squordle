@@ -15,7 +15,7 @@ var bgColors = {
 function GuessBox(props) 
 {
     return (
-        <div className = {classes.GuessBox} 
+        <div className = {classes.guessBox} 
                  id = {props.id} 
                  style = {{backgroundColor: bgColors[props.state]}}>
             {props.letter}

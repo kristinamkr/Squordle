@@ -16,6 +16,7 @@ import loadSave from "../functions/loadSave.js";
 import { useState, useEffect } from 'react';
 
 loadSave();
+
 var inits = gameInit();
 var gsInit = inits.gsInit;
 var lsInit = inits.lsInit;
@@ -40,6 +41,7 @@ function GSDiv(props)
            useState(Number(window.localStorage.pokeDollars));
     window.localStorage.pokeDollars = pokeDollars; 
 
+    // move dollarHandler?
   	function dollarHandler(delta)
     {
         setPokeDollars(pokeDollars + delta);
@@ -120,17 +122,14 @@ function GSDiv(props)
             focus[0] += 1;
             focus[1] = 0;
 	    }
-	    else if (input === "Backspace") { 
-            // itemSelected - deselect
-            if (focus[1] != 0) {
-                focus[1] -= 1;
-                gameSpace[focus[0]].boxes[focus[1]].state = "empty";
-                gameSpace[focus[0]].boxes[focus[1]].letter = '';
-            }
+	    else if (input === "Backspace" && focus[1] != 0) { 
+            focus[1] -= 1;
+            gameSpace[focus[0]].boxes[focus[1]].state = "empty";
+            gameSpace[focus[0]].boxes[focus[1]].letter = '';
 	    }
         else if (input === "Escape")
         {
-
+            // itemSelected - deselect
         } 
 	    else if (focus[1] < pokeAnswer.length &&  // default 
                  validKeySet.has(input)) { 
@@ -148,33 +147,33 @@ function GSDiv(props)
             { window.localStorage.adoptedShuckle === "true" &&
                 <ShuckleMechanics validKeys = {validKeys}/> } 
 
-			<header className = "MenuBar">
+			<header className = {classes.menuBar}>
                 <div className = {classes.pHeader}>
-                    <img style = {{height: "35px"}} 
-                         src = {require("../assets/pokedollarLight.png")}/>
+                    <img src = {require("../assets/pokedollarLight.png")}/>
                     {" "}{pokeDollars}
                 </div>
+
                 <div className = {classes.gameTitle}>
                     <img src = {require("../assets/LogoLight.png")}/>
                 </div>
-                <DisplayMan id = "displayMan"
-                        gameSpace = {gameSpace}
-                        isGameOver = {isGameOver}
-                        dollarHandler = {dollarHandler}
-                        pokeAnswer = {pokeAnswer} />
-      		</header>
 
-      		<div className = "Spacer"/>
-                <GameSpace id = "gameSpace"
-                        gameSpace = {gameSpace}
-                        wordLength = {pokeAnswer.length}/>
-                <Keyboard id = "keyboard" 
-                        letterStates = {letterStates} 
-                        handler = {keyDownHandler}
-                        gameSpace = {gameSpace}
-                        setGameSpace = {setGameSpace} 
-                        validKeys = {validKeys}/>
-            </div>
+                <DisplayMan id = "displayMan"
+                            gameSpace = {gameSpace}
+                            isGameOver = {isGameOver}
+                            dollarHandler = {dollarHandler}
+                            pokeAnswer = {pokeAnswer} />
+      		</header>
+      		<div className = {classes.spacer}/>
+            <GameSpace id = "gameSpace"
+                       gameSpace = {gameSpace}
+                       wordLength = {pokeAnswer.length}/>
+            <Keyboard id = "keyboard" 
+                      letterStates = {letterStates} 
+                      handler = {keyDownHandler}
+                      gameSpace = {gameSpace}
+                      setGameSpace = {setGameSpace} 
+                      validKeys = {validKeys}/>
+        </div>
 	)
 }
 

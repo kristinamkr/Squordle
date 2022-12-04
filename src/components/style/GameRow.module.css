@@ -1,4 +1,4 @@
-.GameRow {
+.gameRow {
     display: grid;
     align-items: center;
     flex-wrap: nowrap;

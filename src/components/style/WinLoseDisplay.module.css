@@ -1,22 +1,22 @@
-.WinLoseDisplay {
-	z-index: 2;
-	border-radius: 8px;
-	background-color:#ffffff;
-	width: 400px;
-	justify-content: center;
-	align-items: center;
-	display: flex;
-	flex-direction: column;
-	position: fixed;
-	top: 20vh;
+.winLoseDisplay {
+    composes: display from "./DisplayMan.module.css";
+    width: 450px;
+    border: 2px solid black;
+    top: 25%;
+    left: 17.5%;
 }
 
 .textDisplay {
     width: 80%;
+    margin-top: 5%;
 }
 
 .spriteDisplay {
     width: 256px;
     height: 192px;
-    position: relative;
+    margin-top: 2.5%;
+}
+
+.winLoseDisplay button {
+    margin-bottom: 3.5%;
 }

@@ -7,21 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-.MenuBar {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  border-bottom: 2px solid #808080;
-  padding: 8px;
-}
-
+/*
 .LeftMenu {
   background: none;
   border: none;
@@ -43,18 +29,9 @@ code {
   border: inherit;
 }
 
-.GameTitle {
-  padding-top: 6px;
-  padding-right: 124px;
-}
-
 .RightMenu {
   display: flex;
   justify-content: flex-end;
   padding-right: 4px;
 }
-
-.Spacer {
-  padding-top: 20px;
-}
-
+*/

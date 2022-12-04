@@ -56,7 +56,7 @@ function PoffinStorage(props)
     function itemPreview(item, bg_color)
     {
         return (
-            <tr className = {classes[item]}>
+            <tr className = {classes.item}>
                 <th style = {{background: bg_color}}>
                     {item.props.tag} 
                     <div> {localStorage.getItem(item.props.name)} </div>
@@ -68,14 +68,15 @@ function PoffinStorage(props)
         )
     }
 
+    // for region implementation, use map function to iterate component renders
     // RENDER ------------------------------------------------------------------
     return (
-        <div style = {{width: "0px", height: "0px"}}>
-            <table className = {classes.PoffinStorage}>
+        <div className = {classes.storageWrapper}>
+            <table className = {classes.poffinStorage}>
                 <tbody>
                 <tr className = {classes.header}>
                     <th> Flavor </th>
-                    <th style = {{width: "66px"}}> Items </th>
+                    <th> Items </th>
                 </tr>
                 { isExpanded && itemPreview(inventory[0], "#F08030") } 
                 { isExpanded && itemPreview(inventory[1], "#F85888") }
@@ -85,17 +86,14 @@ function PoffinStorage(props)
                 </tbody>
             </table>
 
-            <button style = {{background: "none", border: "none"}} 
-                    className = {classes.expansionArrow} 
+            <button className = {classes.expansionArrow} 
                     onClick = {expandPoffins}>
-                <img style = {{width: "40px", height: "40px"}} 
-                     src = {arrowSrc}>
-                </img>
+                <img src = {arrowSrc}/>
             </button>
 
             { !(selectedItem === '') &&
                 <img id = "draggable_item"
-                     className = {classes.Poffin}
+                     className = {classes.poffin}
                      src = {require("../assets/" + selectedItem + ".png")}
                      style = {{cursor: "move",
                                position: itemPos[0],

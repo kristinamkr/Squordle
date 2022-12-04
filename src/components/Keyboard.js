@@ -7,33 +7,29 @@ import KeyRow from "./KeyRow.js"
 
 function Keyboard(props)
 {
+
+    function createRow(rowID, padding, range)
+    {
+        let keys = props.validKeys.slice(range[0], range[1]);
+        if (rowID === "3")
+            keys = ["Backspace"].concat(keys).concat("Enter");
+        
+        return (
+            <KeyRow id = {rowID} 
+                    padding = {padding} 
+                    handler = {props.handler} 
+                    gameSpace = {props.gameSpace} 
+                    setGameSpace = {props.setGameSpace} 
+                    letterStates = {props.letterStates} 
+                    keys = {keys} />
+        )
+    }
+
 	return (
-		<div className = {classes.Keyboard}>
-	      	<KeyRow key = "kr1" 
-                    id = "kr1" 
-                    padding = {"125px"} 
-                    handler = {props.handler} 
-                    gameSpace = {props.gameSpace} 
-                    setGameSpace = {props.setGameSpace} 
-                    letterStates = {props.letterStates} 
-                    keys = {props.validKeys.slice(0, 10)}/>
-	      	<KeyRow key = "kr2" 
-                    id = "kr2" 
-                    padding = {"150px"} 
-                    handler = {props.handler} 
-                    gameSpace = {props.gameSpace} 
-                    setGameSpace = {props.setGameSpace} 
-                    letterStates = {props.letterStates} 
-                    keys = {props.validKeys.slice(10,19)}/>
-	      	<KeyRow key = "kr3" 
-                    id = "kr3" 
-                    padding = {"126px"} 
-                    handler = {props.handler} 
-                    gameSpace = {props.gameSpace} 
-                    setGameSpace = {props.setGameSpace} 
-                    letterStates = {props.letterStates} 
-                    keys = {["Backspace"].concat(
-                        props.validKeys.slice(19,27).concat("Enter"))}/>
+		<div className = {classes.keyboard}>
+            { createRow("1", "125px", [0, 10]) }
+            { createRow("2", "150px", [10, 19]) }
+            { createRow("3", "126px", [19, 27]) }
 		</div>
 	)
 }

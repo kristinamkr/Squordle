@@ -77,7 +77,7 @@ function ShopDisplay(props)
 
 	var currentEmotion = emotion.HAPPY;
 
-	if (Number(window.localStorage.shopState) <=6 )
+	if (Number(window.localStorage.shopState) <= 6)
 		currentEmotion = Number(window.localStorage.shopState);
 	else
 		currentEmotion = emotion.HAPPY;
