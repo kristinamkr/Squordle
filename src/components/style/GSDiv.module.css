@@ -1,11 +1,11 @@
-.GSDiv {
+.gsDiv {
 	align-items: center;
 	justify-content: center;
 	display: flex;
 	flex-direction: column;
 }
 
-.header {
+.pHeader {
     font-size: 3rem;
     position: relative;
     left: 20px;
@@ -15,5 +15,5 @@
 .gameTitle img {
     display: flex;
     height: 40px;
-    width: auto;
+    padding-right: 15px;
 }

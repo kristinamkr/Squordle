@@ -2,68 +2,51 @@
  * WinLoseDisplay.js 
 */
 
-import classes from "./style/WinDisplay.module.css";
+import classes from "./style/WinLoseDisplay.module.css";
 import spriteLink from  "../functions/SpriteLink.js";
 
 function WinLoseDisplay(props)
 {
-	var setDisplayState = props.setDisplayState;
-
 	var answer = props.pokeAnswer;
     var spriteRef = spriteLink(answer);
 
-	function reload()
+    function winOrLose()
     {
-		setDisplayState({"showInfo": false,
-                         "showWinpage": false,
-                         "showLosepage": false,
-                         "showBackdrop": false});
-		window.location.reload();
-	}
-
-    function loseDisplay()
-    {
-        return (
-            <>
-                <img className = {classes.textDisplay}
-                     src = {require("../assets/LoseTextLight.png")}/>
-                <img className = {classes.spriteDisplay}
-                     src = {spriteRef}/>
-                <p>
-                    The correct pokemon was {answer[0].toUpperCase() + 
-                        answer.slice(1)}
-                </p>
-            </>
-        )
+        let imgName, gameOverTxt;
+        if (props.isGameOver[1] === 'win') {
+            imgName = "WinTextLight";
+            gameOverTxt = "The pokémon was " + answer[0].toUpperCase() + 
+                answer.slice(1);
+        }
+        else {
+            imgName = "LoseTextLight";
+            gameOverTxt = "The correct pokémon was " + answer[0].toUpperCase() +
+                answer.slice(1);
+        }
+        
+        return displayWinLose(imgName, gameOverTxt);
     }
 
-    function winDisplay()
+    function displayWinLose(imgName, gameOverTxt)
     {
         return (
             <>
                 <img className = {classes.textDisplay}
-                     src = {require("../assets/WinTextLight.png")}/>
+                     src = {require("../assets/" + imgName + ".png")}/>
                 <img className = {classes.spriteDisplay}
                      src = {spriteRef}/>
                 <p> 
-                    The pokémon was {answer[0].toUpperCase() + answer.slice(1)}
+                    {gameOverTxt}
                 </p>
             </>
         )
-    }
-
-    function winOrLose()
-    {
-        if (props.isGameOver[1] === 'win')
-            return winDisplay();
-        return loseDisplay();
-    }
+   }
 
 	return (
-        <div className={classes.WinLoseDisplay}> <p/>
-            {winOrLose()}
-			<button onClick = {reload}> Play Again? </button>
-			<p/> </div>
+        <div className = {classes.WinLoseDisplay}> 
+            { winOrLose() }
+			<button onClick = {() => props.reload()}> Play Again? </button>
+		</div>
 	);
 }
 

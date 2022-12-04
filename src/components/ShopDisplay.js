@@ -52,8 +52,7 @@ function ShopDisplay(props)
 			shopAdvance();
 			props.shopHandler();
 		}
-        else
-			shopAdvance();
+        else shopAdvance();
 	}
 
 	function shuckleAdopter()
@@ -83,8 +82,8 @@ function ShopDisplay(props)
 	else
 		currentEmotion = emotion.HAPPY;
 
-	var sellingShuckle = (
-		<div className = {classes.shuckleDisplay}> <p/>
+	var shuckleShop = (
+		<div className = {classes.display}> <p/>
 			<img className = {classes.header}
                  src = {require("../assets/shopHeaderLight.png")}/>
 			<div className = {classes.subheader}>
@@ -106,29 +105,15 @@ function ShopDisplay(props)
                     </button>
                 </div> }
 
-				<button style = {{height: "100%"}} 
-                        onClick = {shopDialogue}>
+				<button onClick = {shopDialogue}>
                     Leave
                 </button>
 			</div>
         <p/> </div>
     );
-    
-    function display(item)
-    {
-        return (
-            <div className = {classes.item}>
-                {item}
-                <img style = {{height: "26px"}}
-                     src = {require("../assets/pokedollarLight.png")}/>
-                {" "} {item.props.price}
-                <button onClick = {() => buy(item)}> Buy </button>
-            </div>
-        )
-    }
 
 	var regularShop = (
-		<div className = {classes.regularDisplay}> <p/>
+		<div className = {classes.display}>
 			<img className = {classes.header}
                  src = {require("../assets/shopHeaderLight.png")}/>
 			<div className = {classes.subheader}>
@@ -146,20 +131,33 @@ function ShopDisplay(props)
                 </div>
                 <div className = {classes.rowDisplay}>
                     {display(inventory[4])}
+
 					<div className = {classes.buttonWrapper}>
-						<button className = {classes.leave}
-                                onClick = {props.shopHandler}>
+						<button onClick = {props.shopHandler}>
                             Leave
                         </button>
 					</div>
 				</div>
 			</div>
-		<p/> </div>
+		</div>
     );
+
+    function display(item)
+    {
+        return (
+            <div className = {classes.item}>
+                {item}
+                <img style = {{height: "26px"}}
+                     src = {require("../assets/pokedollarLight.png")}/>
+                {" "} {item.props.price}
+                <button onClick = {() => buy(item)}> Buy </button>
+            </div>
+        )
+    }
 
 	return (
 		<div className = {classes.shopDisplay}>
-			{Number(window.localStorage.shopState) <= 7 && sellingShuckle}
+			{Number(window.localStorage.shopState) <= 7 && shuckleShop}
 			{Number(window.localStorage.shopState) > 7 && regularShop}
 		</div>
 	)

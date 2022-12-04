@@ -120,11 +120,13 @@ function GSDiv(props)
             focus[0] += 1;
             focus[1] = 0;
 	    }
-	    else if (input === "Backspace" && 
-                 focus[1] != 0) {
-            focus[1] -= 1;
-            gameSpace[focus[0]].boxes[focus[1]].state = "empty";
-            gameSpace[focus[0]].boxes[focus[1]].letter = '';
+	    else if (input === "Backspace") { 
+            // itemSelected - deselect
+            if (focus[1] != 0) {
+                focus[1] -= 1;
+                gameSpace[focus[0]].boxes[focus[1]].state = "empty";
+                gameSpace[focus[0]].boxes[focus[1]].letter = '';
+            }
 	    }
         else if (input === "Escape")
         {
@@ -142,12 +144,12 @@ function GSDiv(props)
     }
 
 	return (
-        <div className = {classes.GSDiv}>
+        <div className = {classes.gsDiv}>
             { window.localStorage.adoptedShuckle === "true" &&
                 <ShuckleMechanics validKeys = {validKeys}/> } 
 
 			<header className = "MenuBar">
-                <div className = {classes.header}>
+                <div className = {classes.pHeader}>
                     <img style = {{height: "35px"}} 
                          src = {require("../assets/pokedollarLight.png")}/>
                     {" "}{pokeDollars}

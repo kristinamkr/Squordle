@@ -1,7 +1,7 @@
-.shuckleDisplay{
+.display {
 	z-index: 2;
 	border-radius: 8px;
-	background-color:#ffffff;
+	background-color: #ffffff;
 	width: 400px;
 	justify-content: center;
 	align-items: center;
@@ -11,23 +11,24 @@
 	top: 20vh;
 }
 
-.regularDisplay{
-	z-index: 2;
-	border-radius: 8px;
-	background-color:#ffffff;
-	width: 400px;
-	justify-content: center;
-	align-items: center;
-	display: flex;
-	flex-direction: column;
-	position: fixed;
-	top: 20vh;
+.rowDisplay {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    font-size: 2rem;
 }
 
-.listRow{
+.item {
+    padding-left: 30px;
+    padding-right: 40px;
+    display: inherit;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
-	align-items: center;
-	display: flex;
-	flex-direction: row;
-	padding-top: 20px;
+.buttonWrapper button {
+    height: 52px;
+    width: 64px;
+    text-align: center;
+    padding-top: 32px;
 }

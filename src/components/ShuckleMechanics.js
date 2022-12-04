@@ -38,7 +38,7 @@ function ShuckleMechanics(props)
                             mousePos[0] - 32,  // offset - better way?
                             mousePos[1] - 32,
                             0]);
-                setItemLoc([mousePos[1], mousePos[0], 1]);  // poffin moving
+                setItemLoc([mousePos[0], mousePos[1], 1]);  // poffin moving
                 setDerealizeItem(Number(getPoffinId(selectedItem)));
             }
         }, 16);
@@ -58,19 +58,14 @@ function ShuckleMechanics(props)
     {
         setItemLoc([itemLoc[0], itemLoc[1], 0]);  // poffin NOT  moving
         setRealizeItem(false);
-        // setItem('');
-        // setItemVisibility(false);
-        // temporary to get rid of poffin
-        /*
-        setItemPos(["absolute",
-                    0,
-                    0,
-                    0,
-                    false]);
-        */
     }
 
-   function getPoffinId(name)
+    function reset() {
+        setItem('');
+        console.log("ATE");
+    }
+
+    function getPoffinId(name)
     {
         for (let i = 0; i < inventory.length; i++) {
             if (inventory[i].props.name === name)
@@ -86,6 +81,7 @@ function ShuckleMechanics(props)
                            setItem = {setItem}
                            itemPos = {itemPos} 
                            setItemPos = {setItemPos} 
+                           isMoving = {isMoving}
                            setMoving = {setMoving}
                            realize = {realize} />
             <ShuckleCursor keyDownHandler = {props.keyDownHandler}
@@ -95,7 +91,8 @@ function ShuckleMechanics(props)
                            setTargetPos = {setItemLoc}
                            realizeItem = {realizeItem} 
                            derealize = {derealize}
-                           derealizeItem = {derealizeItem} />
+                           derealizeItem = {derealizeItem} 
+                           reset = {reset} /> 
         </>
     )
 }

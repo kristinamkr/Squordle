@@ -35,7 +35,7 @@ function PoffinStorage(props)
         var nodes = Array.prototype.slice.call(e.currentTarget.children);
         const item = nodes[0].name;
         const itemCount = localStorage.getItem(item);
-        if (itemCount > 0) {
+        if (itemCount > 0 && (selectedItem === '')) {  // test
             setItem(item);
             props.setItemPos(["absolute", 
                               props.mousePos[0], 
@@ -56,7 +56,7 @@ function PoffinStorage(props)
     function itemPreview(item, bg_color)
     {
         return (
-            <tr className = {classes.item}>
+            <tr className = {classes[item]}>
                 <th style = {{background: bg_color}}>
                     {item.props.tag} 
                     <div> {localStorage.getItem(item.props.name)} </div>
