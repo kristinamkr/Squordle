@@ -5,7 +5,7 @@
 import inventory from './Inventory.js';
 import PoffinStorage from './PoffinStorage.js';
 import ShuckleCursor from './ShuckleCursor.js';
-import { useState , useEffect } from 'react';
+import {useState, useEffect} from 'react';
 
 function ShuckleMechanics(props)
 {
@@ -25,17 +25,19 @@ function ShuckleMechanics(props)
     const [selectedItem, setItem] = useState('');
     // [0] - absolute/relative ?, 
     // [1] - xPos, [2] - yPos, [3] - zIndex
-    const [itemPos, setItemPos] = useState(['', 0, 0, 0]);
+    const [itemPos, setItemPos] = useState(['', 0, 0, -1]);
+    // [0] - xPos, [1] - yPos, [2] - isMoving 
+	const [itemLoc, setItemLoc] = useState([0, 0, -1])
+    // const [isMoving, setMoving] = useState(-1);
     const [isMoving, setMoving] = useState(false);
     const [realizeItem, setRealizeItem] = useState(false); 
     const [derealizeItem, setDerealizeItem] = useState(-1);
-	const [itemLoc, setItemLoc] = useState([0, 0, -1])
 
     useEffect(() => {       
         setTimeout(() => {
             if (selectedItem && isMoving) {
                 setItemPos(["absolute",
-                            mousePos[0] - 32,  // offset - better way?
+                            mousePos[0] - 32,
                             mousePos[1] - 32,
                             0]);
                 setItemLoc([mousePos[0], mousePos[1], 1]);  // poffin moving
@@ -48,21 +50,24 @@ function ShuckleMechanics(props)
     {
         const itemCount = localStorage.getItem(item);
         if (itemCount > 0 && isMoving) {
-            localStorage.setItem(item, Number(itemCount) - 1);
+            localStorage.setItem(selectedItem, Number(itemCount) - 1);
             setMoving(false);
             setRealizeItem(true);
         }
+
     }
     
     function derealize()
     {
         setItemLoc([itemLoc[0], itemLoc[1], 0]);  // poffin NOT  moving
-        setRealizeItem(false);
     }
 
     function reset() {
         setItem('');
-        console.log("ATE");
+        setMoving(false);
+        setItemLoc([itemLoc[0], itemLoc[1], -1]);
+        setDerealizeItem(-1);
+        console.log("ITEM INFORMATION RESET");
     }
 
     function getPoffinId(name)

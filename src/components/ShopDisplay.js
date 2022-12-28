@@ -9,10 +9,10 @@ import { useState, useEffect } from 'react';
 
 function ShopDisplay(props)
 {
-	const emotion = { NEUTRAL: 0,
-                      HAPPY:   1,
-                      SAD:     2,
-                      WEEPY:   3};
+	const emotion = {HAPPY:   0,
+                     SAD:     1,
+                     WEEPY:   2,
+                     NEUTRAL: 3};
     Object.freeze(emotion);
 
 	var shopText = ["Would you like to adopt a Shuckle?",
@@ -44,11 +44,11 @@ function ShopDisplay(props)
 
 	function shopDialogue()
     {
-		if (window.localStorage.adoptedShuckle === "false" 
-                && window.localStorage.shopState === '6')
+		if (window.localStorage.adoptedShuckle === "false" && 
+            window.localStorage.shopState === '6')
 			props.shopHandler();
-		else if (window.localStorage.adoptedShuckle === "true" 
-                && window.localStorage.shopState === '7') {
+		else if (window.localStorage.adoptedShuckle === "true" && 
+                 window.localStorage.shopState === '7') {
 			shopAdvance();
 			props.shopHandler();
 		}
@@ -59,8 +59,8 @@ function ShopDisplay(props)
     {
 		if (Number(window.localStorage.pokeDollars) >= 1000) {
 			window.localStorage.adoptedShuckle = true;
-			window.localStorage.shopState = 7;    // # of items ?
-			window.localStorage.spicyPoffin = 1;  // free Poffin
+			window.localStorage.shopState = 7; 
+			window.localStorage.spicyPoffin = 1; 
 			setShopHeader(shopText[Number(window.localStorage.shopState)]);
 			dollarHandler(-1000);
 		}
@@ -75,45 +75,40 @@ function ShopDisplay(props)
 		}
 	}
 
-	var currentEmotion = emotion.HAPPY;
-
-	if (Number(window.localStorage.shopState) <= 6)
-		currentEmotion = Number(window.localStorage.shopState);
-	else
-		currentEmotion = emotion.HAPPY;
+	let emote = emotion.HAPPY;
+	if (Number(window.localStorage.shopState) <= 3)
+		emote = Number(window.localStorage.shopState);
+	else 
+        emote = emotion.NEUTRAL;
 
 	var shuckleShop = (
-		<div className = {classes.display}> <p/>
+		<div className = {classes.shuckleDisplay}> 
 			<img className = {classes.header}
                  src = {require("../assets/shopHeaderLight.png")}/>
 			<div className = {classes.subheader}>
                 {shopText[Number(window.localStorage.shopState)]}
             </div>
-			<img style = {{width: "80%"}} 
-                 src = {require("../assets/213Shuckle" + currentEmotion + ".png")}/>
+			<img src = {require("../assets/213Shuckle" + emote + ".png")}/>
 
-			<div className = {classes.shuckleFormat}> 
-				{window.localStorage.adoptedShuckle === "false" && 
-                <div className = {classes.center}>
-                    <div className = {classes.noname}> 
-                        <img style = {{height: "26px"}} 
-                             src = {require("../assets/pokedollarLight.png")}/>
-                        {" "} {1000}
-                    </div>
-                    <button onClick = {shuckleAdopter}>
-                        Adopt
-                    </button>
-                </div> }
+            {window.localStorage.adoptedShuckle === "false" &&
+            <div>
+                <div className = {classes.sellInfo}> 
+                        <img src = {require("../assets/pokedollarLight.png")}/>
+                        <p> {" "} {1000} </p>
+                </div>
+                <button onClick = {shuckleAdopter}>
+                    Adopt
+                </button> 
+            </div>}
 
-				<button onClick = {shopDialogue}>
-                    Leave
-                </button>
-			</div>
-        <p/> </div>
+            <button onClick = {shopDialogue}>
+                Leave
+            </button>
+        </div>
     );
 
 	var regularShop = (
-		<div className = {classes.display}>
+		<div className = {classes.shopDisplay}>
 			<img className = {classes.header}
                  src = {require("../assets/shopHeaderLight.png")}/>
 			<div className = {classes.subheader}>
@@ -131,35 +126,35 @@ function ShopDisplay(props)
                 </div>
                 <div className = {classes.rowDisplay}>
                     {display(inventory[4])}
-
-					<div className = {classes.buttonWrapper}>
-						<button onClick = {props.shopHandler}>
-                            Leave
-                        </button>
-					</div>
+                    <button onClick = {props.shopHandler}>
+                        Leave
+                    </button>
 				</div>
 			</div>
 		</div>
     );
 
+
+                // <div className = {classes.priceInfo}>
     function display(item)
     {
         return (
             <div className = {classes.item}>
                 {item}
-                <img style = {{height: "26px"}}
-                     src = {require("../assets/pokedollarLight.png")}/>
-                {" "} {item.props.price}
+                <div className = {classes.priceInfo}>
+                    <img src = {require("../assets/pokedollarLight.png")}/>
+                    <p> {" "} {item.props.price} </p> 
+                </div> 
                 <button onClick = {() => buy(item)}> Buy </button>
             </div>
         )
     }
 
 	return (
-		<div className = {classes.shopDisplay}>
+		<>
 			{Number(window.localStorage.shopState) <= 7 && shuckleShop}
 			{Number(window.localStorage.shopState) > 7 && regularShop}
-		</div>
+		</>
 	)
 }
 

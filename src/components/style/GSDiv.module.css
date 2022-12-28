@@ -13,7 +13,7 @@
 
 .pHeader {
     position: relative;
-    width: 240px;
+    width: 400px;
     left: 15px;
     font-size: 3rem;
 }
@@ -24,7 +24,6 @@
 
 .gameTitle img {
     height: 35px;
-    margin-left: 15%;
     padding-top: 6px;
     padding-right: 125px;
 }

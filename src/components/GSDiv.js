@@ -41,7 +41,6 @@ function GSDiv(props)
            useState(Number(window.localStorage.pokeDollars));
     window.localStorage.pokeDollars = pokeDollars; 
 
-    // move dollarHandler?
   	function dollarHandler(delta)
     {
         setPokeDollars(pokeDollars + delta);
@@ -144,8 +143,7 @@ function GSDiv(props)
 
 	return (
         <div className = {classes.gsDiv}>
-            { window.localStorage.adoptedShuckle === "true" &&
-                <ShuckleMechanics validKeys = {validKeys}/> } 
+
 
 			<header className = {classes.menuBar}>
                 <div className = {classes.pHeader}>
@@ -163,6 +161,8 @@ function GSDiv(props)
                             dollarHandler = {dollarHandler}
                             pokeAnswer = {pokeAnswer} />
       		</header>
+            { window.localStorage.adoptedShuckle === "true" &&
+                <ShuckleMechanics validKeys = {validKeys}/> } 
       		<div className = {classes.spacer}/>
             <GameSpace id = "gameSpace"
                        gameSpace = {gameSpace}

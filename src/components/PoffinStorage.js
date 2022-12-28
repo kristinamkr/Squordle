@@ -35,22 +35,15 @@ function PoffinStorage(props)
         var nodes = Array.prototype.slice.call(e.currentTarget.children);
         const item = nodes[0].name;
         const itemCount = localStorage.getItem(item);
-        if (itemCount > 0 && (selectedItem === '')) {  // test
+
+        if (itemCount > 0 && !(props.isMoving === 0)) {  // test
             setItem(item);
             props.setItemPos(["absolute", 
                               props.mousePos[0], 
                               props.mousePos[1], 
                               1]);
-            props.setMoving(true);
+            props.setMoving(1);
         }
-    }
-
-    function deselectItem(e)
-    {
-        console.log("hello");
-        if (e.key === 'Escape')  // check [0] ?
-            console.log("ESC ESC ESC");
-            setItem('');
     }
 
     function itemPreview(item, bg_color)

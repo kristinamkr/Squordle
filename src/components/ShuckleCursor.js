@@ -9,7 +9,7 @@ function ShuckleCursor(props)
 {
     const focus = { MOUSE: 0,
                     ITEM:  1,
-                    KEY:   2};
+                    KEY:   2 };
     Object.freeze(focus);
 
 	const action = { NONPLUSSED: 0, 
@@ -19,20 +19,21 @@ function ShuckleCursor(props)
                      SURPRISED:  4,
                      SICK:       5,
                      SHINY:      6,
-                     LAY_EGG:    7};
+                     LAY_EGG:    7 };
     Object.freeze(action);
 
     const mousePos = props.mousePos;
     const [shucklePos, setShucklePos] = useState([0, 0]);
-	const [shuckleTarget, setShuckleTarget] = useState(0);
+	const [shuckleFocus, setShuckleFocus] = useState(0);
 	const [shuckleAction, setShuckleAction] = useState(0);
 
+    const [targetPos, setTargetPos] = useState([mousePos[0], mousePos[1]]);
     const itemDerealized = props.derealizeItem;
-	const [targetPos, setTargetPos] = [props.targetPos, props.setTargetPos];
     const [targetReached, setTargetReached] = useState(false);
 
     const [remainingKeys, setRemainingKeys] = 
         useState(["Backspace", "Enter"].concat(props.validKeys));
+    const [selectKey, setKey] = useState(null);
     const damageList = ["#131313", "#242424", "#303030", "#404040"];
 
 	function isNearTarget() 
@@ -53,61 +54,64 @@ function ShuckleCursor(props)
 	}
 
     // USE EFFECTS -------------------------------------------------------------
+    // necessary for properly updating shuckle's new interest
 	useEffect(() => { 
         if (props.realizeItem) props.derealize();
 
-        const eatItem = async () => {
-            await resolveOnceEaten();
-            props.reset();  // disappear selectedItem
-        };
-        
         setTimeout(() => {
+            if (shuckleFocus === focus.MOUSE)
+                setTargetPos([mousePos[0], mousePos[1]]);
+
+            if (shuckleFocus === focus.KEY) {
+                if (selectKey === null && remainingKeys.length > 0)
+                    chooseKey();
+            }
+
+            if (!(shuckleFocus === focus.ITEM)) {
+                if (props.targetPos[2] === 0) {
+                    setShuckleFocus(focus.ITEM);
+                    setTargetPos(props.targetPos);
+                }
+            }
+             
             setTargetReached(isNearTarget());
-
-            if (targetReached && shuckleTarget === focus.ITEM) {
-                console.log("TARGET REACHED");
-                eatItem(); 
-            }
-            if (shuckleTarget === focus.KEY) {
-                if (targetReached)
-                    console.log("THED");
-            }
-            let newLoc = targetPos;
-            let newPos = [targetPos[0] + 15, targetPos[1]];
-
-            if (shuckleTarget === focus.MOUSE) {
-                if (targetPos[2] === 0)
-                    setShuckleTarget(focus.ITEM);
-                newLoc = newPos = mousePos;
-            }
-
-            setTargetPos(newLoc);
-            changeShucklePos(newPos);
+            changeShucklePos([targetPos[0] + 15, targetPos[1]]);
         }, 16);
-    });
+    }, [shucklePos]);
 
     useEffect(() => {
-        let key;
-        const destroyy = async () => {
-            await destroy(key);
-            console.log("i hate this");
+        const eatItem = async () => {
+            await resolveOnceEaten();
+            props.reset();  // disappear item 
+            setShuckleAction(props.derealizeItem);
+
+            if (props.derealizeItem === 1)
+                setShuckleFocus(focus.KEY);
+            setTargetReached(false);
         };
 
-        if (shuckleAction === 1) {
-            key = chooseKey();
-            console.log(key + " <- key");    
-            // destroyy();
+        const destroy = async () => {
+            await resolveOnceDestroyed(); 
+        };
+
+        if (targetReached) {
+            if (shuckleFocus === focus.ITEM)
+                eatItem();
+            if (shuckleFocus === focus.KEY) {
+                if (!(selectKey === null))
+                     destroy();
+            }
         }
-    }, [shuckleAction, remainingKeys]);
+    }, [targetReached]);
 
     function chooseKey() {
         const rand = Math.floor(Math.random() * remainingKeys.length);
 
-        const keyy = document.getElementById(remainingKeys[rand]);
-        const keyyPos = keyy.getBoundingClientRect();
+        const key = document.getElementById(remainingKeys[rand]);
+        const keyPos = key.getBoundingClientRect();
 
-        setTargetPos([keyyPos.top, keyyPos.left, 0]);
-        return keyy;
+        setTargetPos([keyPos.top, keyPos.left]); // zero ? ? ?
+        setKey(key);
     }
 
     // PROMISES ----------------------------------------------------------------
@@ -115,18 +119,20 @@ function ShuckleCursor(props)
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve();
-            }, 1000);
+            }, 5000);
         });
     }
 
-    function destroy(key) {
+    function resolveOnceDestroyed() {
         return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    const rand = Math.floor(Math.random() * damageList.length);
-                    key.style.background = damageList[rand];
-                    key.style.pointerEvents = 'none';
-                    resolve();
-                }, 5000); 
+            setTimeout(() => {
+                const rand = Math.floor(Math.random() * damageList.length);
+                selectKey.style.background = damageList[rand];
+                selectKey.style.pointerEvents = 'none';
+                setRemainingKeys(remainingKeys.filter(k => k !== selectKey.id));
+
+                resolve();
+            }, 5000); 
         });
     }
 
@@ -147,17 +153,16 @@ function ShuckleCursor(props)
 			{window.localStorage.shuckleShiny === "1" && 
                 animate("shuckleShiny", shucklePos, [0, 0]) }
 
-			{shuckleTarget === focus.MOUSE && targetReached && (
+			{shuckleFocus === focus.MOUSE && targetReached && (
 				<> { animate("love", shucklePos, [0, 0]) } </>
             )}
-            {shuckleTarget === focus.ITEM && targetReached && 
-             shuckleAction !== action.ANGRY && (
+            {shuckleFocus === focus.ITEM && targetReached && (
                 <> { animate("chomp", targetPos, [31, 31]) } </>
             )}
 			{shuckleAction === action.ANGRY && (
 				<> { animate("anger", shucklePos, [0, 0]) } </>
             )}
-            {shuckleAction === action.ANGRY && targetReached && (
+            {shuckleFocus === focus.KEY && shuckleAction === action.ANGRY && targetReached && (
                 <> { animate("slash", targetPos, [0, 0]) } </>
             )}
 		</>

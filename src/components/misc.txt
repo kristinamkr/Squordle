@@ -391,3 +391,7 @@ useEffect(() => {
                    left: shucklePos[0] + "px",
                    top: shucklePos[1] + "px"}} 
          src = {require("../assets/shuckleShiny.gif")}/> }
+
+AHHHHHHHHHHHHHHH
+
+

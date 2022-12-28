@@ -1,6 +1,6 @@
 .storageWrapper {
-    width: 0px;
     height: 0px;
+    width: 0px;
 }
 
 .storageWrapper button {
@@ -14,9 +14,8 @@
 }
 
 .poffinStorage {
-	z-index: 1;
 	position: relative;
-	top: 95px;
+	top: 35px;
 	left: -375px;
 
     width: 125.08px;
@@ -36,8 +35,8 @@
 
 .expansionArrow {
 	position: relative;
-	top:96px;
-	left: -342px;
+	top: 40px;
+	left: -335px;
 }
 
 .expansionArrow img {

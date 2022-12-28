@@ -23,39 +23,33 @@ function DisplayMan(props)
            useState({"showShop": false,
                      "showInfo": false,
                      "showWinLose": false,
-                     "showBackdrop": false
-                    });
+                     "showBackdrop": false});
+
+    function winLoseHandler()
+    {   
+        setDisplayState({...displayState, 
+                         "showBackdrop": true});
+    }
 
 	function infoHandler()
     {
         setDisplayState({...displayState, 
                          "showInfo": !displayState["showInfo"],
-                         "showBackdrop": !displayState["showBackdrop"]
-                        });
+                         "showBackdrop": !displayState["showBackdrop"]});
   	}
 
   	function shopHandler()
     {
   		setDisplayState({...displayState,
                          "showShop": !displayState["showShop"],
-                         "showBackdrop": !displayState["showBackdrop"]
-                        });
+                         "showBackdrop": !displayState["showBackdrop"]});
   	}
-
-  	function winLoseHandler()
-    {
-        setDisplayState({...displayState,
-                         "showWinLose": true,
-                         "showBackdrop": true
-                        });
-  	}   
 
 	function reload()
     {
 		setDisplayState({"showInfo": false,
                          "showWinLose": false,
-                         "showBackdrop": false
-                        });
+                         "showBackdrop": false});
 		window.location.reload();
     }
 
@@ -80,10 +74,12 @@ function DisplayMan(props)
             {displayState["showShop"] && 
                 <ShopDisplay dollarHandler = {props.dollarHandler} 
                              shopHandler = {shopHandler}/>}
-            {props.isGameOver[0] && 
-                <WinLoseDisplay isGameOver = {props.isGameOver}
-                                reload = {reload}
-                                pokeAnswer = {props.pokeAnswer}/>}
+
+            {props.isGameOver[0] &&  
+                <WinLoseDisplay winLoseHandler = {winLoseHandler}
+                                pokeAnswer = {props.pokeAnswer}
+                                isGameOver = {props.isGameOver}
+                                reload = {reload}/>}
         </>
     )
 }
