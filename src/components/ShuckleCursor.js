@@ -3,7 +3,7 @@
 */ 
 
 import classes from "./style/ShuckleCursor.module.css";
-import { useState , useEffect } from 'react';
+import { useState, useReducer, useEffect} from 'react';
 
 function ShuckleCursor(props)
 {
@@ -24,22 +24,25 @@ function ShuckleCursor(props)
 
     const mousePos = props.mousePos;
     const [shucklePos, setShucklePos] = useState([0, 0]);
-	const [shuckleFocus, setShuckleFocus] = useState(0);
-	const [shuckleAction, setShuckleAction] = useState(0);
 
-    const [targetPos, setTargetPos] = useState([mousePos[0], mousePos[1]]);
-    const itemDerealized = props.derealizeItem;
+    // behavioral info: [0] - focus, [1] - action
+    const [shuckleInfo, setShuckleInfo] = useState([0, 0]);
+   
+    // store targetPos info in a queue? also need to then track shuckleInfo
+    // s.t. shuckle 'remembers' how to feel abt target
+    // [0] - xPos, [1] - yPos.. could possibly be combined
+    const [targetPos, setTargetPos] = useState([0, 0]); 
     const [targetReached, setTargetReached] = useState(false);
 
+    // im thinking needs to remain a useState for sake of render updates
     const [remainingKeys, setRemainingKeys] = 
         useState(["Backspace", "Enter"].concat(props.validKeys));
-    const [selectKey, setKey] = useState(null);
+    const [selectedKey, setKey] = useState(null);
     const damageList = ["#131313", "#242424", "#303030", "#404040"];
 
-	function isNearTarget() 
+	function isNear(a, b) 
     {
-		return (Math.abs(targetPos[0] - shucklePos[0]) < 25 && 
-                Math.abs(targetPos[1] - shucklePos[1]) < 25);
+        return (Math.abs(a[0] - b[0]) < 25 && Math.abs(a[1] - b[1]) < 25);
 	}
 
 	function changeShucklePos(mousePos)
@@ -50,68 +53,83 @@ function ShuckleCursor(props)
   		const xDir = Math.max(Math.min(0.03 * (mouse_x - shuckle_x), 3.5), -3.5);
   		const yDir = Math.max(Math.min(0.03 * (mouse_y - shuckle_y), 3.5), -3.5);
 
-        setShucklePos([xDir + shuckle_x, yDir + shuckle_y]);
+        return([xDir + shuckle_x, yDir + shuckle_y]);
 	}
 
     // USE EFFECTS -------------------------------------------------------------
-    // necessary for properly updating shuckle's new interest
-	useEffect(() => { 
-        if (props.realizeItem) props.derealize();
-
-        setTimeout(() => {
-            if (shuckleFocus === focus.MOUSE)
-                setTargetPos([mousePos[0], mousePos[1]]);
-
-            if (shuckleFocus === focus.KEY) {
-                if (selectKey === null && remainingKeys.length > 0)
-                    chooseKey();
-            }
-
-            if (!(shuckleFocus === focus.ITEM)) {
-                if (props.targetPos[2] === 0) {
-                    setShuckleFocus(focus.ITEM);
-                    setTargetPos(props.targetPos);
-                }
-            }
-             
-            setTargetReached(isNearTarget());
-            changeShucklePos([targetPos[0] + 15, targetPos[1]]);
-        }, 16);
-    }, [shucklePos]);
-
+    // TARGET TRACKING ----------------------------------------------
     useEffect(() => {
+        setTimeout(() => {
+            let currPos;
+            if (shuckleInfo[0] === focus.MOUSE) {   // MOUSE TRACKING
+                currPos = [mousePos[0], mousePos[1]]; 
+                if (!(isNear(currPos, targetPos))) 
+                    setTargetPos(currPos);
+            }
+            
+            if (props.realizeItem[0]) {             // SET TO ITEM
+                currPos = [props.targetInfo[1], props.targetInfo[2]];
+                setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
+            }
+
+            if (!targetReached) {
+                let pos = changeShucklePos([targetPos[0] + 15, targetPos[1]]);
+                setShucklePos([pos[0], pos[1]]);
+            }
+            setTargetReached(isNear(targetPos, shucklePos));
+        }, 16);
+    }, [mousePos, targetPos, shucklePos, targetReached]);
+
+    // SHUCKLE BEHAVIOR MANAGER  ------------------------------------
+    useEffect(() => {
+        let currBehavior = [shuckleInfo[0], shuckleInfo[1]];
+
+        // ASYNC FUNCTIONS ---------------------------------
         const eatItem = async () => {
             await resolveOnceEaten();
             props.reset();  // disappear item 
-            setShuckleAction(props.derealizeItem);
 
-            if (props.derealizeItem === 1)
-                setShuckleFocus(focus.KEY);
-            setTargetReached(false);
+            if (props.realizeItem[1] === 1) 
+                currBehavior = [focus.KEY, props.realizeItem[1]];
+
+            setShuckleInfo([currBehavior[0], currBehavior[1]]);
         };
 
         const destroy = async () => {
-            await resolveOnceDestroyed(); 
+            await resolveOnceDestroyed();
+            setKey(null);
         };
+        // -------------------------------------------------
 
         if (targetReached) {
-            if (shuckleFocus === focus.ITEM)
+            console.log("--- TARGET REACHED ---\n\tfocus = " + shuckleInfo[0] + 
+                "\n\taction = " + shuckleInfo[1]);
+
+            if (shuckleInfo[0] === focus.ITEM)
                 eatItem();
-            if (shuckleFocus === focus.KEY) {
-                if (!(selectKey === null))
-                     destroy();
+            else if (shuckleInfo[0] === focus.KEY) {  // KEY FOCUS
+                if (selectedKey === null && remainingKeys.length > 0)
+                    chooseKey();
+                if (!(selectedKey === null))
+                    destroy();
+                // EXIT CONDITION
+                if (remainingKeys.length <= 0 || shuckleInfo[0] === 6)
+                    setShuckleInfo([focus.MOUSE, 0]);
             }
+            if (shuckleInfo[1] === 6)
+                console.log("yummy lemonade :)");
         }
-    }, [targetReached]);
+    }, [shuckleInfo, targetReached, remainingKeys]);
 
     function chooseKey() {
-        const rand = Math.floor(Math.random() * remainingKeys.length);
+        setTargetReached(false);
 
+        const rand = Math.floor(Math.random() * remainingKeys.length);
         const key = document.getElementById(remainingKeys[rand]);
         const keyPos = key.getBoundingClientRect();
 
-        setTargetPos([keyPos.top, keyPos.left]); // zero ? ? ?
         setKey(key);
+        setTargetPos([keyPos.top, keyPos.left]);
     }
 
     // PROMISES ----------------------------------------------------------------
@@ -119,7 +137,7 @@ function ShuckleCursor(props)
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve();
-            }, 5000);
+            }, 1000);
         });
     }
 
@@ -127,12 +145,11 @@ function ShuckleCursor(props)
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const rand = Math.floor(Math.random() * damageList.length);
-                selectKey.style.background = damageList[rand];
-                selectKey.style.pointerEvents = 'none';
-                setRemainingKeys(remainingKeys.filter(k => k !== selectKey.id));
-
+                selectedKey.style.background = damageList[rand];
+                selectedKey.style.pointerEvents = 'none';
+                setRemainingKeys(remainingKeys.filter(k => k !== selectedKey.id));
                 resolve();
-            }, 5000); 
+            }, 1000); 
         });
     }
 
@@ -152,17 +169,17 @@ function ShuckleCursor(props)
                 animate("shuckle", shucklePos, [0, 0]) }
 			{window.localStorage.shuckleShiny === "1" && 
                 animate("shuckleShiny", shucklePos, [0, 0]) }
-
-			{shuckleFocus === focus.MOUSE && targetReached && (
+			{shuckleInfo[0] === focus.MOUSE && targetReached && (
 				<> { animate("love", shucklePos, [0, 0]) } </>
             )}
-            {shuckleFocus === focus.ITEM && targetReached && (
-                <> { animate("chomp", targetPos, [31, 31]) } </>
+            {shuckleInfo[0] === focus.ITEM && targetReached && (
+                <> { animate("chomp", targetPos , [31, 31]) } </>
             )}
-			{shuckleAction === action.ANGRY && (
+			{shuckleInfo[1] === action.ANGRY && (
 				<> { animate("anger", shucklePos, [0, 0]) } </>
             )}
-            {shuckleFocus === focus.KEY && shuckleAction === action.ANGRY && targetReached && (
+            {shuckleInfo[0] === focus.KEY && shuckleInfo[1] === action.ANGRY && 
+                targetReached && (
                 <> { animate("slash", targetPos, [0, 0]) } </>
             )}
 		</>

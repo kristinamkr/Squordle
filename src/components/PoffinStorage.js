@@ -5,7 +5,7 @@
 import classes from "./style/PoffinStorage.module.css";
 import inventory from './Inventory.js';
 
-import React, {useState, useEffect} from 'react';
+import { useState, useEffect} from 'react';
 
 function PoffinStorage(props) 
 {
@@ -26,9 +26,8 @@ function PoffinStorage(props)
     }
     // -------------------------------------------------------------------------
 
-    const selectedItem = props.selectedItem;
-    const setItem = props.setItem;
-    const itemPos = props.itemPos; 
+    const mousePos = props.mousePos;
+    const itemInfo = props.itemInfo; 
 
     function selectItem(e)
     {
@@ -36,13 +35,11 @@ function PoffinStorage(props)
         const item = nodes[0].name;
         const itemCount = localStorage.getItem(item);
 
-        if (itemCount > 0 && !(props.isMoving === 0)) {  // test
-            setItem(item);
-            props.setItemPos(["absolute", 
-                              props.mousePos[0], 
-                              props.mousePos[1], 
+        if (itemCount > 0 && itemInfo[0] === '') {  // test
+            props.setItemInfo([item,
+                              mousePos[0], 
+                              mousePos[1],
                               1]);
-            props.setMoving(1);
         }
     }
 
@@ -84,16 +81,16 @@ function PoffinStorage(props)
                 <img src = {arrowSrc}/>
             </button>
 
-            { !(selectedItem === '') &&
+            { !(itemInfo[0] === '') &&
                 <img id = "draggable_item"
                      className = {classes.poffin}
-                     src = {require("../assets/" + selectedItem + ".png")}
+                     src = {require("../assets/" + itemInfo[0] + ".png")}
                      style = {{cursor: "move",
-                               position: itemPos[0],
-                               top: String(itemPos[1]) + "px",
-                               left: String(itemPos[2]) + "px",
-                               zIndex: String(itemPos[3])}}
-                     onClick = {() => props.realize(selectedItem)}
+                               position: "absolute",
+                               top: String(itemInfo[1]) - 32 + "px",
+                               left: String(itemInfo[2]) - 32 + "px",
+                               zIndex: String(itemInfo[3])}}
+                     onClick = {() => props.realize(itemInfo[0])}
                      decoding = "async"/> }
         </div>
     );

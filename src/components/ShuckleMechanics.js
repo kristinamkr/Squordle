@@ -5,7 +5,7 @@
 import inventory from './Inventory.js';
 import PoffinStorage from './PoffinStorage.js';
 import ShuckleCursor from './ShuckleCursor.js';
-import {useState, useEffect} from 'react';
+import { useState, useReducer, useEffect} from 'react';
 
 function ShuckleMechanics(props)
 {
@@ -22,52 +22,44 @@ function ShuckleMechanics(props)
     });
     // -------------------------------------------------------------------------
 
-    const [selectedItem, setItem] = useState('');
-    // [0] - absolute/relative ?, 
-    // [1] - xPos, [2] - yPos, [3] - zIndex
-    const [itemPos, setItemPos] = useState(['', 0, 0, -1]);
-    // [0] - xPos, [1] - yPos, [2] - isMoving 
-	const [itemLoc, setItemLoc] = useState([0, 0, -1])
-    // const [isMoving, setMoving] = useState(-1);
-    const [isMoving, setMoving] = useState(false);
-    const [realizeItem, setRealizeItem] = useState(false); 
-    const [derealizeItem, setDerealizeItem] = useState(-1);
+    // [0] - itemName, [1] - xPos, [2] - yPos, [3] - isMoving?
+    const [itemInfo, setItemInfo] = useState(['', 0, 0, -1]);
+
+    // [0] - itemRealized?, [1] - realizedItemNum
+    const [realizeItem, setRealizeItem] = useState([false, -1]); 
 
     useEffect(() => {       
         setTimeout(() => {
-            if (selectedItem && isMoving) {
-                setItemPos(["absolute",
-                            mousePos[0] - 32,
-                            mousePos[1] - 32,
-                            0]);
-                setItemLoc([mousePos[0], mousePos[1], 1]);  // poffin moving
-                setDerealizeItem(Number(getPoffinId(selectedItem)));
+            if (itemInfo[0] && !(realizeItem[0])) {
+                setItemInfo([itemInfo[0], 
+                            mousePos[0],    
+                            mousePos[1], 
+                            1]);  // poffin moving
             }
         }, 16);
-    });
+    }, [itemInfo]);
 
     function realize(item)
     {
         const itemCount = localStorage.getItem(item);
-        if (itemCount > 0 && isMoving) {
-            localStorage.setItem(selectedItem, Number(itemCount) - 1);
-            setMoving(false);
-            setRealizeItem(true);
+        if (itemCount > 0) {
+            localStorage.setItem(itemInfo[0], Number(itemCount) - 1);
+            setRealizeItem([true, Number(getPoffinId(itemInfo[0]))]);
+            derealize();
         }
-
     }
     
     function derealize()
     {
-        setItemLoc([itemLoc[0], itemLoc[1], 0]);  // poffin NOT  moving
+        setItemInfo([itemInfo[0], 
+                     itemInfo[1], 
+                     itemInfo[2], 
+                     0]); 
     }
 
     function reset() {
-        setItem('');
-        setMoving(false);
-        setItemLoc([itemLoc[0], itemLoc[1], -1]);
-        setDerealizeItem(-1);
-        console.log("ITEM INFORMATION RESET");
+        setItemInfo(['', ...itemInfo]); 
+        setRealizeItem(false, -1);
     }
 
     function getPoffinId(name)
@@ -82,21 +74,14 @@ function ShuckleMechanics(props)
         <>
             <PoffinStorage keyDownHandler = {props.keyDownHandler}
                            mousePos = {mousePos}
-                           selectedItem = {selectedItem}
-                           setItem = {setItem}
-                           itemPos = {itemPos} 
-                           setItemPos = {setItemPos} 
-                           isMoving = {isMoving}
-                           setMoving = {setMoving}
+                           itemInfo = {itemInfo} 
+                           setItemInfo = {setItemInfo}
                            realize = {realize} />
             <ShuckleCursor keyDownHandler = {props.keyDownHandler}
                            validKeys = {props.validKeys}
                            mousePos = {mousePos}
-                           targetPos = {itemLoc}
-                           setTargetPos = {setItemLoc}
-                           realizeItem = {realizeItem} 
-                           derealize = {derealize}
-                           derealizeItem = {derealizeItem} 
+                           targetInfo = {itemInfo}
+                           realizeItem = {realizeItem}
                            reset = {reset} /> 
         </>
     )
