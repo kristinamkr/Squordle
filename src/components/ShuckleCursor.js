@@ -15,11 +15,12 @@ function ShuckleCursor(props)
 	const action = { NONPLUSSED: 0, 
                      ANGRY:      1,
                      HAPPY:      2,
-                     CONFUSED:   3,
-                     SURPRISED:  4,
-                     SICK:       5,
-                     SHINY:      6,
-                     LAY_EGG:    7 };
+                     SING:       3,
+                     CONFUSED:   4,  // UNIMPLEMENTED
+                     SURPRISED:  5,  // UNIMPLEMENTED
+                     SHINY:      6,  // UNIMPLEMENTED
+                     SICK:       7,  // UNIMPLEMENTED
+                     LAY_EGG:    8 };  // UNIMPLEMENTED
     Object.freeze(action);
 
     const mousePos = props.mousePos;
@@ -27,14 +28,10 @@ function ShuckleCursor(props)
 
     // behavioral info: [0] - focus, [1] - action
     const [shuckleInfo, setShuckleInfo] = useState([0, 0]);
-   
-    // store targetPos info in a queue? also need to then track shuckleInfo
-    // s.t. shuckle 'remembers' how to feel abt target
-    // [0] - xPos, [1] - yPos.. could possibly be combined
+
     const [targetPos, setTargetPos] = useState([0, 0]); 
     const [targetReached, setTargetReached] = useState(false);
 
-    // im thinking needs to remain a useState for sake of render updates
     const [remainingKeys, setRemainingKeys] = 
         useState(["Backspace", "Enter"].concat(props.validKeys));
     const [selectedKey, setKey] = useState(null);
@@ -60,84 +57,112 @@ function ShuckleCursor(props)
     // TARGET TRACKING ----------------------------------------------
     useEffect(() => {
         setTimeout(() => {
-            let currPos;
             if (shuckleInfo[0] === focus.MOUSE) {   // MOUSE TRACKING
-                currPos = [mousePos[0], mousePos[1]]; 
+                let currPos = [mousePos[0], mousePos[1]]; 
                 if (!(isNear(currPos, targetPos))) 
                     setTargetPos(currPos);
+
+                if (props.realizeItem[0])           // SET TO ITEM
+                    setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
             }
-            
-            if (props.realizeItem[0]) {             // SET TO ITEM
-                currPos = [props.targetInfo[1], props.targetInfo[2]];
-                setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
+
+            if (shuckleInfo[0] === focus.KEY) {     // KEY TRACKING 
+                
             }
 
             if (!targetReached) {
                 let pos = changeShucklePos([targetPos[0] + 15, targetPos[1]]);
                 setShucklePos([pos[0], pos[1]]);
             }
+
             setTargetReached(isNear(targetPos, shucklePos));
         }, 16);
     }, [mousePos, targetPos, shucklePos, targetReached]);
 
-    // SHUCKLE BEHAVIOR MANAGER  ------------------------------------
+    // TARGET SPECIFIC BEHAVIOR  -------------------------------------
     useEffect(() => {
-        let currBehavior = [shuckleInfo[0], shuckleInfo[1]];
-
         // ASYNC FUNCTIONS ---------------------------------
         const eatItem = async () => {
-            await resolveOnceEaten();
-            props.reset();  // disappear item 
+            await resolveOnceTimedOut(1000); 
 
+            let currFocus = focus.MOUSE;
             if (props.realizeItem[1] === 1) 
-                currBehavior = [focus.KEY, props.realizeItem[1]];
+                currFocus = focus.KEY;
 
-            setShuckleInfo([currBehavior[0], currBehavior[1]]);
+            props.reset(); 
+            setShuckleInfo([currFocus, props.realizeItem[1]]);
         };
 
         const destroy = async () => {
             await resolveOnceDestroyed();
             setKey(null);
         };
+
+        // FUNCTION FUNCTION -------------------------------
+        function chooseKey() {
+            setTargetReached(false);
+
+            const rand = Math.floor(Math.random() * remainingKeys.length);
+            const key = document.getElementById(remainingKeys[rand]);
+            const keyPos = key.getBoundingClientRect();
+
+            setKey(key);
+            setTargetPos([keyPos.top, keyPos.left]);
+        }
         // -------------------------------------------------
 
         if (targetReached) {
-            console.log("--- TARGET REACHED ---\n\tfocus = " + shuckleInfo[0] + 
-                "\n\taction = " + shuckleInfo[1]);
-
-            if (shuckleInfo[0] === focus.ITEM)
+            if (shuckleInfo[0] === focus.ITEM) 
                 eatItem();
-            else if (shuckleInfo[0] === focus.KEY) {  // KEY FOCUS
+            else if (shuckleInfo[0] === focus.KEY) {    // KEY FOCUS - ANGRY
                 if (selectedKey === null && remainingKeys.length > 0)
                     chooseKey();
                 if (!(selectedKey === null))
                     destroy();
-                // EXIT CONDITION
-                if (remainingKeys.length <= 0 || shuckleInfo[0] === 6)
+
+                if (remainingKeys.length <= 0) {        // EXIT CASE
                     setShuckleInfo([focus.MOUSE, 0]);
+                    setTargetReached(false);
+                }
             }
-            if (shuckleInfo[1] === 6)
-                console.log("yummy lemonade :)");
         }
     }, [shuckleInfo, targetReached, remainingKeys]);
 
-    function chooseKey() {
-        setTargetReached(false);
+    // EMOTION-BASED BEHAVIORS ---------------------------------------
+    useEffect(() => {
+        const processEmotion = async () => {
+            await resolveOnceTimedOut(2500);
+            setShuckleInfo([focus.MOUSE, action.NONPLUSSED]);
+        }
 
-        const rand = Math.floor(Math.random() * remainingKeys.length);
-        const key = document.getElementById(remainingKeys[rand]);
-        const keyPos = key.getBoundingClientRect();
-
-        setKey(key);
-        setTargetPos([keyPos.top, keyPos.left]);
-    }
+        // move ?
+        if (shuckleInfo[1] === action.NONPLUSSED)
+            processEmotion();
+        else if (shuckleInfo[1] === action.ANGRY)
+            processEmotion();
+        else if (shuckleInfo[1] === action.HAPPY)
+            processEmotion();
+        else if (shuckleInfo[1] === action.SING)
+            processEmotion();
+        else if (shuckleInfo[1] === action.CONFUSED)
+            processEmotion();
+        else if (shuckleInfo[1] === action.SURPRISED)
+            processEmotion();
+        else if (shuckleInfo[1] === action.SHINY) {
+            window.localStorage.shuckleShiny = "1";
+        }
+        else if (shuckleInfo[1] === action.SICK)
+            processEmotion();
+        else if (shuckleInfo[1] === action.LAY_EGG)
+            processEmotion();
+    }, [shuckleInfo[1]]);
 
     // PROMISES ----------------------------------------------------------------
-    function resolveOnceEaten() {
+    function resolveOnceTimedOut(ms) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve();
-            }, 1000);
+            }, ms);
         });
     }
 
@@ -166,22 +191,22 @@ function ShuckleCursor(props)
 	return (
 		<>
 			{window.localStorage.shuckleShiny === "0" && 
-                animate("shuckle", shucklePos, [0, 0]) }
+                animate("shuckle", shucklePos, [25, 10]) }
 			{window.localStorage.shuckleShiny === "1" && 
-                animate("shuckleShiny", shucklePos, [0, 0]) }
-			{shuckleInfo[0] === focus.MOUSE && targetReached && (
-				<> { animate("love", shucklePos, [0, 0]) } </>
-            )}
-            {shuckleInfo[0] === focus.ITEM && targetReached && (
-                <> { animate("chomp", targetPos , [31, 31]) } </>
-            )}
-			{shuckleInfo[1] === action.ANGRY && (
-				<> { animate("anger", shucklePos, [0, 0]) } </>
-            )}
-            {shuckleInfo[0] === focus.KEY && shuckleInfo[1] === action.ANGRY && 
-                targetReached && (
-                <> { animate("slash", targetPos, [0, 0]) } </>
-            )}
+                animate("shuckleShiny", shucklePos, [25, 10]) }
+
+			{shuckleInfo[0] === focus.MOUSE && shuckleInfo[1] === action.SING
+                && ( <> { animate("sing", shucklePos, [40, 5]) } </> )}
+			{shuckleInfo[0] === focus.MOUSE && !(shuckleInfo[1] === action.SING)
+                && targetReached 
+                && ( <> { animate("love", shucklePos, [35, 5]) } </> )}
+            {shuckleInfo[0] === focus.ITEM && targetReached 
+                && ( <> { animate("chomp", targetPos , [31, 31]) } </> )}
+			{shuckleInfo[1] === action.ANGRY 
+                && ( <> { animate("anger", shucklePos, [45, -20]) } </> )}
+            {shuckleInfo[0] === focus.KEY && shuckleInfo[1] === action.ANGRY 
+                && targetReached 
+                && ( <> { animate("slash", targetPos, [0, 0]) } </> )}
 		</>
     )
 }

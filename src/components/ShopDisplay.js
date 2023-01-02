@@ -55,6 +55,13 @@ function ShopDisplay(props)
         else shopAdvance();
 	}
 
+    // i dont know what i did here
+	let emote = emotion.HAPPY;
+	if (Number(window.localStorage.shopState) <= 3)
+		emote = Number(window.localStorage.shopState);
+	else 
+        emote = emotion.NEUTRAL;
+
 	function shuckleAdopter()
     {
 		if (Number(window.localStorage.pokeDollars) >= 1000) {
@@ -66,6 +73,57 @@ function ShopDisplay(props)
 		}
 	}
 
+	function shuckleShop() 
+    {
+        return (
+            <div className = {classes.shuckleDisplay}> 
+                <img className = {classes.header}
+                     src = {require("../assets/shopHeaderLight.png")}/>
+                <div className = {classes.subheader}>
+                    {shopText[Number(window.localStorage.shopState)]}
+                </div>
+                <img className = {classes.shucklePic}
+                     src = {require("../assets/213Shuckle" + emote + ".png")}/>
+
+                {window.localStorage.adoptedShuckle === "false" &&
+                    <div className = {classes.something}>
+                        <div className = {classes.sellInfo}> 
+                            <img src = {require("../assets/pokedollarLight.png")}/>
+                            <p> {" "} {1000} </p>
+                        </div>
+                        <div className = {classes.adopt}>
+                            <button onClick = {shuckleAdopter}>
+                                Adopt
+                            </button> 
+                        </div>
+                    </div>
+                }
+
+                <button onClick = {shopDialogue}>
+                    Leave
+                </button>
+
+            </div>
+        )
+    }
+
+    function display(item)
+    {
+        return (
+            <div className = {classes.item}>
+                {item}
+                <div className = {classes.attempt}>
+                    <div className = {classes.priceInfo}>
+                        <img src = {require("../assets/pokedollarLight.png")}/>
+                        <p> {" "} {item.props.price} </p> 
+                    </div> 
+
+                    <button onClick = {() => buy(item)}> Buy </button>
+                </div>
+            </div>
+        )
+    }
+
 	function buy(item)
     {
 		if (Number(window.localStorage.pokeDollars) >= item.props.price) {
@@ -75,85 +133,41 @@ function ShopDisplay(props)
 		}
 	}
 
-	let emote = emotion.HAPPY;
-	if (Number(window.localStorage.shopState) <= 3)
-		emote = Number(window.localStorage.shopState);
-	else 
-        emote = emotion.NEUTRAL;
-
-	var shuckleShop = (
-		<div className = {classes.shuckleDisplay}> 
-			<img className = {classes.header}
-                 src = {require("../assets/shopHeaderLight.png")}/>
-			<div className = {classes.subheader}>
-                {shopText[Number(window.localStorage.shopState)]}
-            </div>
-			<img src = {require("../assets/213Shuckle" + emote + ".png")}/>
-
-            {window.localStorage.adoptedShuckle === "false" &&
-            <div>
-                <div className = {classes.sellInfo}> 
-                        <img src = {require("../assets/pokedollarLight.png")}/>
-                        <p> {" "} {1000} </p>
-                </div>
-                <button onClick = {shuckleAdopter}>
-                    Adopt
-                </button> 
-            </div>}
-
-            <button onClick = {shopDialogue}>
-                Leave
-            </button>
-        </div>
-    );
-
-	var regularShop = (
-		<div className = {classes.shopDisplay}>
-			<img className = {classes.header}
-                 src = {require("../assets/shopHeaderLight.png")}/>
-			<div className = {classes.subheader}>
-                {shopText[Number(window.localStorage.shopState)]}
-            </div>
-
-			<div className = {classes.menu}> 
-				<div className = {classes.rowDisplay}> 
-                    {display(inventory[0])}
-                    {display(inventory[1])}
-				</div>
-				<div className = {classes.rowDisplay}> 
-                    {display(inventory[2])}
-                    {display(inventory[3])}
-                </div>
-                <div className = {classes.rowDisplay}>
-                    {display(inventory[4])}
-                    <button onClick = {props.shopHandler}>
-                        Leave
-                    </button>
-				</div>
-			</div>
-		</div>
-    );
-
-
-                // <div className = {classes.priceInfo}>
-    function display(item)
+	function regularShop()
     {
         return (
-            <div className = {classes.item}>
-                {item}
-                <div className = {classes.priceInfo}>
-                    <img src = {require("../assets/pokedollarLight.png")}/>
-                    <p> {" "} {item.props.price} </p> 
-                </div> 
-                <button onClick = {() => buy(item)}> Buy </button>
+            <div className = {classes.shopDisplay}>
+                <img className = {classes.header}
+                     src = {require("../assets/shopHeaderLight.png")}/>
+                <div className = {classes.subheader}>
+                    {shopText[Number(window.localStorage.shopState)]}
+                </div>
+
+                <div className = {classes.menu}> 
+                    <div className = {classes.rowDisplay}> 
+                        {display(inventory[0])}
+                        {display(inventory[1])}
+                    </div>
+                    <div className = {classes.rowDisplay}> 
+                        {display(inventory[2])}
+                        {display(inventory[3])}
+                    </div>
+                    <div className = {classes.rowDisplay}>
+                        {display(inventory[4])}
+                    <button className = {classes.leave}
+                            onClick = {props.shopHandler}>
+                        Leave
+                    </button>
+                    </div>
+                </div>
             </div>
         )
     }
 
 	return (
 		<>
-			{Number(window.localStorage.shopState) <= 7 && shuckleShop}
-			{Number(window.localStorage.shopState) > 7 && regularShop}
+			{Number(window.localStorage.shopState) <= 7 && shuckleShop()}
+			{Number(window.localStorage.shopState) > 7 && regularShop()}
 		</>
 	)
 }

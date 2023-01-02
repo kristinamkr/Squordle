@@ -5,17 +5,21 @@
 }
 
 .menuBar {
-  display: flex;
-  align-items: center;
-  border-bottom: 2px solid #808080;
-  padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 750px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #808080;
 }
 
 .pHeader {
     position: relative;
-    width: 400px;
     left: 15px;
     font-size: 3rem;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .pHeader img {
@@ -25,9 +29,8 @@
 .gameTitle img {
     height: 35px;
     padding-top: 6px;
-    padding-right: 125px;
 }
 
 .spacer {
-  padding-top: 20px;
+    padding-top: 20px;
 }

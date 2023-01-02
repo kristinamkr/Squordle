@@ -65,8 +65,10 @@ function ShuckleMechanics(props)
     function getPoffinId(name)
     {
         for (let i = 0; i < inventory.length; i++) {
-            if (inventory[i].props.name === name)
+            if (inventory[i].props.name === name) {
+                console.log("item id - " + inventory[i].props.id); 
                 return inventory[i].props.id;
+            }
         }
     }
 

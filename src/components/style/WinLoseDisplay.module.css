@@ -1,22 +1,24 @@
 .winLoseDisplay {
     composes: display from "./DisplayMan.module.css";
-    width: 450px;
+    width: 400px;
+    height: 450px;
     border: 2px solid black;
-    top: 25%;
-    left: 17.5%;
 }
 
 .textDisplay {
     width: 80%;
-    margin-top: 5%;
+    margin-top: 10%;
+    margin-bottom: 15%;
 }
 
 .spriteDisplay {
     width: 256px;
     height: 192px;
-    margin-top: 2.5%;
+    margin-top: -10%;
+    padding-bottom: 3.5%;
 }
 
 .winLoseDisplay button {
+    margin-top: 1.5%;
     margin-bottom: 3.5%;
 }

@@ -33,13 +33,14 @@ function InfoDisplay(props)
 			<p/>
 			<img src = {require("../assets/howtoplayLight.png")}/>
 
-            {infoText.map((info, index) => {return bullet(index)} )}
-
 			<div className = {classes.listRow}> 
-                This project was made by&nbsp; 
-                <a href="https://www.github.com/3ddiehead">3ddiehead</a>
+                {infoText.map((info, index) => {return bullet(index)} )}
 			</div>
 
+            <div className = {classes.credit}>
+                This project was made by&nbsp; 
+                <a href="https://www.github.com/3ddiehead">3ddiehead</a>
+            </div>
 			<button onClick = {props.infoHandler}> Close </button>
 			<p/>
 		</div>

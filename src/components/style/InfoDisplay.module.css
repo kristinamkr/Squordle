@@ -4,20 +4,23 @@
 
 .infoDisplay {
     composes: display from "./DisplayMan.module.css";
-    width: 450px;
-    top: 25%;
-    left: 17.5%;
+    width: 400px;
+    height: 475px;
 }
 
 .infoDisplay img {
     width: 80%;
 }
 
+img.pokeBullet {
+    width: 15px;
+    height: 100%;
+    padding-right: 10px;
+}
+
 .listRow {
-	align-items: center;
-	justify-content: space-between;
-	display: flex;
-	flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 	padding-left: 15px;
 	padding-right: 15px;
 	padding-top: 20px;
@@ -28,11 +31,9 @@
 }
 
 .listRow:last-of-type {
-     padding-bottom: 20px;
+    padding-bottom: 25px;
 }
 
-img.pokeBullet {
-    width: 14px;
-    height: 100%;
-    padding-right: 10px;
+.credit {
+    padding-bottom: 20px;
 }
