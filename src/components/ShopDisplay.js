@@ -9,11 +9,11 @@ import { useState, useEffect } from 'react';
 
 function ShopDisplay(props)
 {
-	const emotion = {HAPPY:   0,
-                     SAD:     1,
-                     WEEPY:   2,
-                     NEUTRAL: 3};
-    Object.freeze(emotion);
+	const emote = {HAPPY:   0,
+                   SAD:     1,
+                   WEEPY:   2,
+                   NEUTRAL: 3};
+    Object.freeze(emote);
 
 	var shopText = ["Would you like to adopt a Shuckle?",
                     "Please adopt him! Look! He's so lonely.",
@@ -30,15 +30,13 @@ function ShopDisplay(props)
                      + "we will have items to sell you.",
                     "Welcome back! Feel free to browse."]
 
+	const dollarHandler = props.dollarHandler;
 	const [shopHeader, setShopHeader] = 
         useState(shopText[Number(window.localStorage.shopState)]);
 
-	var dollarHandler = props.dollarHandler;
-
 	function shopAdvance()
     {
-		window.localStorage.shopState = 
-            Number(window.localStorage.shopState) + 1;
+		window.localStorage.shopState = Number(window.localStorage.shopState) + 1;
 		setShopHeader(shopText[Number(window.localStorage.shopState)]);
 	}
 
@@ -46,21 +44,15 @@ function ShopDisplay(props)
     {
 		if (window.localStorage.adoptedShuckle === "false" && 
             window.localStorage.shopState === '6')
-			props.shopHandler();
+            props.shopHandler();
 		else if (window.localStorage.adoptedShuckle === "true" && 
                  window.localStorage.shopState === '7') {
 			shopAdvance();
 			props.shopHandler();
 		}
-        else shopAdvance();
+        else 
+            shopAdvance();
 	}
-
-    // i dont know what i did here
-	let emote = emotion.HAPPY;
-	if (Number(window.localStorage.shopState) <= 3)
-		emote = Number(window.localStorage.shopState);
-	else 
-        emote = emotion.NEUTRAL;
 
 	function shuckleAdopter()
     {
@@ -73,6 +65,15 @@ function ShopDisplay(props)
 		}
 	}
 
+    // to scared to really question why this is like this
+    let currEmote;
+    if (Number(window.localStorage.shopState) <= 3)
+            currEmote = Number(window.localStorage.shopState);
+    else currEmote = emote.NEUTRAL; 
+
+    if (window.localStorage.adoptedShuckle === "true")
+            currEmote = emote.HAPPY;
+
 	function shuckleShop() 
     {
         return (
@@ -83,25 +84,32 @@ function ShopDisplay(props)
                     {shopText[Number(window.localStorage.shopState)]}
                 </div>
                 <img className = {classes.shucklePic}
-                     src = {require("../assets/213Shuckle" + emote + ".png")}/>
+                     src = {require("../assets/213Shuckle" + currEmote + ".png")}/>
 
                 {window.localStorage.adoptedShuckle === "false" &&
-                    <div className = {classes.something}>
+                    <div>
                         <div className = {classes.sellInfo}> 
                             <img src = {require("../assets/pokedollarLight.png")}/>
                             <p> {" "} {1000} </p>
                         </div>
-                        <div className = {classes.adopt}>
+                        <div className = {classes.godHelpMe}>
                             <button onClick = {shuckleAdopter}>
                                 Adopt
                             </button> 
+                            <button className = {classes.exit1}
+                                    onClick = {shopDialogue}>
+                                Leave
+                            </button>
                         </div>
                     </div>
                 }
-
-                <button onClick = {shopDialogue}>
-                    Leave
-                </button>
+                {window.localStorage.adoptedShuckle === "true" &&
+                    <div>
+                        <button onClick = {shopDialogue}>
+                            Leave
+                        </button>
+                    </div>
+                }
 
             </div>
         )
@@ -117,7 +125,6 @@ function ShopDisplay(props)
                         <img src = {require("../assets/pokedollarLight.png")}/>
                         <p> {" "} {item.props.price} </p> 
                     </div> 
-
                     <button onClick = {() => buy(item)}> Buy </button>
                 </div>
             </div>

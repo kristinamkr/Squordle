@@ -61,13 +61,12 @@ function ShuckleCursor(props)
                 let currPos = [mousePos[0], mousePos[1]]; 
                 if (!(isNear(currPos, targetPos))) 
                     setTargetPos(currPos);
-
-                if (props.realizeItem[0])           // SET TO ITEM
-                    setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
             }
 
-            if (shuckleInfo[0] === focus.KEY) {     // KEY TRACKING 
-                
+            if (props.realizeItem[0]) {             // SET TO ITEM
+                setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
+                if (shuckleInfo[0] === focus.KEY)   // KEY CASE
+                    setTargetPos([mousePos[0], mousePos[1]]);
             }
 
             if (!targetReached) {
@@ -89,8 +88,15 @@ function ShuckleCursor(props)
             if (props.realizeItem[1] === 1) 
                 currFocus = focus.KEY;
 
+            // is there a better way to do this (ANGRY CONDITION)
+            if (shuckleInfo[1] === action.ANGRY && props.realizeItem[1] === 3)
+                setShuckleInfo([focus.MOUSE, action.SING]);
+            else if (shuckleInfo[1] === action.ANGRY && !(props.realizeItem[1] === 3))
+                setShuckleInfo([focus.KEY, action.ANGRY]);
+            else // EVERYTHING ELSE
+                setShuckleInfo([currFocus, props.realizeItem[1]]);
+
             props.reset(); 
-            setShuckleInfo([currFocus, props.realizeItem[1]]);
         };
 
         const destroy = async () => {
@@ -99,7 +105,8 @@ function ShuckleCursor(props)
         };
 
         // FUNCTION FUNCTION -------------------------------
-        function chooseKey() {
+        function chooseKey() 
+        {
             setTargetReached(false);
 
             const rand = Math.floor(Math.random() * remainingKeys.length);
@@ -139,7 +146,7 @@ function ShuckleCursor(props)
         if (shuckleInfo[1] === action.NONPLUSSED)
             processEmotion();
         else if (shuckleInfo[1] === action.ANGRY)
-            processEmotion();
+            console.log("ANGRY");
         else if (shuckleInfo[1] === action.HAPPY)
             processEmotion();
         else if (shuckleInfo[1] === action.SING)
@@ -158,7 +165,8 @@ function ShuckleCursor(props)
     }, [shuckleInfo[1]]);
 
     // PROMISES ----------------------------------------------------------------
-    function resolveOnceTimedOut(ms) {
+    function resolveOnceTimedOut(ms) 
+    {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve();
@@ -166,7 +174,8 @@ function ShuckleCursor(props)
         });
     }
 
-    function resolveOnceDestroyed() {
+    function resolveOnceDestroyed() 
+    {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const rand = Math.floor(Math.random() * damageList.length);
@@ -179,7 +188,8 @@ function ShuckleCursor(props)
     }
 
     // RENDER ------------------------------------------------------------------
-    function animate(name, pos, offset) {
+    function animate(name, pos, offset) 
+    {
         return (
             <img className = {classes[name]}
                  style = {{top: (pos[0] - offset[0]) + "px", 

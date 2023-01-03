@@ -26,6 +26,7 @@ var validKeys = inits.validKeys;
 var pokemonSet = new Set(PokeList);
 
 const focus = [0, 0];  // (row #, box #)
+const lettersUsed = [];
 
 function GSDiv(props) 
 {
@@ -50,26 +51,32 @@ function GSDiv(props)
 	function checkAnswer(row)
     {
 	    var lsChange = letterStates;
-        let pointsWon = 0;
+        let pointsWon = 0; 
 
 	    for (var i = 0; i < pokeAnswer.length; i++) {
             var currentBox = row.boxes[i];
 
             if (currentBox.letter === pokeAnswer[i]) {  // green
                 currentBox.state = "correct";
-                pointsWon += 20;
                 lsChange["correctGuess"].add(currentBox.letter);
                 setLetterStates(lsChange);
+                if (!(lettersUsed.includes(currentBox.letter)))
+                    pointsWon += 20;
             }
             else if (isInAnswer(currentBox.letter)) {   // yellow
                 currentBox.state = "inWord";
-                pointsWon += 5;
                 lsChange["inWord"].add(currentBox.letter);
+                if (!(lettersUsed.includes(currentBox.letter)))
+                    pointsWon += 5;
             }
             else {                                      // gray
                 currentBox.state = "incorrect";
                 lsChange["notInWord"].add(currentBox.letter);
             }
+
+            // TRACK UNIQUE LETTERS
+            if (!(lettersUsed.includes(currentBox.letter)))
+                lettersUsed.push(currentBox.letter);
         }
 
         if (isWinner(row)) {
@@ -83,16 +90,17 @@ function GSDiv(props)
             row.state = "filled";
         }
 
-	    dollarHandler(pointsWon)
         row.winnings += pointsWon;
         setLetterStates(lsChange);
+	    dollarHandler(pointsWon)
         return row;
 	}
 
     function isInAnswer(letter)
     {
         const answerSet = new Set(pokeAnswer);
-        if (answerSet.has(letter)) return true;
+        if (answerSet.has(letter)) 
+            return true;
         return false;
     }
 
@@ -100,7 +108,7 @@ function GSDiv(props)
     {
         for (var i = 0; i < row.length; i++) {
             const currentBox = row.boxes[i];
-            if (currentBox.state != "correct") 
+            if (!(currentBox.state === "correct"))
                 return false;
         }
         return true;
@@ -115,27 +123,25 @@ function GSDiv(props)
         for (var i = 0; i < pokeAnswer.length; i++)
             guess = guess + gameSpace[focus[0]].boxes[i].letter;
 
-        if (input === "Enter" && 
-            focus[1] === pokeAnswer.length && pokemonSet.has(guess)) {
-            var currentRow = checkAnswer(gameSpace[focus[0]]);
-            currentRow.guess = guess;
-            focus[0] += 1;
-            focus[1] = 0;
-        }
-        else if (input === "Backspace" && focus[1] != 0) { 
-            focus[1] -= 1;
-            gameSpace[focus[0]].boxes[focus[1]].state = "empty";
-            gameSpace[focus[0]].boxes[focus[1]].letter = '';
-        }
-        else if (input === "Escape")
-        {
-            // itemSelected - deselect
-        } 
-        else if (focus[1] < pokeAnswer.length &&  // default 
-                 validKeySet.has(input)) { 
-            gameSpace[focus[0]].boxes[focus[1]].letter = input;
-            gameSpace[focus[0]].boxes[focus[1]].state = "filled"
-            focus[1] += 1;
+        if (!(isGameOver[0])) { // ONLY ALLOW GUESSES IF GAME NOT WON/LOST
+            if (input === "Enter" && 
+                focus[1] === pokeAnswer.length && pokemonSet.has(guess)) {
+                var currentRow = checkAnswer(gameSpace[focus[0]]);
+                currentRow.guess = guess;
+                focus[0] += 1;
+                focus[1] = 0;
+            }
+            else if (input === "Backspace" && focus[1] != 0) { 
+                focus[1] -= 1;
+                gameSpace[focus[0]].boxes[focus[1]].state = "empty";
+                gameSpace[focus[0]].boxes[focus[1]].letter = '';
+            }
+            else if (focus[1] < pokeAnswer.length &&  // default 
+                     validKeySet.has(input)) { 
+                gameSpace[focus[0]].boxes[focus[1]].letter = input;
+                gameSpace[focus[0]].boxes[focus[1]].state = "filled"
+                focus[1] += 1;
+            }
         }
 
         setGameSpace([...gameSpace]);

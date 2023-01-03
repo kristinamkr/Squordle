@@ -38,9 +38,9 @@
 	background-color: #ffffff;
 }
 
-.icon:last-of-type {
-    margin-left: -10%;
-    padding-right: 5%;
+.icon button:first-of-type {
+    margin-left: -50%;
+    padding-right: 20%;
 }
 
 .icon button {

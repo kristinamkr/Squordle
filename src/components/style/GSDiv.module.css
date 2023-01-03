@@ -22,6 +22,7 @@
     padding-right: 5px;
 }
 
+/* POKEDOLLAR IMG */
 .pHeader img {
     height: 35px;
 }
@@ -29,6 +30,7 @@
 .gameTitle img {
     height: 35px;
     padding-top: 6px;
+    margin-left: -7.5%;
 }
 
 .spacer {

@@ -59,9 +59,6 @@ function DisplayMan(props)
                 <button onClick = {shopHandler}>
                     <ShopIcon className = {classes.shopIcon}/>
                 </button>
-            </div>
-
-            <div className = {classes.icon}>
                 <button onClick = {infoHandler}>
                     <InfoIcon className = {classes.infoIcon}/>
                 </button>
