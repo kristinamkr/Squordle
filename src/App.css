@@ -33,25 +33,9 @@
     to { transform: rotate(360deg); }
 }
 
-/*
-#header {
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-}
-*/
-
 @media (min-width: 320px) and (max-width: 750px){
-    img {
-         width: auto;
-         max-width: 100%;
-         height: auto;
-     } 
-    
-    p, h1, nav {
-        padding-left: 20px;
-        padding-right: 20px;
+    html, body {
+        padding-left: 100px;
+        padding-bottom: 100px;
     }
 }
