@@ -7,6 +7,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+
+    height: auto;
+    display: table;
+    margin-left: 0px;
+    margin-right: 5px;
+
+}
+
 /*
 .LeftMenu {
   background: none;

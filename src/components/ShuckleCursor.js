@@ -16,11 +16,11 @@ function ShuckleCursor(props)
                      ANGRY:      1,
                      HAPPY:      2,
                      SING:       3,
-                     CONFUSED:   4,  // UNIMPLEMENTED
-                     SURPRISED:  5,  // UNIMPLEMENTED
-                     SHINY:      6,  // UNIMPLEMENTED
-                     SICK:       7,  // UNIMPLEMENTED
-                     LAY_EGG:    8 };  // UNIMPLEMENTED
+                     CONFUSED:   4,     // UNIMPLEMENTED
+                     SURPRISED:  5,     // UNIMPLEMENTED
+                     SHINY:      6,     // UNIMPLEMENTED
+                     SICK:       7,     // UNIMPLEMENTED
+                     LAY_EGG:    8 };   // UNIMPLEMENTED
     Object.freeze(action);
 
     const mousePos = props.mousePos;
@@ -82,7 +82,7 @@ function ShuckleCursor(props)
     useEffect(() => {
         // ASYNC FUNCTIONS ---------------------------------
         const eatItem = async () => {
-            await resolveOnceTimedOut(1000); 
+            await resolveOnceTimedOut(5000); 
 
             let currFocus = focus.MOUSE;
             if (props.realizeItem[1] === 1) 
@@ -183,7 +183,7 @@ function ShuckleCursor(props)
                 selectedKey.style.pointerEvents = 'none';
                 setRemainingKeys(remainingKeys.filter(k => k !== selectedKey.id));
                 resolve();
-            }, 1000); 
+            }, 5000); 
         });
     }
 
