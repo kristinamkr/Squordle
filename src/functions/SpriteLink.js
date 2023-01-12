@@ -35,7 +35,7 @@ function spriteLink(pokeString)
     else
         pokePath = "sword-shield/icon/";
 
-    if (pokeString != "") {
+    if (pokeString !== "") {
         pokePath = "sprites/" + pokePath + pokeString + ".png";
         return(pokeLink + pokePath);
     }
