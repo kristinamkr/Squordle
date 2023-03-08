@@ -1,0 +1,118 @@
+.header {
+    width: 80%;
+    padding-top: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #808080;
+}
+
+.subheader {
+    width: 80%;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.shuckleDisplay {
+    composes: display from "./DisplayMan.module.css";
+    width: 400px;
+    height: 545px;
+}
+
+.shucklePic {
+    width: 70%;
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+.sellInfo {
+    display: flex;
+    height: 45%;
+    width: 250px;
+}
+
+.sellInfo p {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: -1%;
+}
+
+.sellInfo img {
+    height: 30px;
+    width: 25px;
+}
+
+.shuckleDisplay button {
+    position: relative;
+    width: 100px; 
+    height: 25px;
+}
+
+.exit1 {
+    margin-left: 20%;
+}
+
+.shopDisplay {
+    composes: display from "./DisplayMan.module.css";
+}
+
+.menu {
+    width: 100%;
+    justify-content: space-between;
+    padding-left: 45px;
+}
+
+.rowDisplay {
+    display: flex;
+    font-size: 2rem;
+    width: 100%;
+    height: 75px;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-bottom: 2.5%;
+}
+
+.rowDisplay:first-of-type {
+    padding-top: 5%;
+}
+
+.item {
+    display: flex;
+}
+
+.item p {
+    margin-top: -10%;
+}
+
+.attempt {
+    display: block;
+    width: 100px;
+    margin-left: 4.5%;
+}
+
+.attempt button {
+    width: 75px;
+    height: 25px;
+    margin-left: 2.5%;
+}
+
+.priceInfo {
+    display: flex;
+    height: 25px;
+}
+
+.priceInfo img {
+    height: 30px;
+    width: 25px;
+}
+
+.leave {
+    display: flex;
+    margin-top: 3%;
+    margin-left: 15%;
+    
+    padding-left: 15.75px;
+    padding-top: 12px;
+
+    width: 75px;
+    height: 50px;
+}

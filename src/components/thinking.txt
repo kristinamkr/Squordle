@@ -1,0 +1,13 @@
+CURRENT ISSUE: while destroying keys, if item is placed shuckle freezes
+POSSIBLE SOLUTION: queue shuckle target, focus, action
+
+QUEUE ---
+1. store the target pos
+2. store the shuckle's behavior (based on 1)
+3. if targetReached, execute behavior, pop queue
+4. if queue != empty, push [target, shuckleInfo]
+5. if queue == empty, still push or no need?
+
+This would allow the shuckle to complete current action
+
+ONLY TIME QUEUE is in use, when key or item are targets NEVER mouse

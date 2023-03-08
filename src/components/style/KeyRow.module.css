@@ -1,0 +1,6 @@
+.keyRow {
+    display: grid;
+    align-items: center; /* idk */
+    flex-wrap: nowrap;
+    padding-top: 4px;
+}
