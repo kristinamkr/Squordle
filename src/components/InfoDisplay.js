@@ -41,7 +41,7 @@ function InfoDisplay(props)
                 This project was made by&nbsp; 
                 <a href="https://www.github.com/3ddiehead">3ddiehead</a>
             </div>
-			<button onClick = {props.infoHandler}> Close </button>
+			<button onClick = {props.infoHandler}> Play! </button>
 			<p/>
 		</div>
     );

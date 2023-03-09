@@ -5,6 +5,7 @@
 import classes from "./style/ShopDisplay.module.css";
 import inventory from './Inventory.js';
 
+import { ReactComponent as ExitIcon } from "../assets/exitIcon.svg";
 import { useState, useEffect } from 'react';
 
 function ShopDisplay(props)
@@ -87,28 +88,30 @@ function ShopDisplay(props)
                      src = {require("../assets/213Shuckle" + currEmote + ".png")}/>
 
                 {window.localStorage.adoptedShuckle === "false" &&
-                    <div>
-                        <div className = {classes.sellInfo}> 
-                            <img src = {require("../assets/pokedollarLight.png")}/>
-                            <p> {" "} {1000} </p>
-                        </div>
-                        <div className = {classes.godHelpMe}>
+                    <div style = {{display:"flex",width:"248px",justifyContent:"space-between"}}>
+                        <div>
+                            <div className = {classes.sellInfo}> 
+                                <img src = {require("../assets/pokedollarLight.png")}/>
+                                <p> {" "} {1000} </p>
+                            </div>
                             <button onClick = {shuckleAdopter}>
                                 Adopt
-                            </button> 
-                            <button className = {classes.exit1}
-                                    onClick = {shopDialogue}>
-                                Leave
+                            </button>
+                        </div>
+                        <div className = {classes.icon}>
+                            <button onClick = {shopDialogue}>
+                                <ExitIcon className = {classes.exitIcon}/>
                             </button>
                         </div>
                     </div>
                 }
                 {window.localStorage.adoptedShuckle === "true" &&
-                    <div>
+                    <div className = {classes.icon}>
                         <button onClick = {shopDialogue}>
-                            Leave
+                            <ExitIcon className = {classes.exitIcon}/>
                         </button>
                     </div>
+
                 }
 
             </div>
@@ -119,7 +122,9 @@ function ShopDisplay(props)
     {
         return (
             <div className = {classes.item}>
-                {item}
+                <div className = {item.props.name=="lemonade" && classes.lemonade || null}>
+                    {item}
+                </div>
                 <div className = {classes.attempt}>
                     <div className = {classes.priceInfo}>
                         <img src = {require("../assets/pokedollarLight.png")}/>
@@ -161,10 +166,11 @@ function ShopDisplay(props)
                     </div>
                     <div className = {classes.rowDisplay}>
                         {display(inventory[4])}
-                    <button className = {classes.leave}
-                            onClick = {props.shopHandler}>
-                        Leave
-                    </button>
+                        <div className = {classes.icon} style={{marginLeft:"60px"}}>
+                            <button onClick = {props.shopHandler}>
+                                <ExitIcon className = {classes.exitIcon}/>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

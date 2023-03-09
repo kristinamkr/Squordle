@@ -51,7 +51,8 @@ function PoffinStorage(props)
                     {item.props.tag} 
                     <div> {localStorage.getItem(item.props.name)} </div>
                 </th>
-                <td onClick = {selectItem}>
+                <td className = {classes.draggable}
+                    onClick = {selectItem}>
                     {item}
                 </td>
             </tr> 
@@ -66,7 +67,7 @@ function PoffinStorage(props)
                 <tbody>
                 <tr className = {classes.header}>
                     <th> Flavor </th>
-                    <th> Items </th>
+                    <th className = {classes.header1}> Items </th>
                 </tr>
                 { isExpanded && itemPreview(inventory[0], "#F08030") } 
                 { isExpanded && itemPreview(inventory[1], "#F85888") }
@@ -82,16 +83,17 @@ function PoffinStorage(props)
             </button>
 
             { !(itemInfo[0] === '') &&
-                <img id = "draggable_item"
-                     className = {classes.poffin}
-                     src = {require("../assets/" + itemInfo[0] + ".png")}
-                     style = {{cursor: "move",
-                               position: "absolute",
-                               top: String(itemInfo[1]) - 32 + "px",
-                               left: String(itemInfo[2]) - 32 + "px",
-                               zIndex: String(itemInfo[3])}}
-                     onClick = {() => props.realize(itemInfo[0])}
-                     decoding = "async"/> }
+                <div className = {classes.draggable}>
+                    <img id = "draggable_item"
+                         src = {require("../assets/" + itemInfo[0] + ".png")}
+                         style = {{cursor: "move",
+                                   position: "absolute",
+                                   top: String(itemInfo[1]) - 32 + "px",
+                                   left: String(itemInfo[2]) - 32 + "px",
+                                   zIndex: String(itemInfo[3])}}
+                         onClick = {() => props.realize(itemInfo[0])}
+                         decoding = "async"/>
+                </div> }
         </div>
     );
 }

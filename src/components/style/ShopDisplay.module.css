@@ -1,6 +1,6 @@
 .header {
     width: 80%;
-    padding-top: 25px;
+    padding-top: 2em;
     padding-bottom: 20px;
     border-bottom: 2px solid #808080;
 }
@@ -9,7 +9,6 @@
     width: 80%;
     text-align: center;
     padding-top: 10px;
-    padding-bottom: 10px;
 }
 
 .shuckleDisplay {
@@ -20,14 +19,12 @@
 
 .shucklePic {
     width: 70%;
-    padding-top: 10px;
     padding-bottom: 15px;
 }
 
 .sellInfo {
     display: flex;
-    height: 45%;
-    width: 250px;
+    height: 48px;
 }
 
 .sellInfo p {
@@ -58,7 +55,6 @@
 .menu {
     width: 100%;
     justify-content: space-between;
-    padding-left: 45px;
 }
 
 .rowDisplay {
@@ -83,10 +79,21 @@
     margin-top: -10%;
 }
 
+.item img {
+    width: 68px;
+    height: 68px;
+}
+
+.lemonade img {
+    height: 68px;
+    width: inherit;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
 .attempt {
     display: block;
     width: 100px;
-    margin-left: 4.5%;
 }
 
 .attempt button {
@@ -105,14 +112,10 @@
     width: 25px;
 }
 
-.leave {
-    display: flex;
-    margin-top: 3%;
-    margin-left: 15%;
-    
-    padding-left: 15.75px;
-    padding-top: 12px;
-
-    width: 75px;
-    height: 50px;
+.icon button{
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 60px;
+    height: 75px;
 }
