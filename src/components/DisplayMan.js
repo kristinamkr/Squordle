@@ -38,6 +38,11 @@ function DisplayMan(props)
                          "showBackdrop": !displayState["showBackdrop"]});
   	}
 
+    if (window.localStorage.firstTime === "1") {
+        window.localStorage.firstTime = 0;
+        infoHandler();
+    }
+
   	function shopHandler()
     {
   		setDisplayState({...displayState,

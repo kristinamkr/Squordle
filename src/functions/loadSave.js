@@ -4,12 +4,15 @@
 
 function loadSave()
 {
-	if (window.localStorage.length !== 14)
+	if (window.localStorage.length !== 15)
     {
+        if (!(window.localStorage.pokeDollars)) {
+            window.localStorage.firstTime = 1;
+        }
         if (!(window.localStorage.pokeDollars)) {
             window.localStorage.pokeDollars = 0;
         }
-       if (!(window.localStorage.adoptedShuckle)) {
+        if (!(window.localStorage.adoptedShuckle)) {
             window.localStorage.adoptedShuckle = false;
         }
         if (!(window.localStorage.shopState)) {
