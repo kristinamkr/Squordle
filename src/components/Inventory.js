@@ -15,14 +15,14 @@ const inventory = [<Poffin name = "spicyPoffin"
                    <Poffin name = "bitterPoffin"
                            price = "200"
                            tag = "Bitter"
-                           id = "4" />,
+                           id = "3" />,
                    <Poffin name = "goldPoffin"
                            price = "995"
                            tag = "Gold"
-                           id = "6" />,
+                           id = "4" />,
                    <Poffin name = "lemonade"
                            price = "100"
                            tag = "Juice"
-                           id = "3" />];
+                           id = "5" />];
 
 export default inventory;

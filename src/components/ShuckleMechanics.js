@@ -84,7 +84,7 @@ function ShuckleMechanics(props)
                            mousePos = {mousePos}
                            targetInfo = {itemInfo}
                            realizeItem = {realizeItem}
-                           reset = {reset} /> 
+                           reset = {reset} />
         </>
     )
 }

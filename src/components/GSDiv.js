@@ -83,6 +83,7 @@ function GSDiv(props)
             row.state = "winner";
             setGameOver([true, 'win']);
             pointsWon += 200;
+            updateHatching();
         }
         else {
             if (focus[0] === 5 && focus[1] === pokeAnswer.length)
@@ -112,6 +113,11 @@ function GSDiv(props)
                 return false;
         }
         return true;
+    }
+
+
+    function updateHatching(){
+        return null;
     }
 
 	function keyDownHandler(e)

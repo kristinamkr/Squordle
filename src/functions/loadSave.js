@@ -43,7 +43,7 @@ function loadSave()
             window.localStorage.shuckleBitter = 0;
         }  
         if (!(window.localStorage.shuckleChildren)) {
-            window.localStorage.shuckleChildren = [];
+            window.localStorage.shuckleChildren = '[]';
         }
         if (!(window.localStorage.region)) {
             window.localStorage.region = "kanto";
