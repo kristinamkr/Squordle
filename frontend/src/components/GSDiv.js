@@ -9,21 +9,32 @@ import Keyboard from "./Keyboard.js";
 import DisplayMan from "./DisplayMan.js";
 import ShuckleMechanics from './ShuckleMechanics.js';
 
-import PokeList from "./PokeList.js";
 import gameInit from "../functions/gameInit.js";
 import loadSave from "../functions/loadSave.js";
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 loadSave();
 
-var inits = gameInit();
+async function poopoo() {
+    return gameInit();
+};
+
+var inits = poopoo(); // solid?
+
+inits.then((value) => {
+    if (value === 0) {
+        var neveruse = 0;
+    } else {
+
+console.log(value);    
 var gsInit = inits.gsInit;
 var lsInit = inits.lsInit;
 var pokeAnswer = inits.pokeAnswer;
 
 var validKeys = inits.validKeys;
-var pokemonSet = new Set(PokeList);
+var pokemonSet = new Set();
 
 const focus = [0, 0];  // (row #, box #)
 const lettersUsed = [];
@@ -41,6 +52,26 @@ function GSDiv(props)
     const [pokeDollars, setPokeDollars] = 
            useState(Number(window.localStorage.pokeDollars));
     window.localStorage.pokeDollars = pokeDollars; 
+
+    const [pokemon, setPokemon] = useState([]);
+
+    useEffect(() => {
+        async function getRandomPokemon() {
+            const response = await fetch(`http://localhost:3000/random`);
+
+            if (!response.ok) {
+                const message = `An error occurred: ${response.statusText}`;
+                window.alert(message);
+                return;
+            }
+
+            const pokemon = await response.json();
+            setPokemon(pokemon);
+        }
+
+        getRandomPokemon();
+        return;
+    }, []);
 
     // would love if there was a way to move this, but idk if there is
   	function dollarHandler(delta)
@@ -180,6 +211,6 @@ function GSDiv(props)
                       validKeys = {validKeys}/>
         </div>
 	)
-}
-
-export default GSDiv;
+    }
+    export default GSDiv;
+}});

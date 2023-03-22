@@ -77,7 +77,7 @@ function PoffinStorage(props)
             </table>
 
             <button className = {classes.expansionArrow} 
-                    onClick = {expandPoffins}>
+                   onClick = {expandPoffins}>
                 <img src = {arrowSrc}/>
             </button>
 
