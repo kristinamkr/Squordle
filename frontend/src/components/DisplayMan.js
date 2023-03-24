@@ -2,6 +2,8 @@
  * DisplayMan.js
 */
 
+// NEED TO IMPLEMENT SETTINGS TAB...
+
 import classes from "./style/DisplayMan.module.css";
 
 import WinLoseDisplay from "./WinLoseDisplay.js";

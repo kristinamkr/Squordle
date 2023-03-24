@@ -42,5 +42,27 @@ export default class PokemonDAO
 
     }
 
+    static async findPokemon(guess) // eyes emoji
+    {
+        
+
+    }
+
+/*
+router.route('/random').get(async function (req, res)
+{
+    let dbConnect = dbo.getDb('squordle');
+
+    dbConnect
+        .collection("pokemon")
+        .aggregate([{ $sample: { size: 1 } }])
+        .toArray(function (err, result) {
+            if (err)
+                res.status(400).send("Error fetching random pokemon");
+            else
+                res.json(result);
+    });
+});
+*/
     // getPokemonByType() etc...
 }

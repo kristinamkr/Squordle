@@ -14,45 +14,20 @@ export default function PokemonList() {
     const [pokemon, setPokemon] = useState([]);
 
     /*
-    // method fetches records from db
-    useEffect(() => {
-        async function getPokemon() {
-            const response = await fetch(`http://localhost:3000/pokeList`);
+    async function getRandomPokemon() {
+        const response = await fetch(`http://localhost:3000/random`);
 
-            if (!response.ok) {
-                const message = `An error occurred: ${response.statusText}`;
-                window.alert(message);
-                return;
-            }
-
-            const pokeList = await response.json();
-            console.log(typeof(response.json) + " - " + pokeList[0].Name);
-            setPokemon(pokeList);
+        if (!response.ok) {
+            const message = `An error occurred: ${response.statusText}`;
+            window.alert(message);
+            return;
         }
 
-        getPokemon();
-        return;
-    }, []);
+        const pObj = await response.json(); // waiting for promise
+        setPokeObj(pObj);
+    }
     */
 
-    useEffect(() => {
-        async function getRandomPokemon() {
-            const response = await fetch(`http://localhost:3000/random`);
-
-            if (!response.ok) {
-                const message = `An error occurred: ${response.statusText}`;
-                window.alert(message);
-                return;
-            }
-
-            const pokemon = await response.json();
-            console.log("pokeAPI - " + pokemon[0].Name);
-            setPokemon(pokemon);
-        }
-
-        getRandomPokemon();
-        return;
-    }, []);
 
     /*
     function pokemonList() {

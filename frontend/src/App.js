@@ -3,13 +3,10 @@
 */
 
 import './App.css';
-import GSDiv from "./components/GSDiv.js";
+import Squordle from "./components/Squordle.js";
 
 import { useState, useRef } from 'react';
-// use Route to define different routes of application
 import { Switch, Routes, Route, Link } from 'react-router-dom';
-
-import PokeList from './components/PokeAPI.js';
 
 function App() 
 {
@@ -21,11 +18,10 @@ function App()
     return (
         <div>
             <Routes>
-            /*
             <Route path='/' 
-                   element={<GSDiv id='gsVar' />} />
-            */
+                   element={<Squordle id='squordle' />} />
             </Routes>
+            //
         </div>
     );
 }

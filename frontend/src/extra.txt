@@ -1,0 +1,7 @@
+import ShuckleMechanics from './ShuckleMechanics.js';
+
+
+
+            { window.localStorage.adoptedShuckle === "true" &&
+                <ShuckleMechanics validKeys = {validKeys}/> } 
+      		<div className = {classes.spacer}/>

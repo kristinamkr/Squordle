@@ -1,0 +1,32 @@
+/*
+ * Header.module.css
+*/
+
+.menuBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 750px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #808080;
+}
+
+.pHeader {
+    position: relative;
+    left: 15px;
+    font-size: 3rem;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* POKEDOLLAR IMG */
+.pHeader img {
+    height: 35px;
+}
+
+.gameTitle img {
+    height: 35px;
+    padding-top: 6px;
+    margin-left: -7.5%;
+}
