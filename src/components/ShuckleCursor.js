@@ -138,10 +138,7 @@ function ShuckleCursor(props)
                     newPosList.push(pos);
                 }
             }
-
-            if(babyPosList.length > 0) {
-                console.log(babyPosList);
-            }
+            
             if(shuckleInfo[1] == action.BIRTHING) {
                 console.log("b4");
                 resolveOnceTimedOut(7000);
