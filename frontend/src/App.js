@@ -21,7 +21,6 @@ function App()
             <Route path='/' 
                    element={<Squordle id='squordle' />} />
             </Routes>
-            //
         </div>
     );
 }
