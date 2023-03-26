@@ -20,7 +20,7 @@ const inventory = [<Poffin name = "spicyPoffin"
                            price = "995"
                            tag = "Gold"
                            id = "4" />,
-                   <Poffin name = "Lemonade"
+                   <Poffin name = "lemonade"
                            price = "100"
                            tag = "Juice"
                            id = "5" />];

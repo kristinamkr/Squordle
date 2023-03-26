@@ -24,7 +24,8 @@ function ShuckleCursor(props)
     const focus = { MOUSE: 0,
                     ITEM:  1,
                     KEY:   2,
-                    STAY:  3 };
+                    STAY:  3,
+                    MOBILE: 4};
     Object.freeze(focus);
 
 	const action = { NONPLUSSED: 0, 
@@ -95,6 +96,11 @@ function ShuckleCursor(props)
                 setTargetPos(currPos);
             }
 
+            if (shuckleInfo[0] === focus.MOBILE) {
+                let currPos = [mobileTarget[0], mobileTarget[1]]
+                setTargetPos(currPos);
+            }
+
             if (props.realizeItem[0]) {             // SET TO ITEM
                 setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
                 if (shuckleInfo[0] === focus.KEY)   // KEY CASE
@@ -138,11 +144,9 @@ function ShuckleCursor(props)
                     newPosList.push(pos);
                 }
             }
-            
+
             if(shuckleInfo[1] == action.BIRTHING) {
-                console.log("b4");
                 resolveOnceTimedOut(7000);
-                console.log("aftr");
             }
             else {
                 setBabyPosList(newPosList);                
@@ -217,6 +221,7 @@ function ShuckleCursor(props)
     // EMOTION-BASED BEHAVIORS ---------------------------------------
     useEffect(() => {
         const processEmotion = async () => {
+            console.log("poopoo!");
             await resolveOnceTimedOut(3000);
             setShuckleInfo([focus.MOUSE, action.NONPLUSSED]);
         }
@@ -230,14 +235,17 @@ function ShuckleCursor(props)
                 setShuckleInfo([focus.STAY, action.LAY_EGG]);
         }
         const offscreen = async () => {
-            setMobileTarget([400,-200]);
-            setShuckleInfo([focus.MOBILE, shuckleInfo[1]]);
-            while (!(isNear(shucklePos, mobileTarget))) {
+            while (!targetReached) {
+                setMobileTarget([400,-200]);
+                setShuckleInfo([focus.MOBILE, shuckleInfo[1]]);
+                console.log(shuckleInfo);
+                console.log(shucklePos, mobileTarget);
                 await resolveOnceTimedOut(2000);
             }
             await resolveOnceTimedOut(3000);
             if (shuckleInfo[1] === action.BIRTHING) {
-                layEgg();
+                console.log("line4");
+                setShuckleInfo([focus.STAY, action.LAY_EGG]);
             }
             else {
                 processEmotion();
@@ -319,7 +327,8 @@ function ShuckleCursor(props)
             poop();
         }
         else if (shuckleInfo[1] === action.BIRTHING) {
-            offscreen()
+            console.log("OFFSCREEN");
+            offscreen();
         }
         else if (shuckleInfo[1] === action.LAY_EGG) {
             layEgg();
