@@ -14,6 +14,9 @@ app.use(cors());
 app.use(express.json());
 app.use(require('./routing'));
 
+// testing, testing... 1,2,3...
+// app.use(require('./pokemonDAO'));
+
 const dbo = require('./conn');
 
 app.listen(PORT, () => {

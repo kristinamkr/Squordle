@@ -1,13 +1,13 @@
 /*
- * PoffinStorage.js
+ * Inventory.js
 */
 
-import classes from "./style/PoffinStorage.module.css";
-import inventory from './Inventory.js';
+import classes from "./style/Inventory.module.css";
+import items from './Items.js';
 
 import { useState, useEffect} from 'react';
 
-function PoffinStorage(props) 
+function Inventory(props) 
 {
     // INVENTORY ---------------------------------------------------------------
     let pokeLink = "https://cdn3.iconfinder.com/data/icons/faticons/32/";
@@ -16,7 +16,7 @@ function PoffinStorage(props)
 
     const [isExpanded, setIsExpanded] = useState(false);
 
-    function expandPoffins()
+    function expandInventory()
     {
         if (!isExpanded)
             setArrowSrc(pokeLink + "arrow-up-01-512.png");
@@ -62,22 +62,22 @@ function PoffinStorage(props)
     // RENDER ------------------------------------------------------------------
     return (
         <div className = {classes.storageWrapper}>
-            <table className = {classes.poffinStorage}>
+            <table className = {classes.storage}>
                 <tbody>
                 <tr className = {classes.header}>
                     <th> Flavor </th>
                     <th> Items </th>
                 </tr>
-                { isExpanded && itemPreview(inventory[0], "#F08030") } 
-                { isExpanded && itemPreview(inventory[1], "#F85888") }
-                { isExpanded && itemPreview(inventory[2], "#78C850") }
-                { isExpanded && itemPreview(inventory[3], "#F8D030") }
-                { isExpanded && itemPreview(inventory[4], "#6890F0") }
+                { isExpanded && itemPreview(items[0], "#F08030") } 
+                { isExpanded && itemPreview(items[1], "#F85888") }
+                { isExpanded && itemPreview(items[2], "#78C850") }
+                { isExpanded && itemPreview(items[3], "#F8D030") }
+                { isExpanded && itemPreview(items[4], "#6890F0") }
                 </tbody>
             </table>
 
             <button className = {classes.expansionArrow} 
-                   onClick = {expandPoffins}>
+                   onClick = {expandInventory}>
                 <img src = {arrowSrc}/>
             </button>
 
@@ -96,4 +96,4 @@ function PoffinStorage(props)
     );
 }
 
-export default PoffinStorage;
+export default Inventory;

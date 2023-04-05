@@ -3,7 +3,7 @@
 */ 
 
 import classes from "./style/ShopDisplay.module.css";
-import inventory from './Inventory.js';
+import items from './Items.js';
 
 import { useState, useEffect } from 'react';
 
@@ -31,8 +31,10 @@ function ShopDisplay(props)
                     "Welcome back! Feel free to browse."]
 
 	const dollarHandler = props.dollarHandler;
+
 	const [shopHeader, setShopHeader] = 
         useState(shopText[Number(window.localStorage.shopState)]);
+    console.log("shopdisplay dollar - " + window.localStorage.shopState);
 
 	function shopAdvance()
     {
@@ -50,12 +52,12 @@ function ShopDisplay(props)
 			shopAdvance();
 			props.shopHandler();
 		}
-        else 
-            shopAdvance();
+        else shopAdvance();
 	}
 
 	function shuckleAdopter()
     {
+        console.log("shuckle adopter?");
 		if (Number(window.localStorage.pokeDollars) >= 1000) {
 			window.localStorage.adoptedShuckle = true;
 			window.localStorage.shopState = 7; 
@@ -73,6 +75,7 @@ function ShopDisplay(props)
 
     if (window.localStorage.adoptedShuckle === "true")
             currEmote = emote.HAPPY;
+    // -------------------------------------------------------------------------
 
 	function shuckleShop() 
     {
@@ -92,7 +95,7 @@ function ShopDisplay(props)
                             <img src = {require("../assets/pokedollarLight.png")}/>
                             <p> {" "} {1000} </p>
                         </div>
-                        <div className = {classes.godHelpMe}>
+                        <div>
                             <button onClick = {shuckleAdopter}>
                                 Adopt
                             </button> 
@@ -110,7 +113,6 @@ function ShopDisplay(props)
                         </button>
                     </div>
                 }
-
             </div>
         )
     }
@@ -152,15 +154,15 @@ function ShopDisplay(props)
 
                 <div className = {classes.menu}> 
                     <div className = {classes.rowDisplay}> 
-                        {display(inventory[0])}
-                        {display(inventory[1])}
+                        {display(items[0])}
+                        {display(items[1])}
                     </div>
                     <div className = {classes.rowDisplay}> 
-                        {display(inventory[2])}
-                        {display(inventory[3])}
+                        {display(items[2])}
+                        {display(items[3])}
                     </div>
                     <div className = {classes.rowDisplay}>
-                        {display(inventory[4])}
+                        {display(items[4])}
                     <button className = {classes.leave}
                             onClick = {props.shopHandler}>
                         Leave

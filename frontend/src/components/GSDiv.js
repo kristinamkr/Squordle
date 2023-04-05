@@ -12,19 +12,46 @@ import { useState, useEffect } from 'react';
 const focus = [0, 0];  // (row #, box #)
 const lettersUsed = [];
 
-// var pokemonSet = new Set(); // POKESET NEEDS TO INSTEAD BE A FUNCTION WHICH CHECKS GUESS W/ DB
+let pokeList = {};
 
 function GSDiv(props) 
 {
-    var validKeys = "qwertyuiopasdfghjklzxcvbnm".split('');
-
 	useEffect(() => {
         document.addEventListener("keydown", keyDownHandler);
   		return () => document.removeEventListener("keydown", keyDownHandler);
     });
 
-    const pokeAnswer = props.pokemon; // maybe????
-    console.log("INSIDE GSDIV... \npokeAnswer - " + pokeAnswer);
+    const pokeAnswer = props.pokemon; 
+
+    // POKELIST ----------------------------------------------------------------
+    const [pokeObj, setPokeObj] = useState([]);
+
+    useEffect(() => {
+        async function getPokeList() { 
+            const response = await fetch(`http://localhost:3000/pokeList`);
+
+            if (!response.ok) {
+                const message = `An error occurred while fetching pokeList: ` + 
+                    `${response.statusText}`;
+                window.alert(message);
+                return;
+            }
+
+            const pObj = await response.json(); // waiting for promise
+            setPokeObj(pObj);
+        }
+
+        getPokeList();
+    }, []); // empty dependency means executed once on load
+
+    let pokeObjLength = 0; // idiot-coded but it works
+    useEffect(() => {
+        pokeObjLength = pokeObj.length;
+
+        if (pokeObjLength != 0)
+            pokeList = pokeObj.map(p => p.name.toLowerCase());
+    }, [pokeObj]);
+    // -------------------------------------------------------------------------
 
     // init gamespace woo
     var gsInit = Array(6);
@@ -64,18 +91,16 @@ function GSDiv(props)
 	function keyDownHandler(e)
     {
         const input = e.key || e.target.value;
-        const validKeySet = new Set(validKeys);
+        const validKeySet = new Set(props.validKeys);
 
 	    var guess = "";
         for (var i = 0; i < pokeAnswer.length; i++)
             guess = guess + gameSpace[focus[0]].boxes[i].letter;
 
+
         if (!(props.isGameOver[0])) { // ONLY ALLOW GUESSES IF GAME NOT WON/LOST
-            console.log("FOCUS - [" + focus[0] + ", " + focus[1] + "]");
-            console.log("pokeanswer len - " + pokeAnswer.length);
-            if (input === "Enter" && 
-                focus[1] === pokeAnswer.length) { //  && pokemonSet.has(guess)) {
-                    console.log("HELLO?");
+            if (input === "Enter" && focus[1] === pokeAnswer.length 
+                && checkValidity(guess)) {
                     var currentRow = checkAnswer(gameSpace[focus[0]]);
                     currentRow.guess = guess;
                     focus[0] += 1;
@@ -101,7 +126,6 @@ function GSDiv(props)
     // HELPER FUNCTIONS -------------------------------------------------------
 	function checkAnswer(row)
     {
-        console.log("CHECK ANSWER");
 	    var lsChange = letterStates;
         let pointsWon = 0; 
 
@@ -126,14 +150,14 @@ function GSDiv(props)
                 lsChange["notInWord"].add(currentBox.letter);
             }
 
-            // TRACK UNIQUE LETTERS
-            if (!(lettersUsed.includes(currentBox.letter)))
+            if (!(lettersUsed.includes(currentBox.letter))) // TRACK UNIQUE LTRS
                 lettersUsed.push(currentBox.letter);
         }
 
         if (isWinner(row)) {
             row.state = "winner";
             props.setGameOver([true, 'win']);
+            window.localStorage.gameMode = 1;
             pointsWon += 200;
         } 
         else {
@@ -144,30 +168,9 @@ function GSDiv(props)
 
         row.winnings += pointsWon;
         setLetterStates(lsChange);
-	    // dollarHandler(pointsWon) ...needs to communicate w/ header_points
+	    props.dollarHandler(pointsWon); 
         return row;
 	}
-
-    /*
-    useEffect(() => {
-        async function getRandomPokemon() {
-            const response = await fetch(`http://localhost:3000/random`);
-
-            if (!response.ok) {
-                const message = `An error occurred: ${response.statusText}`;
-                window.alert(message);
-                return;
-            }
-
-            const pObj = await response.json(); // waiting for promise
-            setPokeObj(pObj);
-        }
-
-        console.log("HELLO? ? ? ? ?");
-        getRandomPokemon();
-        return; 
-    }, []); // empty dependency means executed once on load
-    */
 
     function isInAnswer(letter)
     {
@@ -187,17 +190,24 @@ function GSDiv(props)
         return true;
     }
 
+    function checkValidity(guess) { 
+        for (let i = 0; i < pokeList.length; i++)
+            if (pokeList[i] === guess)
+                return true;
+        return false;
+    } 
+
 	return (
         <div className = {classes.gsDiv}>
             <GameSpace id = "gameSpace"
                        gameSpace = {gameSpace}
                        wordLength = {pokeAnswer.length}/>
-            <Keyboard id = "keyboard" 
-                      letterStates = {letterStates} 
-                      handler = {keyDownHandler}
-                      gameSpace = {gameSpace}
-                      setGameSpace = {setGameSpace} 
-                      validKeys = {validKeys}/>
+            <Keyboard  id = "keyboard" 
+                       letterStates = {letterStates} 
+                       handler = {keyDownHandler}
+                       gameSpace = {gameSpace}
+                       setGameSpace = {setGameSpace} 
+                       validKeys = {props.validKeys}/>
         </div>
 	)
 }
