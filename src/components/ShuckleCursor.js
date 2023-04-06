@@ -6,15 +6,12 @@
 //DONE*install baby shuckle localStorage dataType
 //DONE*place HTML element for baby shuckles
 //DONE*CSS the baby shuckles
-//Eat poffin + offscreen + Lay egg - 1
-//Create egg wobble + wobble+leap for stages of hatching - 2
+//DONE*Eat poffin + offscreen + Lay egg - 1
+//DONE*Create egg wobble + wobble+leap for stages of hatching - 2
 //Hatch egg (three right guesses) - 2
-//Fix key attacking issues - 3
+//DONE*Fix key attacking issues - 3
 //Implement baby attack - 4
-//Make wander animation - 5
-//make poop - 6
-//All will chase Bitter + Gold - 7
-//Main will chase Spicy + Sweet - 7
+//All will chase Gold - 7
 
 import classes from "./style/ShuckleCursor.module.css";
 import { useState, useReducer, useEffect} from 'react';
@@ -62,6 +59,7 @@ function ShuckleCursor(props)
         useState(["Backspace", "Enter"].concat(props.validKeys));
     const [selectedKey, setKey] = useState(null);
     const [keyPos, setKeyPos] = useState(null);
+    const [busy, setBusy] = useState(true);
     const damageList = ["#131313", "#242424", "#303030", "#404040"];
 
 	function isNear(a, b) 
@@ -99,6 +97,7 @@ function ShuckleCursor(props)
 
         setKey(key);
         setKeyPos([keyPosition.top, keyPosition.left]);
+        setBusy(false);
     }
     // -------------------------------------------------
 
@@ -237,6 +236,7 @@ function ShuckleCursor(props)
                 console.log("exit");
                 setShuckleInfo([focus.MOUSE, 0]);
                 setTargetReached(false);
+                setBusy(false);
             };
         };
     }, [props.realizeItem[0], keyPos]);
@@ -253,7 +253,8 @@ function ShuckleCursor(props)
             setKeyPos(null);
         };
 
-        if (shuckleInfo[0] === focus.KEY && targetReached && selectedKey !== null) {    // KEY FOCUS - ANGRY
+        if (shuckleInfo[0] === focus.KEY && targetReached && !busy) {    // KEY FOCUS - ANGRY
+            setBusy(true);
             console.log("destroy");
             destroy();
         }
@@ -299,7 +300,7 @@ function ShuckleCursor(props)
             const newFamily = shuckleChildren.concat([baby]);
             //updates the game save (you had a baby! you wanna remember you had a baby right?)
             window.localStorage.shuckleChildren = JSON.stringify(newFamily);
-            setBabyPosList(babyPosList.concat(Array(Array(300,-200))))
+            setBabyPosList([[400,-200]].concat(babyPosList));
             setShuckleChildren(newFamily);
             //brings back onscreen
             setShuckleInfo([focus.MOUSE, action.SING]);
@@ -393,23 +394,39 @@ function ShuckleCursor(props)
 
     function animBabies(children, posList)
     {
+
+        //deepCopy and reverse creates the correct render order
+        const revChildren = JSON.parse(JSON.stringify(children));
+
+        var sizes = [];
+        var sizeOffset = [];
         for(var i = 0; i<posList.length; i++){
             if(posList[i] == undefined){
                 posList[i] = [0,0];
             }
+            if(revChildren[i].state === "shuckle"){
+                sizes = sizes.concat([["48px","48px"]]);
+                sizeOffset = sizeOffset.concat([-8]);
+            } else {
+                sizes = sizes.concat([["32px","32px"]]);
+                sizeOffset = sizeOffset.concat([0]);
+
+            }
         }
 
-        //deepCopy and reverse creates the correct render order
-        const revChildren = JSON.parse(JSON.stringify(children));
         revChildren.reverse();
+
+        
 
         return (
                 <>
                     {revChildren.map((child) => (<img className = {classes.shuckle}
-                                                          style = {{top: posList[child.number][0].toString() + "px",
-                                                                    left: posList[child.number][1].toString() + "px"}}
-                                                          src = {require("../assets/" + child.state + ".gif")}
-                                                          key = {child.number}/>))}
+                                                      style = {{top: (posList[child.number][0] + sizeOffset[child.number]).toString() + "px",
+                                                                left: (posList[child.number][1] + sizeOffset[child.number]).toString() + "px",
+                                                                width: sizes[child.number][0],
+                                                                height: sizes[child.number][1]}}
+                                                      src = {require("../assets/" + child.state + ".gif")}
+                                                      key = {child.number}/>))}
                 </>
         )
     }
@@ -421,7 +438,7 @@ function ShuckleCursor(props)
 			{window.localStorage.shuckleShiny === "0" && 
                 animate("shuckle", shucklePos, [16, 32]) }
 			{window.localStorage.shuckleShiny === "1" && 
-                animate("shuckleShiny", shucklePos, [25, 10]) }
+                animate("shuckleShiny", shucklePos, [16, 32]) }
 
 			{shuckleInfo[0] === focus.MOUSE && shuckleInfo[1] === action.SING
                 && ( <> { animate("sing", shucklePos, [32, 26]) } </> )}

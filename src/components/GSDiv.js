@@ -117,7 +117,20 @@ function GSDiv(props)
 
 
     function updateHatching(){
-        return null;
+        var shuckleChildren = JSON.parse(window.localStorage.shuckleChildren)
+        for (var i = 0; i < shuckleChildren.length; i++) {
+            if (shuckleChildren[i].state === "shuckleEgg0") {
+                shuckleChildren[i].state = "shuckleEgg1";
+                break;
+            } else if (shuckleChildren[i].state === "shuckleEgg1") {
+                shuckleChildren[i].state = "shuckleEgg2";
+                break;
+            } else if (shuckleChildren[i].state === "shuckleEgg2") {
+                shuckleChildren[i].state = "shuckle";
+                break
+            }
+        }
+        window.localStorage.shuckleChildren = JSON.stringify(shuckleChildren);
     }
 
 	function keyDownHandler(e)
