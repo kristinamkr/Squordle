@@ -6,6 +6,9 @@ function loadSave()
 {
 	if (window.localStorage.length !== 15)
     {
+        if (!(window.localStorage.gameMode)) {
+            window.localStorage.gameMode = 0;
+        }
         if (!(window.localStorage.pokeDollars)) {
             window.localStorage.firstTime = 1;
         }

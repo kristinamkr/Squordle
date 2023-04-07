@@ -1,11 +1,6 @@
-.gsDiv {
-	align-items: center;
-    justify-content: center; /* desperation setting in... */
-	display: flex;
-	flex-direction: column;
-}
-
-/* mark */
+/*
+ * Header.module.css
+*/
 
 .menuBar {
     display: flex;
@@ -40,8 +35,4 @@
 .gameTitle img {
     height: 35px;
     padding-top: 6px;
-}
-
-.spacer {
-    padding-top: 20px;
 }

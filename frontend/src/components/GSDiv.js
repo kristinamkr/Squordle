@@ -6,27 +6,13 @@ import classes from "./style/GSDiv.module.css";
 
 import GameSpace from "./GameSpace.js";
 import Keyboard from "./Keyboard.js";
-import DisplayMan from "./DisplayMan.js";
-import ShuckleMechanics from './ShuckleMechanics.js';
-
-import PokeList from "./PokeList.js";
-import gameInit from "../functions/gameInit.js";
-import loadSave from "../functions/loadSave.js";
 
 import { useState, useEffect } from 'react';
 
-loadSave();
-
-var inits = gameInit();
-var gsInit = inits.gsInit;
-var lsInit = inits.lsInit;
-var pokeAnswer = inits.pokeAnswer;
-
-var validKeys = inits.validKeys;
-var pokemonSet = new Set(PokeList);
-
 const focus = [0, 0];  // (row #, box #)
 const lettersUsed = [];
+
+let pokeList = {};
 
 function GSDiv(props) 
 {
@@ -35,19 +21,109 @@ function GSDiv(props)
   		return () => document.removeEventListener("keydown", keyDownHandler);
     });
 
+    const pokeAnswer = props.pokemon; 
+
+    // POKELIST ----------------------------------------------------------------
+    const [pokeObj, setPokeObj] = useState([]);
+
+    useEffect(() => {
+        async function getPokeList() { 
+            const response = await fetch(`http://localhost:3000/pokeList`);
+
+            if (!response.ok) {
+                const message = `An error occurred while fetching pokeList: ` + 
+                    `${response.statusText}`;
+                window.alert(message);
+                return;
+            }
+
+            const pObj = await response.json(); // waiting for promise
+            setPokeObj(pObj);
+        }
+
+        getPokeList();
+    }, []); // empty dependency means executed once on load
+
+    let pokeObjLength = 0; // idiot-coded but it works
+    useEffect(() => {
+        pokeObjLength = pokeObj.length;
+
+        if (pokeObjLength != 0)
+            pokeList = pokeObj.map(p => p.name.toLowerCase());
+    }, [pokeObj]);
+    // -------------------------------------------------------------------------
+
+    // init gamespace woo
+    var gsInit = Array(6);
+    for (var i = 0; i < gsInit.length; i++) {
+        var row = {};
+        row.id = "r" + i;
+        row.state = "empty";
+        row.length = pokeAnswer.length;
+        row.boxes = Array(pokeAnswer.length);
+        row.guess = "";
+        row.winnings = 0;
+
+        for(var k = 0; k < row.boxes.length; k++) {
+            var box = {};
+            box.id = row.id + "b" + k;
+            box.delay = k * 100 + "ms"
+            box.state = "empty";
+            box.letter = "";
+            row.boxes[k] = box;
+        }
+        gsInit[i] = row;
+    };
+
+    var lsInit = {
+        inWord : new Set(),
+        correctGuess : new Set(),
+        notInWord : new Set()
+    };
+    var inits = {
+        lsInit : lsInit,
+        gsInit : gsInit,
+    };
+
 	const [gameSpace, setGameSpace] = useState(gsInit);
 	const [letterStates, setLetterStates] = useState(lsInit);
-    const [isGameOver, setGameOver] = useState([false, '']);
-    const [pokeDollars, setPokeDollars] = 
-           useState(Number(window.localStorage.pokeDollars));
-    window.localStorage.pokeDollars = pokeDollars; 
 
-    // would love if there was a way to move this, but idk if there is
-  	function dollarHandler(delta)
+	function keyDownHandler(e)
     {
-        setPokeDollars(pokeDollars + delta);
-  	}
+        const input = e.key || e.target.value;
+        const validKeySet = new Set(props.validKeys);
 
+	    var guess = "";
+        for (var i = 0; i < pokeAnswer.length; i++)
+            guess = guess + gameSpace[focus[0]].boxes[i].letter;
+
+
+        if (!(props.isGameOver[0])) { // ONLY ALLOW GUESSES IF GAME NOT WON/LOST
+            if (input === "Enter" && focus[1] === pokeAnswer.length 
+                && checkValidity(guess)) {
+                    var currentRow = checkAnswer(gameSpace[focus[0]]);
+                    currentRow.guess = guess;
+                    focus[0] += 1;
+                    focus[1] = 0;
+            }
+            else if (input === "Backspace" && focus[1] != 0) { 
+                focus[1] -= 1;
+                gameSpace[focus[0]].boxes[focus[1]].state = "empty";
+                gameSpace[focus[0]].boxes[focus[1]].letter = '';
+            }
+            else if (focus[1] < pokeAnswer.length &&  // default 
+                     validKeySet.has(input)) { 
+                gameSpace[focus[0]].boxes[focus[1]].letter = input;
+                gameSpace[focus[0]].boxes[focus[1]].state = "filled"
+                focus[1] += 1;
+            }
+        }
+
+        setGameSpace([...gameSpace]);
+	    console.log(pokeAnswer);
+    }
+
+    // HELPER FUNCTIONS -------------------------------------------------------
 	function checkAnswer(row)
     {
 	    var lsChange = letterStates;
@@ -74,26 +150,30 @@ function GSDiv(props)
                 lsChange["notInWord"].add(currentBox.letter);
             }
 
-            // TRACK UNIQUE LETTERS
-            if (!(lettersUsed.includes(currentBox.letter)))
+            if (!(lettersUsed.includes(currentBox.letter))) // TRACK UNIQUE LTRS
                 lettersUsed.push(currentBox.letter);
         }
 
         if (isWinner(row)) {
             row.state = "winner";
-            setGameOver([true, 'win']);
+            props.setGameOver([true, 'win']);
+            window.localStorage.gameMode = 1;
             pointsWon += 200;
+<<<<<<< HEAD:src/components/GSDiv.js
             updateHatching();
         }
+=======
+        } 
+>>>>>>> backend:frontend/src/components/GSDiv.js
         else {
             if (focus[0] === 5 && focus[1] === pokeAnswer.length)
-                setGameOver([true, 'loss']);
+                props.setGameOver([true, 'loss']);
             row.state = "filled";
         }
 
         row.winnings += pointsWon;
         setLetterStates(lsChange);
-	    dollarHandler(pointsWon)
+	    props.dollarHandler(pointsWon); 
         return row;
 	}
 
@@ -115,6 +195,7 @@ function GSDiv(props)
         return true;
     }
 
+<<<<<<< HEAD:src/components/GSDiv.js
 
     function updateHatching(){
         var shuckleChildren = JSON.parse(window.localStorage.shuckleChildren)
@@ -166,37 +247,26 @@ function GSDiv(props)
         setGameSpace([...gameSpace]);
 	    console.log(pokeAnswer);
     }
+=======
+    function checkValidity(guess) { 
+        for (let i = 0; i < pokeList.length; i++)
+            if (pokeList[i] === guess)
+                return true;
+        return false;
+    } 
+>>>>>>> backend:frontend/src/components/GSDiv.js
 
 	return (
         <div className = {classes.gsDiv}>
-			<header className = {classes.menuBar}>
-                <div className = {classes.pHeader}>
-                    <img src = {require("../assets/pokedollarLight.png")}/>
-                    {" "}{pokeDollars}
-                </div>
-
-                <div className = {classes.gameTitle}>
-                    <img src = {require("../assets/LogoLight.png")}/>
-                </div>
-
-                <DisplayMan id = "displayMan"
-                            gameSpace = {gameSpace}
-                            isGameOver = {isGameOver}
-                            dollarHandler = {dollarHandler}
-                            pokeAnswer = {pokeAnswer} />
-      		</header>
-            { window.localStorage.adoptedShuckle === "true" &&
-                <ShuckleMechanics validKeys = {validKeys}/> } 
-      		<div className = {classes.spacer}/>
             <GameSpace id = "gameSpace"
                        gameSpace = {gameSpace}
                        wordLength = {pokeAnswer.length}/>
-            <Keyboard id = "keyboard" 
-                      letterStates = {letterStates} 
-                      handler = {keyDownHandler}
-                      gameSpace = {gameSpace}
-                      setGameSpace = {setGameSpace} 
-                      validKeys = {validKeys}/>
+            <Keyboard  id = "keyboard" 
+                       letterStates = {letterStates} 
+                       handler = {keyDownHandler}
+                       gameSpace = {gameSpace}
+                       setGameSpace = {setGameSpace} 
+                       validKeys = {props.validKeys}/>
         </div>
 	)
 }

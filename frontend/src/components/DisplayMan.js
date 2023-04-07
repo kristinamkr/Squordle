@@ -77,6 +77,7 @@ function DisplayMan(props)
                 <ShopDisplay dollarHandler = {props.dollarHandler} 
                              shopHandler = {shopHandler}/>}
 
+
             {props.isGameOver[0] &&  
                 <WinLoseDisplay winLoseHandler = {winLoseHandler}
                                 pokeAnswer = {props.pokeAnswer}

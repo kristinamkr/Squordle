@@ -18,11 +18,16 @@ import { useState, useReducer, useEffect} from 'react';
 
 function ShuckleCursor(props)
 {
+
     const focus = { MOUSE: 0,
+<<<<<<< HEAD:src/components/ShuckleCursor.js
                     ITEM:  1,
                     KEY:   2,
                     STAY:  3,
                     MOBILE: 4};
+=======
+                    ITEM:  1};
+>>>>>>> backend:frontend/src/components/ShuckleCursor.js
     Object.freeze(focus);
 
 	const action = { NONPLUSSED: 0, 
@@ -56,7 +61,7 @@ function ShuckleCursor(props)
     const [mobileTargetPos, setMobileTargetPos] = useState([0,0]);
 
     const [remainingKeys, setRemainingKeys] = 
-        useState(["Backspace", "Enter"].concat(props.validKeys));
+        useState(["Backspace", "Enter"].concat(props.validKeys));  // null?
     const [selectedKey, setKey] = useState(null);
     const [keyPos, setKeyPos] = useState(null);
     const [busy, setBusy] = useState(true);
@@ -112,9 +117,14 @@ function ShuckleCursor(props)
                 setTargetPos(currPos);
             }
 
+<<<<<<< HEAD:src/components/ShuckleCursor.js
             if (shuckleInfo[0] === focus.MOBILE) {
                 let currPos = [mobileTargetPos[0], mobileTargetPos[1]]
                 setTargetPos(currPos);
+=======
+            if (props.realizeItem[0]) {             // SET TO ITEM
+                setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
+>>>>>>> backend:frontend/src/components/ShuckleCursor.js
             }
 
             if (shuckleInfo[0] === focus.KEY && selectedKey !== null) {  // KEY CASE
@@ -132,6 +142,7 @@ function ShuckleCursor(props)
                 setTargetReached(isNear(keyPos, shucklePos));
             }
         }, 16);
+<<<<<<< HEAD:src/components/ShuckleCursor.js
     }, [mousePos, targetPos, shucklePos, selectedKey]);
 
         //BABIES
@@ -182,6 +193,9 @@ function ShuckleCursor(props)
             setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
         }
     }, [props.realizeItem[0]])
+=======
+    }, [shucklePos, mousePos]);
+>>>>>>> backend:frontend/src/components/ShuckleCursor.js
 
     // TARGET SPECIFIC BEHAVIOR  -------------------------------------
 
@@ -192,6 +206,7 @@ function ShuckleCursor(props)
             await resolveOnceTimedOut(5000); 
 
             let currFocus = focus.MOUSE;
+<<<<<<< HEAD:src/components/ShuckleCursor.js
 
             if (props.realizeItem[1] === 1) {
                 console.log("KEY");
@@ -259,6 +274,24 @@ function ShuckleCursor(props)
             destroy();
         }
     }, [targetReached])
+=======
+            setShuckleInfo([currFocus, props.realizeItem[1]]);
+            console.log("ATE ITEM - " + props.realizeItem[1]);
+
+            props.reset(); 
+        };
+
+        const destroy = async () => {
+            await resolveOnceDestroyed();
+            setKey(null);
+        };
+
+        if (targetReached) {
+            if (shuckleInfo[0] === focus.ITEM) 
+                eatItem();
+        }
+    }, [shuckleInfo, targetReached]);
+>>>>>>> backend:frontend/src/components/ShuckleCursor.js
 
     // EMOTION-BASED BEHAVIORS ---------------------------------------
     useEffect(() => {
@@ -337,6 +370,7 @@ function ShuckleCursor(props)
             */
         }
 
+<<<<<<< HEAD:src/components/ShuckleCursor.js
         // move ?
         if (shuckleInfo[1] === action.NONPLUSSED) {
 
@@ -369,6 +403,11 @@ function ShuckleCursor(props)
         else if (shuckleInfo[1] === action.LAY_EGG) {
             layEgg();
         }
+=======
+        processEmotion();
+        if (shuckleInfo[1] === action.SHINY)
+            window.localStorage.shuckleShiny = "1";
+>>>>>>> backend:frontend/src/components/ShuckleCursor.js
     }, [shuckleInfo[1]]);
 
     // PROMISES ----------------------------------------------------------------
@@ -392,6 +431,7 @@ function ShuckleCursor(props)
         )
     }
 
+<<<<<<< HEAD:src/components/ShuckleCursor.js
     function animBabies(children, posList)
     {
 
@@ -430,15 +470,25 @@ function ShuckleCursor(props)
                 </>
         )
     }
+=======
+/*
+			{window.localStorage.shuckleShiny === "1" && 
+                animate("shuckleShiny", shucklePos, [25, 10]) }
+*/
+>>>>>>> backend:frontend/src/components/ShuckleCursor.js
 
 	return (
 		<>
             {shuckleChildren.length > 0
                 && ( <> { animBabies(shuckleChildren, babyPosList) } </> )}
 			{window.localStorage.shuckleShiny === "0" && 
+<<<<<<< HEAD:src/components/ShuckleCursor.js
                 animate("shuckle", shucklePos, [16, 32]) }
 			{window.localStorage.shuckleShiny === "1" && 
                 animate("shuckleShiny", shucklePos, [16, 32]) }
+=======
+                animate("shuckle", shucklePos, [25, 10]) }
+>>>>>>> backend:frontend/src/components/ShuckleCursor.js
 
 			{shuckleInfo[0] === focus.MOUSE && shuckleInfo[1] === action.SING
                 && ( <> { animate("sing", shucklePos, [32, 26]) } </> )}
