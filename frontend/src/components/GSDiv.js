@@ -159,12 +159,8 @@ function GSDiv(props)
             props.setGameOver([true, 'win']);
             window.localStorage.gameMode = 1;
             pointsWon += 200;
-<<<<<<< HEAD:src/components/GSDiv.js
             updateHatching();
         }
-=======
-        } 
->>>>>>> backend:frontend/src/components/GSDiv.js
         else {
             if (focus[0] === 5 && focus[1] === pokeAnswer.length)
                 props.setGameOver([true, 'loss']);
@@ -195,8 +191,6 @@ function GSDiv(props)
         return true;
     }
 
-<<<<<<< HEAD:src/components/GSDiv.js
-
     function updateHatching(){
         var shuckleChildren = JSON.parse(window.localStorage.shuckleChildren)
         for (var i = 0; i < shuckleChildren.length; i++) {
@@ -217,15 +211,15 @@ function GSDiv(props)
 	function keyDownHandler(e)
     {
         const input = e.key || e.target.value;
-        const validKeySet = new Set(validKeys);
+        const validKeySet = new Set(props.validKeys);
 
 	    var guess = "";
         for (var i = 0; i < pokeAnswer.length; i++)
             guess = guess + gameSpace[focus[0]].boxes[i].letter;
 
-        if (!(isGameOver[0])) { // ONLY ALLOW GUESSES IF GAME NOT WON/LOST
+        if (!(props.isGameOver[0])) { // ONLY ALLOW GUESSES IF GAME NOT WON/LOST
             if (input === "Enter" && 
-                focus[1] === pokeAnswer.length && pokemonSet.has(guess)) {
+                focus[1] === pokeAnswer.length && checkValidity(guess)) {
                 var currentRow = checkAnswer(gameSpace[focus[0]]);
                 currentRow.guess = guess;
                 focus[0] += 1;
@@ -247,14 +241,13 @@ function GSDiv(props)
         setGameSpace([...gameSpace]);
 	    console.log(pokeAnswer);
     }
-=======
+
     function checkValidity(guess) { 
         for (let i = 0; i < pokeList.length; i++)
             if (pokeList[i] === guess)
                 return true;
         return false;
     } 
->>>>>>> backend:frontend/src/components/GSDiv.js
 
 	return (
         <div className = {classes.gsDiv}>

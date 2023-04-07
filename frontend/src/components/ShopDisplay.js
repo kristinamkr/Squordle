@@ -91,21 +91,14 @@ function ShopDisplay(props)
                      src = {require("../assets/213Shuckle" + currEmote + ".png")}/>
 
                 {window.localStorage.adoptedShuckle === "false" &&
-<<<<<<< HEAD:src/components/ShopDisplay.js
                     <div style = {{display:"flex",width:"248px",justifyContent:"space-between"}}>
                         <div>
                             <div className = {classes.sellInfo}> 
                                 <img src = {require("../assets/pokedollarLight.png")}/>
                                 <p> {" "} {1000} </p>
                             </div>
-=======
-                    <div>
-                        <div className = {classes.sellInfo}> 
-                            <img src = {require("../assets/pokedollarLight.png")}/>
-                            <p> {" "} {1000} </p>
                         </div>
                         <div>
->>>>>>> backend:frontend/src/components/ShopDisplay.js
                             <button onClick = {shuckleAdopter}>
                                 Adopt
                             </button>
@@ -176,20 +169,12 @@ function ShopDisplay(props)
                         {display(items[3])}
                     </div>
                     <div className = {classes.rowDisplay}>
-<<<<<<< HEAD:src/components/ShopDisplay.js
-                        {display(inventory[4])}
+                        {display(items[4])}
                         <div className = {classes.icon} style={{marginLeft:"60px"}}>
                             <button onClick = {props.shopHandler}>
                                 <ExitIcon className = {classes.exitIcon}/>
                             </button>
                         </div>
-=======
-                        {display(items[4])}
-                    <button className = {classes.leave}
-                            onClick = {props.shopHandler}>
-                        Leave
-                    </button>
->>>>>>> backend:frontend/src/components/ShopDisplay.js
                     </div>
                 </div>
             </div>

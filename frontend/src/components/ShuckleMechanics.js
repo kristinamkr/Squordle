@@ -2,8 +2,8 @@
  * ShuckleMechanics.js
 */
 
-import inventory from './Inventory.js';
-import PoffinStorage from './PoffinStorage.js';
+import items from './Items.js';
+import Inventory from './Inventory.js';
 import ShuckleCursor from './ShuckleCursor.js';
 import { useState, useReducer, useEffect} from 'react';
 
@@ -64,18 +64,17 @@ function ShuckleMechanics(props)
 
     function getPoffinId(name)
     {
-        for (let i = 0; i < inventory.length; i++) {
-            if (inventory[i].props.name === name) {
-                console.log("item id - " + inventory[i].props.id); 
-                return inventory[i].props.id;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].props.name === name) {
+                console.log("item id - " + items[i].props.id); 
+                return items[i].props.id;
             }
         }
     }
 
     return (
         <>
-            <PoffinStorage keyDownHandler = {props.keyDownHandler}
-                           mousePos = {mousePos}
+            <Inventory mousePos = {mousePos}
                            itemInfo = {itemInfo} 
                            setItemInfo = {setItemInfo}
                            realize = {realize} />
