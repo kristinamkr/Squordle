@@ -2,8 +2,6 @@
  * DisplayMan.js
 */
 
-// NEED TO IMPLEMENT SETTINGS TAB...
-
 import classes from "./style/DisplayMan.module.css";
 
 import WinLoseDisplay from "./WinLoseDisplay.js";
@@ -73,6 +71,7 @@ function DisplayMan(props)
             {displayState["showShop"] && 
                 <ShopDisplay dollarHandler = {props.dollarHandler} 
                              shopHandler = {shopHandler}/>}
+
 
             {props.isGameOver[0] &&  
                 <WinLoseDisplay winLoseHandler = {winLoseHandler}

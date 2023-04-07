@@ -9,21 +9,12 @@ import { useState, useEffect } from 'react';
 
 function Header(props)
 {
-
-    const [pokeDollars, setPokeDollars] = 
-           useState(Number(window.localStorage.pokeDollars));
-    window.localStorage.pokeDollars = pokeDollars; 
-
-    function dollarHandler(delta)
-    {
-        setPokeDollars(pokeDollars + delta);
-    }
-
     return (
+    <div className = {classes.center}>
         <header className = {classes.menuBar}>
             <div className = {classes.pHeader}>
                 <img src = {require("../assets/pokedollarLight.png")}/>
-                {" "}{pokeDollars}
+                {" "}{props.pokeDollars}
             </div>
 
             <div className = {classes.gameTitle}>
@@ -32,9 +23,10 @@ function Header(props)
 
             <DisplayMan id = "displayMan"
                         isGameOver = {props.isGameOver}
-                        dollarHandler = {dollarHandler}
+                        dollarHandler = {props.dollarHandler}
                         pokeAnswer = {props.pokemon} />
         </header>
+        </div>
     )
 }
 
