@@ -71,9 +71,8 @@ function Inventory(props)
                 </tr>
                 { isExpanded && itemPreview(items[0], "#F08030") } 
                 { isExpanded && itemPreview(items[1], "#F85888") }
-                { isExpanded && itemPreview(items[2], "#78C850") }
-                { isExpanded && itemPreview(items[3], "#F8D030") }
-                { isExpanded && itemPreview(items[4], "#6890F0") }
+                { isExpanded && itemPreview(items[2], "#F8D030") }
+                { isExpanded && itemPreview(items[3], "#6890F0") }
                 </tbody>
             </table>
 

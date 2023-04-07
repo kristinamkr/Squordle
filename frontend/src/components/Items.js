@@ -25,17 +25,22 @@ const items = [<Poffin name = "spicyPoffin"
                        price = "400"
                        tag = "Sweet"
                        id = "2" />,
-               <Poffin name = "bitterPoffin"
-                       price = "200"
-                       tag = "Bitter"
-                       id = "4" />,
                <Poffin name = "goldPoffin"
                        price = "995"
                        tag = "Gold"
-                       id = "6" />,
+                       id = "3" />,
                <Poffin name = "lemonade"
                        price = "100"
                        tag = "Juice"
-                       id = "3" />];
+                       id = "4" />,
+               <Poffin name = "ticket"
+                       price = "495"
+                       tag = "Ticket"
+                       id = "5" />,
+               <Poffin name = "soldOut"
+                       price = "N/A"
+                       tag = "soldOut"
+                       id = "6" />,
+                       ];
 
 export default items;

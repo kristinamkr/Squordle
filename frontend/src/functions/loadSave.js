@@ -28,7 +28,7 @@ function loadSave()
             window.localStorage.sweetPoffin = 0;
         }  
         if (!(window.localStorage.bitterPoffin)) {
-            window.localStorage.bitterPoffin = 0;
+            window.localStorage.purchasedTicket = 0;
         }  
         if (!(window.localStorage.goldPoffin)) {
             window.localStorage.goldPoffin = 0;
