@@ -97,8 +97,6 @@ function ShopDisplay(props)
                                 <img src = {require("../assets/pokedollarLight.png")}/>
                                 <p> {" "} {1000} </p>
                             </div>
-                        </div>
-                        <div>
                             <button onClick = {shuckleAdopter}>
                                 Adopt
                             </button>

@@ -66,7 +66,7 @@ function Inventory(props)
             <table className = {classes.storage}>
                 <tbody>
                 <tr className = {classes.header}>
-                    <th> Flavor </th>
+                    <th className = {classes.leftColumn}> Flavor </th>
                     <th className = {classes.header1}> Items </th>
                 </tr>
                 { isExpanded && itemPreview(items[0], "#F08030") } 

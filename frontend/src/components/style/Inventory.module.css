@@ -14,12 +14,18 @@
 }
 
 .header1 {
-    width: 66px;
+    min-width: 66px;
+    max-width: 66px;
+}
+
+.leftColumn {
+    min-width: 50.28px;
+    max-width: 50.28px;
 }
 
 .storage {
 	position: relative;
-	top: 17.9px;
+	top: 8px;
 	left: -375px;
 
     width: 125.08px;
@@ -41,8 +47,8 @@
 
 .expansionArrow {
 	position: relative;
-	top: 14px;
-	left: -340px;
+	top: 10px;
+	left: -336px;
 }
 
 .expansionArrow img {
