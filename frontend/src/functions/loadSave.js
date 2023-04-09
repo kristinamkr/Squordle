@@ -4,7 +4,7 @@
 
 function loadSave()
 {
-	if (window.localStorage.length !== 15)
+    if (window.localStorage.length !== 13)
     {
         if (!(window.localStorage.gameMode)) {
             window.localStorage.gameMode = 0;
@@ -27,9 +27,6 @@ function loadSave()
         if (!(window.localStorage.sweetPoffin)) {
             window.localStorage.sweetPoffin = 0;
         }  
-        if (!(window.localStorage.bitterPoffin)) {
-            window.localStorage.purchasedTicket = 0;
-        }  
         if (!(window.localStorage.goldPoffin)) {
             window.localStorage.goldPoffin = 0;
         }  
@@ -39,17 +36,11 @@ function loadSave()
         if (!(window.localStorage.shuckleShiny)) {
             window.localStorage.shuckleShiny = 0;
         }  
-        if (!(window.localStorage.shuckleSpicy)) {
-            window.localStorage.shuckleSpicy = 0;
-        }  
-        if (!(window.localStorage.shuckleSweet)) {
-            window.localStorage.shuckleSweet = 0;
-        }  
-        if (!(window.localStorage.shuckleBitter)) {
-            window.localStorage.shuckleBitter = 0;
-        }  
         if (!(window.localStorage.shuckleChildren)) {
             window.localStorage.shuckleChildren = '[]';
+        }
+        if (!(window.localStorage.ticket0)) {
+            window.localStorage.ticket0 = 0;
         }
         if (!(window.localStorage.region)) {
             window.localStorage.region = "kanto";

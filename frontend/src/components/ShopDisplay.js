@@ -167,7 +167,12 @@ function ShopDisplay(props)
                         {display(items[3])}
                     </div>
                     <div className = {classes.rowDisplay}>
-                        {display(items[5])}
+                        {window.localStorage.ticket0 === "0" &&
+                            display(items[4])
+                        }
+                        {window.localStorage.ticket0 === "1" &&
+                            display(items[5])
+                        }
                         <div className = {classes.icon} style={{marginLeft:"60px"}}>
                             <button onClick = {props.shopHandler}>
                                 <ExitIcon className = {classes.exitIcon}/>
