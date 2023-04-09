@@ -38,10 +38,12 @@ function InfoDisplay(props)
 			</div>
 
             <div className = {classes.credit}>
-                This project was made by&nbsp; 
-                <a href="https://www.github.com/3ddiehead">3ddiehead</a>
-                &nbsp;and&nbsp;
-                <a href="https://www.github.com/kristinamkr">kristinamkr</a>
+                This project was made by&nbsp;
+                <div className = {classes.names}>
+                    <a href="https://www.github.com/3ddiehead">3ddiehead</a>
+                    &nbsp;+&nbsp;
+                    <a href="https://www.github.com/kristinamkr">kristinamkr</a>
+                </div>
             </div>
 			<button onClick = {props.infoHandler}> Play! </button>
 			<p/>
