@@ -97,10 +97,11 @@ function ShuckleCursor(props)
         const keyPosition = key.getBoundingClientRect();
         console.log(keyPosition.top, keyPosition.left);
 
-        setKey(key);
-        setKeyPos([keyPosition.top, keyPosition.left]);
         setBusy(false);
         setHaltInv(true);
+        setKey(key);
+        setKeyPos([keyPosition.top, keyPosition.left]);
+
     }
     // -------------------------------------------------
 
@@ -116,13 +117,18 @@ function ShuckleCursor(props)
             }
 
             if (shuckleInfo[0] === focus.MOBILE) {
-                let currPos = [mobileTargetPos[0], mobileTargetPos[1]]
+                let currPos = [mobileTargetPos[0], mobileTargetPos[1]];
                 setTargetPos(currPos);
             }
 
             if (shuckleInfo[0] === focus.KEY && selectedKey !== null) {  // KEY CASE
-                console.log("keycase");
-                setTargetPos([keyPos[0], keyPos[1]]);
+                let currPos = [keyPos[0], keyPos[1]]
+                setTargetPos(currPos);
+            }
+
+            if (shuckleInfo[0] === focus.ITEM) {
+                let currPos = [props.targetInfo[1],props.targetInfo[2]];
+                setTargetPos(currPos);
             }
 
             let pos = translateSpritePos([targetPos[0] + 15, targetPos[1]], shucklePos, 3);
@@ -178,14 +184,6 @@ function ShuckleCursor(props)
         }, 16);
     }, [babyPosList, shucklePos]);
 
-    //MOVE TOWARD ITEM if REALIZED and NONPLUSSED or ANGRY
-    useEffect(() => {
-        if (props.realizeItem[0] && shuckleInfo[1] <= 1) {  // SET TO ITEM
-            console.log("itemcase");
-            setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
-        }
-    }, [props.realizeItem[0]])
-
     // TARGET SPECIFIC BEHAVIOR  -------------------------------------
 
 
@@ -202,16 +200,13 @@ function ShuckleCursor(props)
             }
 
             // is there a better way to do this (ANGRY CONDITION)
-            if (shuckleInfo[1] === action.ANGRY && props.realizeItem[1] === 3) {
+            if (shuckleInfo[1] === action.ANGRY && props.realizeItem[1] !== 3) {
                 console.log("RECOVER");
-                setShuckleInfo([focus.MOUSE, action.SING]);
-            } else if (shuckleInfo[1] === action.ANGRY && !(props.realizeItem[1] === 3)) {
-                console.log("FOCOSKEY");
-                setShuckleInfo([focus.KEY, action.ANGRY]);
+                setKey(null);
+                setKeyPos(null);
+                setShuckleInfo([currFocus, action.SING]);
             }
             else {// EVERYTHING ELSE
-                console.log("FIRSTFOCOS");
-                console.log(currFocus);
                 setShuckleInfo([currFocus, props.realizeItem[1]]);
             }
             props.reset();
@@ -230,6 +225,10 @@ function ShuckleCursor(props)
     }, [targetReached, selectedKey, shuckleInfo[0]]);
 
     useEffect(() => {
+        if (props.realizeItem[0] && selectedKey === null) {  // SET TO ITEM
+            console.log("itemcase");
+            setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
+        }
         if (shuckleInfo[0] === focus.KEY) {    // KEY FOCUS - ANGRY
             if (selectedKey === null && remainingKeys.length > 0) {
                 console.log("chooseKey");
@@ -238,8 +237,8 @@ function ShuckleCursor(props)
             if (remainingKeys.length <= 0) {        // EXIT CASE
                 console.log("exit");
                 setShuckleInfo([focus.MOUSE, 0]);
-                setHaltInv(false);
                 setTargetReached(false);
+                setHaltInv(false);
                 setBusy(false);
             };
         };
@@ -253,6 +252,7 @@ function ShuckleCursor(props)
             selectedKey.style.background = damageList[rand];
             selectedKey.style.pointerEvents = 'none';
             setRemainingKeys(remainingKeys.filter(k => k !== selectedKey.id));
+            setTargetReached(false);
             setKey(null);
             setKeyPos(null);
         };
@@ -268,6 +268,7 @@ function ShuckleCursor(props)
     useEffect(() => {
         const processEmotion = async () => {
             await resolveOnceTimedOut(3000);
+            setMobileTargetPos([0,0]);
             setHaltInv(false);
             setShuckleInfo([focus.MOUSE, action.NONPLUSSED]);
         }
@@ -277,13 +278,12 @@ function ShuckleCursor(props)
             setShuckleInfo([focus.MOBILE, shuckleInfo[1]]);
             await resolveOnceTimedOut(6000);
             if (shuckleInfo[1] === action.BIRTHING) {
-                setShuckleInfo([focus.STAY, action.LAY_EGG]);
+                setShuckleInfo([shuckleInfo[0], action.LAY_EGG]);
             }
             else {
                 processEmotion();
             }
         }
-
 
         const layEgg = async () => {
             const baby = createBaby();
@@ -294,6 +294,7 @@ function ShuckleCursor(props)
             setShuckleChildren(newFamily);
             //brings back onscreen
             setHaltInv(false);
+            setMobileTargetPos([0,0]);
             setShuckleInfo([focus.MOUSE, action.SING]);
         }
 
@@ -380,8 +381,13 @@ function ShuckleCursor(props)
             offscreen();
         }
         else if (shuckleInfo[1] === action.LAY_EGG) {
-            layEgg();
+            if(props.realizeItem[0]){
+                setShuckleInfo([focus.ITEM, action.NONPLUSSED]);
+            } else {
+                layEgg();
+            }
         }
+
     }, [shuckleInfo[1]]);
 
     // PROMISES ----------------------------------------------------------------
