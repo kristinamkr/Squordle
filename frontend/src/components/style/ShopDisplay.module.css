@@ -80,12 +80,12 @@
 }
 
 .item img {
-    width: 68px;
-    height: 68px;
+    width: 64px;
+    height: 64px;
 }
 
 .lemonade img {
-    height: 68px;
+    height: 64px;
     width: inherit;
     padding-left: 6px;
     padding-right: 6px;

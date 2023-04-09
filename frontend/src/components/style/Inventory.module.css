@@ -14,13 +14,19 @@
 }
 
 .header1 {
-    width: 66px;
+    min-width: 66px;
+    max-width: 66px;
+}
+
+.leftColumn {
+    min-width: 50.28px;
+    max-width: 50.28px;
 }
 
 .storage {
 	position: relative;
-	top: 17.9px;
-	left: -375px;
+	top: 16px;
+	left: -370px;
 
     width: 125.08px;
     text-align: center;
@@ -31,7 +37,6 @@
 
 .draggable img {
     cursor: move;
-    width:  64px;
     height: 64px;
 }
 
@@ -41,8 +46,8 @@
 
 .expansionArrow {
 	position: relative;
-	top: 14px;
-	left: -340px;
+	top: 18px;
+	left: -330px;
 }
 
 .expansionArrow img {

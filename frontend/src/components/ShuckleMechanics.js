@@ -28,6 +28,8 @@ function ShuckleMechanics(props)
     // [0] - itemRealized?, [1] - realizedItemNum
     const [realizeItem, setRealizeItem] = useState([false, -1]); 
 
+    const [haltInv, setHaltInv] = useState(false);
+
     useEffect(() => {       
         setTimeout(() => {
             if (itemInfo[0] && !(realizeItem[0])) {
@@ -77,12 +79,16 @@ function ShuckleMechanics(props)
             <Inventory mousePos = {mousePos}
                            itemInfo = {itemInfo} 
                            setItemInfo = {setItemInfo}
+                           haltInv = {haltInv}
+                           setHaltInv = {setHaltInv}
                            realize = {realize} />
             <ShuckleCursor keyDownHandler = {props.keyDownHandler}
                            validKeys = {props.validKeys}
                            mousePos = {mousePos}
                            targetInfo = {itemInfo}
                            realizeItem = {realizeItem}
+                           haltInv = {haltInv}
+                           setHaltInv = {setHaltInv}
                            reset = {reset} />
         </>
     )

@@ -3,3 +3,8 @@ img.poffin {
 	width: 64px;
 	height: 64px;
 }
+
+img.lemonade {
+	cursor: move;
+	height: 64px;
+}

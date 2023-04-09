@@ -97,8 +97,6 @@ function ShopDisplay(props)
                                 <img src = {require("../assets/pokedollarLight.png")}/>
                                 <p> {" "} {1000} </p>
                             </div>
-                        </div>
-                        <div>
                             <button onClick = {shuckleAdopter}>
                                 Adopt
                             </button>
@@ -169,7 +167,7 @@ function ShopDisplay(props)
                         {display(items[3])}
                     </div>
                     <div className = {classes.rowDisplay}>
-                        {display(items[4])}
+                        {display(items[5])}
                         <div className = {classes.icon} style={{marginLeft:"60px"}}>
                             <button onClick = {props.shopHandler}>
                                 <ExitIcon className = {classes.exitIcon}/>

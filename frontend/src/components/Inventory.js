@@ -29,13 +29,21 @@ function Inventory(props)
     const mousePos = props.mousePos;
     const itemInfo = props.itemInfo; 
 
+    const haltInv = props.haltInv;
+    const setHaltInv = props.setHaltInv;
+
     function selectItem(e)
     {
         var nodes = Array.prototype.slice.call(e.currentTarget.children);
         const item = nodes[0].name;
         const itemCount = localStorage.getItem(item);
 
-        if (itemCount > 0 && itemInfo[0] === '') {  // test
+        console.log(itemCount > 0);
+        console.log(itemInfo[0] === '');
+        console.log(haltInv);
+        console.log(item);
+
+        if (itemCount > 0 && itemInfo[0] === '' && (!haltInv || item === "lemonade")) {  // test
             props.setItemInfo([item,
                               mousePos[0], 
                               mousePos[1],
@@ -66,14 +74,13 @@ function Inventory(props)
             <table className = {classes.storage}>
                 <tbody>
                 <tr className = {classes.header}>
-                    <th> Flavor </th>
+                    <th className = {classes.leftColumn}> Flavor </th>
                     <th className = {classes.header1}> Items </th>
                 </tr>
                 { isExpanded && itemPreview(items[0], "#F08030") } 
                 { isExpanded && itemPreview(items[1], "#F85888") }
-                { isExpanded && itemPreview(items[2], "#78C850") }
-                { isExpanded && itemPreview(items[3], "#F8D030") }
-                { isExpanded && itemPreview(items[4], "#6890F0") }
+                { isExpanded && itemPreview(items[2], "#F8D030") }
+                { isExpanded && itemPreview(items[3], "#6890F0") }
                 </tbody>
             </table>
 
