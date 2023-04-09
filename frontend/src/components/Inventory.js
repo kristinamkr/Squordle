@@ -29,13 +29,21 @@ function Inventory(props)
     const mousePos = props.mousePos;
     const itemInfo = props.itemInfo; 
 
+    const haltInv = props.haltInv;
+    const setHaltInv = props.setHaltInv;
+
     function selectItem(e)
     {
         var nodes = Array.prototype.slice.call(e.currentTarget.children);
         const item = nodes[0].name;
         const itemCount = localStorage.getItem(item);
 
-        if (itemCount > 0 && itemInfo[0] === '') {  // test
+        console.log(itemCount > 0);
+        console.log(itemInfo[0] === '');
+        console.log(haltInv);
+        console.log(item);
+
+        if (itemCount > 0 && itemInfo[0] === '' && (!haltInv || item === "lemonade")) {  // test
             props.setItemInfo([item,
                               mousePos[0], 
                               mousePos[1],

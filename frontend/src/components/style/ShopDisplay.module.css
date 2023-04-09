@@ -87,8 +87,8 @@
 .lemonade img {
     height: 64px;
     width: inherit;
-    padding-left: 3px;
-    padding-right: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .attempt {

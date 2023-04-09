@@ -35,6 +35,10 @@ function ShuckleCursor(props)
                      LAY_EGG:    6};
     Object.freeze(action);
 
+
+    const haltInv = props.haltInv;
+    const setHaltInv = props.setHaltInv;
+
     const mousePos = props.mousePos;
     const [shuckleChildren, setShuckleChildren] = useState(JSON.parse(window.localStorage.shuckleChildren));
     const [shucklePos, setShucklePos] = useState([0, 0]);
@@ -96,6 +100,7 @@ function ShuckleCursor(props)
         setKey(key);
         setKeyPos([keyPosition.top, keyPosition.left]);
         setBusy(false);
+        setHaltInv(true);
     }
     // -------------------------------------------------
 
@@ -233,6 +238,7 @@ function ShuckleCursor(props)
             if (remainingKeys.length <= 0) {        // EXIT CASE
                 console.log("exit");
                 setShuckleInfo([focus.MOUSE, 0]);
+                setHaltInv(false);
                 setTargetReached(false);
                 setBusy(false);
             };
@@ -261,19 +267,11 @@ function ShuckleCursor(props)
     // EMOTION-BASED BEHAVIORS ---------------------------------------
     useEffect(() => {
         const processEmotion = async () => {
-            console.log("poopoo!");
             await resolveOnceTimedOut(3000);
+            setHaltInv(false);
             setShuckleInfo([focus.MOUSE, action.NONPLUSSED]);
         }
-        const wander = async () => {
-            //CREATE MYOPIABUG
-            setShuckleInfo([focus.MYOPIA, shuckleInfo[1]]);
-            await resolveOnceTimedOut(2500);
-            if (shuckleInfo[1] === action.SICK)
-                setShuckleInfo([focus.STAY, action.POOP]);
-            else if (shuckleInfo[1] === action.CONFUSED)
-                setShuckleInfo([focus.STAY, action.LAY_EGG]);
-        }
+
         const offscreen = async () => {
             setMobileTargetPos([300,-200]);
             setShuckleInfo([focus.MOBILE, shuckleInfo[1]]);
@@ -285,14 +283,8 @@ function ShuckleCursor(props)
                 processEmotion();
             }
         }
-        const poop = async () => {
-            //CREATE JITTERBUG
-            setShuckleInfo([focus.JITTER, shuckleInfo[1]]);
-            await resolveOnceTimedOut(2500);
-            setShuckleInfo([focus.STAY, shuckleInfo[1]]);
-            //CREATE POOPSPRITE
-            setShuckleInfo([focus.MOUSE, action.SING]);
-        }
+
+
         const layEgg = async () => {
             const baby = createBaby();
             const newFamily = shuckleChildren.concat([baby]);
@@ -301,7 +293,31 @@ function ShuckleCursor(props)
             setBabyPosList([[400,-200]].concat(babyPosList));
             setShuckleChildren(newFamily);
             //brings back onscreen
+            setHaltInv(false);
             setShuckleInfo([focus.MOUSE, action.SING]);
+        }
+
+        /*
+        const poop = async () => {
+            //CREATE JITTERBUG
+            setShuckleInfo([focus.JITTER, shuckleInfo[1]]);
+            await resolveOnceTimedOut(2500);
+            setShuckleInfo([focus.STAY, shuckleInfo[1]]);
+            //CREATE POOPSPRITE
+            setShuckleInfo([focus.MOUSE, action.SING]);
+        }
+        */
+        /*
+        const wander = async () => {
+            //CREATE MYOPIABUG
+            setShuckleInfo([focus.MYOPIA, shuckleInfo[1]]);
+            await resolveOnceTimedOut(2500);
+            if (shuckleInfo[1] === action.SICK)
+                setShuckleInfo([focus.STAY, action.POOP]);
+            else if (shuckleInfo[1] === action.CONFUSED)
+                setShuckleInfo([focus.STAY, action.LAY_EGG]);
+        }
+        */
 
             //Change the spawn location to the opposite side of the shuckle from the average of the positions of the babies.
             /*if (shuckleChildren > 1) {
@@ -333,7 +349,6 @@ function ShuckleCursor(props)
             }
             setBabyPosList(babyPosList+[shucklePos[0]+16+spawnX, shucklePos[1]+16+spawnY])
             */
-        }
 
         // move ?
         if (shuckleInfo[1] === action.NONPLUSSED) {
@@ -355,13 +370,13 @@ function ShuckleCursor(props)
             window.localStorage.shuckleShiny = "1";
         }
         else if (shuckleInfo[1] === action.SICK) {
-            wander();
+            //wander();
         }
         else if (shuckleInfo[1] === action.POOP) {
-            poop();
+            //poop();
         }
         else if (shuckleInfo[1] === action.BIRTHING) {
-            console.log("OFFSCREEN");
+            setHaltInv(true);
             offscreen();
         }
         else if (shuckleInfo[1] === action.LAY_EGG) {
