@@ -68,7 +68,6 @@ function ShuckleMechanics(props)
     {
         for (let i = 0; i < items.length; i++) {
             if (items[i].props.name === name) {
-                console.log("item id - " + items[i].props.id); 
                 return items[i].props.id;
             }
         }

@@ -35,7 +35,6 @@ function ShopDisplay(props)
 
 	const [shopHeader, setShopHeader] = 
         useState(shopText[Number(window.localStorage.shopState)]);
-    console.log("shopdisplay dollar - " + window.localStorage.shopState);
 
 	function shopAdvance()
     {
@@ -58,7 +57,6 @@ function ShopDisplay(props)
 
 	function shuckleAdopter()
     {
-        console.log("shuckle adopter?");
 		if (Number(window.localStorage.pokeDollars) >= 1000) {
 			window.localStorage.adoptedShuckle = true;
 			window.localStorage.shopState = 7; 

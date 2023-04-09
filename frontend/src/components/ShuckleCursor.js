@@ -95,7 +95,6 @@ function ShuckleCursor(props)
         const rand = Math.floor(Math.random() * remainingKeys.length);
         const key = document.getElementById(remainingKeys[rand]);
         const keyPosition = key.getBoundingClientRect();
-        console.log(keyPosition.top, keyPosition.left);
 
         setBusy(false);
         setHaltInv(true);
@@ -195,13 +194,11 @@ function ShuckleCursor(props)
             let currFocus = focus.MOUSE;
 
             if (props.realizeItem[1] === 1) {
-                console.log("KEY");
                 currFocus = focus.KEY;
             }
 
             // is there a better way to do this (ANGRY CONDITION)
             if (shuckleInfo[1] === action.ANGRY && props.realizeItem[1] !== 3) {
-                console.log("RECOVER");
                 setKey(null);
                 setKeyPos(null);
                 setShuckleInfo([currFocus, action.SING]);
@@ -213,11 +210,8 @@ function ShuckleCursor(props)
             setTargetReached(false);
         };
 
-        console.log(targetReached, shuckleInfo, selectedKey);
-
         if (targetReached && shuckleInfo[0] === focus.ITEM && shuckleInfo[1] <= 1) {
             if (shuckleInfo[0] === focus.ITEM) {
-                console.log("eatItem");
                 eatItem();
             }
         }
@@ -226,16 +220,13 @@ function ShuckleCursor(props)
 
     useEffect(() => {
         if (props.realizeItem[0] && selectedKey === null) {  // SET TO ITEM
-            console.log("itemcase");
             setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
         }
         if (shuckleInfo[0] === focus.KEY) {    // KEY FOCUS - ANGRY
             if (selectedKey === null && remainingKeys.length > 0) {
-                console.log("chooseKey");
                 chooseKey();
             };
             if (remainingKeys.length <= 0) {        // EXIT CASE
-                console.log("exit");
                 setShuckleInfo([focus.MOUSE, 0]);
                 setTargetReached(false);
                 setHaltInv(false);
@@ -259,7 +250,6 @@ function ShuckleCursor(props)
 
         if (shuckleInfo[0] === focus.KEY && targetReached && !busy) {    // KEY FOCUS - ANGRY
             setBusy(true);
-            console.log("destroy");
             destroy();
         }
     }, [targetReached])

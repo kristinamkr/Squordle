@@ -38,11 +38,6 @@ function Inventory(props)
         const item = nodes[0].name;
         const itemCount = localStorage.getItem(item);
 
-        console.log(itemCount > 0);
-        console.log(itemInfo[0] === '');
-        console.log(haltInv);
-        console.log(item);
-
         if (itemCount > 0 && itemInfo[0] === '' && (!haltInv || item === "lemonade")) {  // test
             props.setItemInfo([item,
                               mousePos[0], 
