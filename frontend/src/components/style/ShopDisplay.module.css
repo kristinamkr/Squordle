@@ -39,7 +39,8 @@
 }
 
 .shuckleDisplay button {
-    position: relative;
+    position: relative; 
+    border: 1px solid red;
     width: 100px; 
     height: 25px;
 }

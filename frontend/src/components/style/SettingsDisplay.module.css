@@ -1,0 +1,13 @@
+/*
+ * SettingsDisplay.module.css
+*/
+
+.settingsDisplay {
+    composes: display from "./DisplayMan.module.css";
+    width: 400px;
+    height: 475px;
+}
+
+.settingsDisplay img {
+    width: 80%;
+}

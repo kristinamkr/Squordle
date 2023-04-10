@@ -4,7 +4,7 @@
 
 import classes from "./style/Squordle.module.css";
 
-import Header from "./Header.js";
+import DisplayMan from "./DisplayMan.js";
 import GSDiv from "./GSDiv.js";
 import ShuckleMechanics from "./ShuckleMechanics.js";
 
@@ -13,15 +13,16 @@ import loadSave from "../functions/loadSave.js";
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+let usedPokemon = []; 
+
 loadSave();
 function Squordle(props) 
 {
-    var validKeys = "qwertyuiopasdfghjklzxcvbnm".split('');
+    console.log("SQUORDLE");
 
-    const [pokeObj, setPokeObj] = useState([]); // ? 
     const [pokemon, setPokemon] = useState(['eddie']);
+    const pokeList = props.pokeList;
 
-    // best way?
     const [pokeDollars, setPokeDollars] = 
         useState(Number(window.localStorage.pokeDollars));
     window.localStorage.pokeDollars = pokeDollars; 
@@ -29,61 +30,59 @@ function Squordle(props)
     function dollarHandler(delta) { 
         setPokeDollars(pokeDollars + delta); 
     }
-    // ----------
 
     const [isGameOver, setGameOver] = useState([false, '']);
-
+    
     useEffect(() => {
-        async function getPokemon() {
-            let response;
-            if (window.localStorage.gameMode == 0)
-                response = await fetch(`http://localhost:3000/potd`);
-            else
-                response = await fetch(`http://localhost:3000/random`);
-
-            if (!response.ok) {
-                const message = `An error occurred: ${response.statusText}`;
-                window.alert(message);
-                return;
-            }
-
-            const pObj = await response.json(); // waiting for promise
-            setPokeObj(pObj);
+        async function getDaily() {
+            return await fetch(`http://localhost:3000/potd`)
+                .then((result) => result.json())
         }
 
-        getPokemon();
-        return; 
-    }, []); // empty dependency means executed once on load
+        function getRandom() {
+            const max = Object.keys(pokeList).length;
+            let i = Math.floor(Math.random() * max);
+            // REPEAT IF POKEMON ALREADY CYCLED || INAPPROPRIATE LENGTH
+            while ((pokeList[i].length < 5 || pokeList[i].length > 8) ||  
+                usedPokemon.includes(pokeList[i])) 
+                i = Math.floor(Math.random() * max);
+            return pokeList[i];
+        }
 
-    let pokeObjLength = 0;
-    useEffect(() => {
-        pokeObjLength = pokeObj.length;
-
-        if (pokeObjLength != 0)
-            setPokemon(pokeObj[0].name.toLowerCase());
-    }, [pokeObj]);
+        if (isGameOver[0] == false) {
+            if (window.localStorage.gameMode == 0)
+                getDaily()
+                    .then(function(result) { 
+                        setPokemon(result[0].name.toLowerCase());
+                    }).catch((err) => console.error(err));
+            else
+                setPokemon(getRandom());
+        }
+        else usedPokemon.push(pokemon);
+    }, [isGameOver[0]]);
 
 	return (
         <>
             <div className = {classes.center}>
-                <Header id = "header"
+                <DisplayMan id = "header"
+                        userHandler = {props.userHandler}
                         pokemon = {pokemon}
                         pokeDollars = {pokeDollars}
-                        dollarHandler = {dollarHandler}                        
-                        isGameOver = {isGameOver} />
+                        dollarHandler = {dollarHandler}
+                        isGameOver = {isGameOver}
+                        setGameOver = {setGameOver} />
 
                 { window.localStorage.adoptedShuckle === "true" &&
-                    <ShuckleMechanics validKeys = {validKeys} /> }
+                    <ShuckleMechanics /> }
             </div>
 
-			{ !(pokemon == 'eddie') && 
+			{ !(pokemon == "eddie") &&  
                 <GSDiv  id = "gsdiv"
-                        pokemon = {pokemon}                   
-                        setPokeObj = {setPokeObj} 
+                        pokemon = {pokemon} 
+                        pokeList = {pokeList}
                         dollarHandler = {dollarHandler}                        
                         isGameOver = {isGameOver} 
-                        setGameOver = {setGameOver} 
-                        validKeys = {validKeys} />} 
+                        setGameOver = {setGameOver} />}
         </>
 	)
 }

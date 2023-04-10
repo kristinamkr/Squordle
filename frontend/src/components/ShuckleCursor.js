@@ -40,7 +40,8 @@ function ShuckleCursor(props)
     const setHaltInv = props.setHaltInv;
 
     const mousePos = props.mousePos;
-    const [shuckleChildren, setShuckleChildren] = useState(JSON.parse(window.localStorage.shuckleChildren));
+    const [shuckleChildren, setShuckleChildren] = 
+        useState(JSON.parse(window.localStorage.shuckleChildren));
     const [shucklePos, setShucklePos] = useState([0, 0]);
 
     const babyPosInit = Array(shuckleChildren.length);
@@ -54,11 +55,13 @@ function ShuckleCursor(props)
 
     const [targetPos, setTargetPos] = useState([0,0]); 
     const [targetReached, setTargetReached] = useState(false);
-    const [babyTargetReached, setBabyTargetReached] = useState(Array(shuckleChildren.length));
+    const [babyTargetReached, setBabyTargetReached] = 
+        useState(Array(shuckleChildren.length));
     const [mobileTargetPos, setMobileTargetPos] = useState([0,0]);
 
-    const [remainingKeys, setRemainingKeys] = 
-        useState(["Backspace", "Enter"].concat(props.validKeys));  // null?
+    const [remainingKeys, setRemainingKeys] = useState(["Backspace", "Enter"]
+        .concat("qwertyuiopasdfghjklzxcvbnm".split(''))); 
+
     const [selectedKey, setKey] = useState(null);
     const [keyPos, setKeyPos] = useState(null);
     const [busy, setBusy] = useState(true);
@@ -69,22 +72,22 @@ function ShuckleCursor(props)
         return (Math.abs(a[0] - b[0]) < 25 && Math.abs(a[1] - b[1]) < 25);
 	}
 
-	function translateSpritePos(targPos, currPos, speed)
+	function translateSpritePos(tPos, currPos, speed)
     {
-		const [targ_x, targ_y] = [targPos[0], targPos[1]];
+		const [t_x, t_y] = [tPos[0], tPos[1]];
   		const [curr_x, curr_y] = [currPos[0], currPos[1]];
 
-  		const xDir = Math.max(Math.min(speed * 0.01 * (targ_x - curr_x), 3.5), -3.5);
-  		const yDir = Math.max(Math.min(speed * 0.01 * (targ_y - curr_y), 3.5), -3.5);
+  		const xDir = Math.max(Math.min(speed * 0.01 * (t_x - curr_x), 3.5), -3.5);
+  		const yDir = Math.max(Math.min(speed * 0.01 * (t_y - curr_y), 3.5), -3.5);
 
         return([xDir + curr_x, yDir + curr_y]);
 	}
 
     function createBaby()
     {
-        return {number:shuckleChildren.length,
-                state:"shuckleEgg0",
-                shiny:0}
+        return {number: shuckleChildren.length,
+                state:  "shuckleEgg0",
+                shiny:  0}
     }
 
     // FUNCTION FUNCTION -------------------------------
@@ -106,8 +109,7 @@ function ShuckleCursor(props)
 
     // USE EFFECTS -------------------------------------------------------------
     // TARGET TRACKING ----------------------------------------------
-
-        //SHUCKLE
+    //SHUCKLE
     useEffect(() => {
         setTimeout(() => {
             if (shuckleInfo[0] === focus.MOUSE) {  // MOUSE TRACKING
@@ -130,19 +132,20 @@ function ShuckleCursor(props)
                 setTargetPos(currPos);
             }
 
-            let pos = translateSpritePos([targetPos[0] + 15, targetPos[1]], shucklePos, 3);
+            let pos = translateSpritePos([targetPos[0] + 15, targetPos[1]], 
+                                         shucklePos, 
+                                         3);
             setShucklePos([pos[0], pos[1]]);
 
-            if (shuckleInfo[0] !== focus.KEY) {
-                setTargetReached(isNear(targetPos, shucklePos) || isNear(mobileTargetPos, shucklePos));
-            }
-            else {
+            if (shuckleInfo[0] !== focus.KEY)
+                setTargetReached(isNear(targetPos, shucklePos) 
+                    || isNear(mobileTargetPos, shucklePos));
+            else
                 setTargetReached(isNear(keyPos, shucklePos));
-            }
         }, 16);
     }, [mousePos, targetPos, shucklePos, selectedKey]);
 
-        //BABIES
+    //BABIES
     useEffect(() => {
         setTimeout(() => {
             let currPosList = [[shucklePos[0], shucklePos[1]]];
@@ -153,39 +156,41 @@ function ShuckleCursor(props)
             let targPosList = [];
             let targReachedList = [];
             for (var i = 0; i < babyPosList.length; i++) {
-                if (!(isNear(babyPosList[i], currPosList[i]))) {
+                if (!(isNear(babyPosList[i], currPosList[i])))
                     targReachedList.push(0);
-                }
-                else {
+                else
                     targReachedList.push(1);
-                }
                 targPosList.push(currPosList[i]);
             }
 
             let newPosList = [];
             for (var i = 0; i < babyPosList.length; i++) {
-                if (targReachedList[i] == 1) {
+                if (targReachedList[i] == 1)
                     newPosList.push(babyPosList[i]);
-                }
                 else {
-                    let pos = translateSpritePos([targPosList[i][0], targPosList[i][1]-32], babyPosList[i], 6);
+                    let pos = translateSpritePos([targPosList[i][0], 
+                                                  targPosList[i][1]-32], 
+                                                 babyPosList[i], 
+                                                 6);
                     newPosList.push(pos);
                 }
             }
 
-            if(shuckleInfo[1] == action.BIRTHING) {
+            if(shuckleInfo[1] == action.BIRTHING)
                 resolveOnceTimedOut(7000);
-            }
-            else {
+            else
                 setBabyPosList(newPosList);                
-            }
             setBabyTargetReached(targReachedList);
         }, 16);
     }, [babyPosList, shucklePos]);
 
+    //MOVE TOWARD ITEM if REALIZED and NONPLUSSED or ANGRY
+    useEffect(() => {
+        if (props.realizeItem[0] && shuckleInfo[1] <= 1)  // SET TO ITEM
+            setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
+    }, [props.realizeItem[0]])
+
     // TARGET SPECIFIC BEHAVIOR  -------------------------------------
-
-
     useEffect(() => {
         // ASYNC FUNCTIONS ---------------------------------
         const eatItem = async () => {
@@ -403,7 +408,6 @@ function ShuckleCursor(props)
 
     function animBabies(children, posList)
     {
-
         //deepCopy and reverse creates the correct render order
         const revChildren = JSON.parse(JSON.stringify(children));
 
@@ -425,18 +429,18 @@ function ShuckleCursor(props)
 
         revChildren.reverse();
 
-        
-
         return (
-                <>
-                    {revChildren.map((child) => (<img className = {classes.shuckle}
-                                                      style = {{top: (posList[child.number][0] + sizeOffset[child.number]).toString() + "px",
-                                                                left: (posList[child.number][1] + sizeOffset[child.number]).toString() + "px",
-                                                                width: sizes[child.number][0],
-                                                                height: sizes[child.number][1]}}
-                                                      src = {require("../assets/" + child.state + ".gif")}
-                                                      key = {child.number}/>))}
-                </>
+            <>
+                { revChildren.map((child) => (<img className = {classes.shuckle}
+                      style = {{top: (posList[child.number][0] + 
+                                      sizeOffset[child.number]).toString() + "px",
+                                left: (posList[child.number][1] + 
+                                      sizeOffset[child.number]).toString() + "px",
+                                width: sizes[child.number][0],
+                                height: sizes[child.number][1]}}
+                      src = {require("../assets/" + child.state + ".gif")}
+                      key = {child.number}/>))}
+            </>
         )
     }
 
