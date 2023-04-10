@@ -1,26 +1,57 @@
 /*
- * App.js
+ * app.js
 */
 
-import './App.css';
 import Squordle from "./components/Squordle.js";
 
-import { useState, useRef } from 'react';
-import { Switch, Routes, Route, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-function App() 
-{
-    // disables tabbing
-    document.addEventListener("focus", (e) => {  
-        document.activeElement.blur()  
-    }, true);
+function App()
+{ 
+    console.log("APP!");
+
+    // USER AUTH ---------------------------------------------------------------
+    const [user, setUser] = useState(['', false]);
+    function userHandler(name) {
+        setUser([name, true]);
+    }
+
+    useEffect(() => {
+        if (user[1]) console.log("WELCOME, " + user[0]);
+    }, [user[1]]);
+
+    // -------------------------------------------------------------------------
+
+    // FETCH POKELIST... SHOULD ONLY EXECUTE ONCE ------------------------------
+    const [pokeList, setPokeList] = useState(null);
+
+    async function pokePromise() { 
+        return await fetch(`http://localhost:3000/pokeList`)
+                .then(result => result.json())
+                .catch((err) => console.error(err));
+    }
+
+    useEffect(() => {
+        if (!pokeList) {
+            pokePromise()
+                .then(function(result) {
+                  setPokeList(result.map(p => p.name.toLowerCase()));
+                }).catch(err => console.error(err));
+        }
+    }, [pokeList]);
+    // -------------------------------------------------------------------------
 
     return (
         <div>
-            <Routes>
-            <Route path='/' 
-                   element={<Squordle id='squordle' />} />
-            </Routes>
+            { pokeList &&
+                <Routes>
+                <Route path='/' 
+                       element={<Squordle id='squordle' 
+                                          pokeList = {pokeList} 
+                                          userHandler = {userHandler} />} />
+                </Routes>
+            }
         </div>
     );
 }

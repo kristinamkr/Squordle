@@ -58,7 +58,6 @@ function ShopDisplay(props)
 
 	function shuckleAdopter()
     {
-        console.log("shuckle adopter?");
 		if (Number(window.localStorage.pokeDollars) >= 1000) {
 			window.localStorage.adoptedShuckle = true;
 			window.localStorage.shopState = 7; 

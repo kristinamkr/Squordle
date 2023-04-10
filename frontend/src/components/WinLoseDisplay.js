@@ -23,9 +23,7 @@ function WinLoseDisplay(props)
             imgName = "WinTextLight";
             gameOverTxt = "The pokémon was " + answer[0].toUpperCase() + 
                 answer.slice(1);
-        }
-
-        else {
+        } else {
             imgName = "LoseTextLight";
             gameOverTxt = "The correct pokémon was " + answer[0].toUpperCase() +
                 answer.slice(1);
@@ -33,15 +31,15 @@ function WinLoseDisplay(props)
     }
 
 	return (
-        <div className = {classes.winLoseDisplay}> 
+        <div className = {classes.winLoseDisplay}>
             { winOrLose() }
-                <img className = {classes.textDisplay}
-                     src = {require("../assets/" + imgName + ".png")}/>
-                <img className = {classes.spriteDisplay}
-                     src = {spriteRef}/>
-                <p> {gameOverTxt} </p>
-			<button onClick = {() => props.reload()}> Play Again? </button>
-		</div>
+            <img className = {classes.textDisplay}
+                 src = {require("../assets/" + imgName + ".png")}/>
+            <img className = {classes.spriteDisplay}
+                 src = {spriteRef}/>
+            <p> {gameOverTxt} </p>
+            <button onClick = {() => props.reload()}> Play Again? </button>
+        </div>
 	);
 }
 

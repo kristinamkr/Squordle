@@ -79,7 +79,6 @@ function ShuckleMechanics(props)
                            setItemInfo = {setItemInfo}
                            realize = {realize} />
             <ShuckleCursor keyDownHandler = {props.keyDownHandler}
-                           validKeys = {props.validKeys}
                            mousePos = {mousePos}
                            targetInfo = {itemInfo}
                            realizeItem = {realizeItem}
