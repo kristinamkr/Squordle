@@ -13,7 +13,8 @@ function SettingsDisplay(props)
 			<p/>
 			<img src = {require("../assets/settings.png")}/>
 
-            <User userHandler = {props.userHandler} />
+            <User user = {props.user}
+                  userHandler = {props.userHandler} />
 
 			<button onClick = {props.settingsHandler}> Close </button>
 			<p/>

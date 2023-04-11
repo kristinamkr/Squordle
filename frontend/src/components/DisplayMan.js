@@ -101,6 +101,7 @@ function DisplayMan(props)
                                  shopHandler = {shopHandler}/>}
                 {displayState["showSettings"] && 
                     <SettingsDisplay settingsHandler = {settingsHandler}
+                                     user = {props.user}
                                      userHandler = {props.userHandler} />} 
                 {displayState["showInfo"] && 
                     <InfoDisplay infoHandler = {infoHandler}/>}

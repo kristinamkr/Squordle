@@ -65,6 +65,7 @@ function Squordle(props)
         <>
             <div className = {classes.center}>
                 <DisplayMan id = "header"
+                        user = {props.user}
                         userHandler = {props.userHandler}
                         pokemon = {pokemon}
                         pokeDollars = {pokeDollars}

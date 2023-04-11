@@ -12,14 +12,26 @@ function App()
     console.log("APP!");
 
     // USER AUTH ---------------------------------------------------------------
-    const [user, setUser] = useState(['', false]);
-    function userHandler(name) {
-        setUser([name, true]);
+    const [user, setUser] = useState(null);
+
+    function userHandler(data) {
+        setUser(data);
     }
 
     useEffect(() => {
-        if (user[1]) console.log("WELCOME, " + user[0]);
-    }, [user[1]]);
+        if (user) {
+            localStorage.region = user.userData.region;
+            localStorage.pokeDollars = user.userData.pokeDollars;
+            localStorage.adoptedShuckle = user.userData.shuckleInfo.adopted;
+            localStorage.shuckleShiny = user.userData.shuckleInfo.shiny;
+            localStorage.shuckleChildren = user.userData.shuckleInfo.children;
+            localStorage.spicyPoffin = user.userData.inventory.spicyPoffin;
+            localStorage.sweetPoffin = user.userData.inventory.sweetPoffin;
+            localStorage.goldPoffin = user.userData.inventory.goldPoffin;
+            localStorage.lemonade = user.userData.inventory.lemonade;
+            localStorage.ticket0 = user.userData.inventory.ticket;
+        } 
+    }, [user]);
 
     // -------------------------------------------------------------------------
 
@@ -49,6 +61,7 @@ function App()
                 <Route path='/' 
                        element={<Squordle id='squordle' 
                                           pokeList = {pokeList} 
+                                          user = {user}
                                           userHandler = {userHandler} />} />
                 </Routes>
             }
