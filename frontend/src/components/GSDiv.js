@@ -10,7 +10,6 @@ import Keyboard from "./Keyboard.js";
 import { useState, useEffect } from 'react';
 
 let focus = [0, 0];  // (row #, box #)
-let lettersUsed = [];
 
 const gsInit = Array(6);
 
@@ -66,7 +65,6 @@ function GSDiv(props)
         };
     
         focus = [0, 0];
-        lettersUsed = [];
         setGameSpace(gsInit);
         setLetterStates(lsInit);
     }
@@ -113,31 +111,37 @@ function GSDiv(props)
 	function checkAnswer(row)
     {
 	    var lsChange = letterStates;
+        var tileList = pokeAnswer.split("");
+        var boxes = row.boxes;
         let pointsWon = 0; 
 
+
 	    for (var i = 0; i < pokeAnswer.length; i++) {
-            var currentBox = row.boxes[i];
-
-            if (currentBox.letter === pokeAnswer[i]) {  // green
-                currentBox.state = "correct";
-                lsChange["correctGuess"].add(currentBox.letter);
+            if (boxes[i].letter === pokeAnswer[i]) {  // green
+                boxes[i].state = "correct";
+                lsChange["correctGuess"].add(boxes[i].letter);
                 setLetterStates(lsChange);
-                if (!(lettersUsed.includes(currentBox.letter)))
-                    pointsWon += 20;
+                tileList.splice(i, 1);
+                pointsWon += 20;
             }
-            else if (isInAnswer(currentBox.letter)) {   // yellow
-                currentBox.state = "inWord";
-                lsChange["inWord"].add(currentBox.letter);
-                if (!(lettersUsed.includes(currentBox.letter)))
-                    pointsWon += 5;
-            }
-            else {                                      // gray
-                currentBox.state = "incorrect";
-                lsChange["notInWord"].add(currentBox.letter);
+        }
+
+        for (var i = 0; i < pokeAnswer.length; i++) {
+            //skip over correct answers
+            if (boxes[i].state === "correct") {
+                continue;
             }
 
-            if (!(lettersUsed.includes(currentBox.letter))) // TRACK UNIQUE LTRS
-                lettersUsed.push(currentBox.letter);
+            //check if the rest are in the word somewhere
+            if (isInAnswer(boxes[i].letter, tileList)) {   // yellow
+                boxes[i].state = "inWord";
+                lsChange["inWord"].add(boxes[i].letter);
+                pointsWon += 5;
+            }
+            else {                               // gray
+                boxes[i].state = "incorrect";
+                lsChange["notInWord"].add(boxes[i].letter);
+            }
         }
 
         if (isWinner(row)) {
@@ -165,19 +169,23 @@ function GSDiv(props)
         return row;
 	}
 
-    function isInAnswer(letter)
+    function isInAnswer(letter, tileList)
     {
-        const answerSet = new Set(pokeAnswer);
-        if (answerSet.has(letter)) 
-            return true;
+        for (var i = 0; i < tileList.length; i++){
+            if (letter === tileList[i]) {
+                tileList.splice(i, 1);
+                return true;
+            }
+        }
+
         return false;
     }
 
     function isWinner(row)
     {
         for (var i = 0; i < row.length; i++) {
-            const currentBox = row.boxes[i];
-            if (!(currentBox.state === "correct"))
+            const boxes = row.boxes;
+            if (!(boxes[i].state === "correct"))
                 return false;
         }
         return true;
