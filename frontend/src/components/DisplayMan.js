@@ -22,51 +22,61 @@ function Backdrop()
 function DisplayMan(props)
 {
 	const [displayState, setDisplayState] = 
-           useState({"showShop": false,
-                     "showSettings": false,
-                     "showInfo": false,
-                     "showWinLose": false,
-                     "showBackdrop": false});
+           useState({ showShop:     false,
+                      showSettings: false,
+                      showInfo:     false,
+                      showWinLose:  false,
+                      showBackdrop: false });
 
-    if (window.localStorage.firstTime === "1") {
-        window.localStorage.firstTime = 0;
+    useEffect(() => {
+        let enableBackdrop = false;
+        for(let key in displayState) {
+            if (displayState[key])
+                enableBackdrop = true;
+        }
+        localStorage.backdrop = enableBackdrop;
+        console.log("BACKDROP ? " + localStorage.backdrop);
+    }, [displayState]);
+
+    if (JSON.parse(localStorage.firstTime)) {
+        localStorage.firstTime = false;
         infoHandler();
     }
 
     function winLoseHandler()
     {   
         setDisplayState({...displayState, 
-                         "showWinLose": true,
-                         "showBackdrop": true});
+                         showWinLose:  true,
+                         showBackdrop: true});
     }
 
   	function shopHandler()
     {
   		setDisplayState({...displayState,
-                         "showShop": !displayState["showShop"],
-                         "showBackdrop": !displayState["showBackdrop"]});
+                         showShop:     !displayState["showShop"],
+                         showBackdrop: !displayState["showBackdrop"]});
   	}
 
   	function settingsHandler()
     {
   		setDisplayState({...displayState,
-                         "showSettings": !displayState["showSettings"],
-                         "showBackdrop": !displayState["showBackdrop"]});
+                         showSettings: !displayState["showSettings"],
+                         showBackdrop: !displayState["showBackdrop"]});
   	}
 
 	function infoHandler()
     {
         setDisplayState({...displayState, 
-                         "showInfo": !displayState["showInfo"],
-                         "showBackdrop": !displayState["showBackdrop"]});
+                         showInfo:     !displayState["showInfo"],
+                         showBackdrop: !displayState["showBackdrop"]});
   	}
 
     // CHANGE S.T. ONLY HEADER & GSDIV ARE RE-RENDERED
 	function reload()
     {
-		setDisplayState({"showInfo": false,
-                         "showWinLose": false,
-                         "showBackdrop": false});
+		setDisplayState({showInfo:     false,
+                         showWinLose:  false,
+                         showBackdrop: false});
         props.setGameOver([false, '']);
     }
 

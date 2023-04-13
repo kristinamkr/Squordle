@@ -14,11 +14,10 @@
 //All will chase Gold - 7
 
 import classes from "./style/ShuckleCursor.module.css";
-import { useState, useReducer, useEffect} from 'react';
+import { useState, useEffect} from 'react';
 
 function ShuckleCursor(props)
 {
-
     const focus = { MOUSE: 0,
                     ITEM:  1,
                     KEY:   2,
@@ -35,13 +34,12 @@ function ShuckleCursor(props)
                      LAY_EGG:    6};
     Object.freeze(action);
 
-
     const haltInv = props.haltInv;
     const setHaltInv = props.setHaltInv;
 
     const mousePos = props.mousePos;
     const [shuckleChildren, setShuckleChildren] = 
-        useState(JSON.parse(window.localStorage.shuckleChildren));
+        useState(JSON.parse(localStorage.shuckleInfo)["children"]);
     const [shucklePos, setShucklePos] = useState([0, 0]);
 
     const babyPosInit = Array(shuckleChildren.length);
@@ -69,7 +67,7 @@ function ShuckleCursor(props)
 
 	function isNear(a, b) 
     {
-        return (Math.abs(a[0] - b[0]) < 25 && Math.abs(a[1] - b[1]) < 25);
+        if (a) return (Math.abs(a[0] - b[0]) < 25 && Math.abs(a[1] - b[1]) < 25);
 	}
 
 	function translateSpritePos(tPos, currPos, speed)
@@ -77,8 +75,10 @@ function ShuckleCursor(props)
 		const [t_x, t_y] = [tPos[0], tPos[1]];
   		const [curr_x, curr_y] = [currPos[0], currPos[1]];
 
-  		const xDir = Math.max(Math.min(speed * 0.01 * (t_x - curr_x), 3.5), -3.5);
-  		const yDir = Math.max(Math.min(speed * 0.01 * (t_y - curr_y), 3.5), -3.5);
+  		const xDir = Math.max
+            (Math.min(speed * 0.01 * (t_x - curr_x), 3.5), -3.5);
+  		const yDir = Math.max
+            (Math.min(speed * 0.01 * (t_y - curr_y), 3.5), -3.5);
 
         return([xDir + curr_x, yDir + curr_y]);
 	}
@@ -138,8 +138,9 @@ function ShuckleCursor(props)
             setShucklePos([pos[0], pos[1]]);
 
             if (shuckleInfo[0] !== focus.KEY)
-                setTargetReached(isNear(targetPos, shucklePos) 
-                    || isNear(mobileTargetPos, shucklePos));
+                setTargetReached
+                    (isNear(targetPos, shucklePos) || 
+                     isNear(mobileTargetPos, shucklePos));
             else
                 setTargetReached(isNear(keyPos, shucklePos));
         }, 16);
@@ -283,10 +284,16 @@ function ShuckleCursor(props)
         const layEgg = async () => {
             const baby = createBaby();
             const newFamily = shuckleChildren.concat([baby]);
-            //updates the game save (you had a baby! you wanna remember you had a baby right?)
-            window.localStorage.shuckleChildren = JSON.stringify(newFamily);
+
+            // updates the game save 
+            // (you had a baby! you wanna remember you had a baby right?)
+            let tempInfo = JSON.parse(localStorage.shuckleInfo);
+            tempInfo["children"] = newFamily;
+            localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
+
             setBabyPosList([[400,-200]].concat(babyPosList));
             setShuckleChildren(newFamily);
+
             //brings back onscreen
             setHaltInv(false);
             setMobileTargetPos([0,0]);
@@ -363,7 +370,9 @@ function ShuckleCursor(props)
             processEmotion();
         }
         else if (shuckleInfo[1] === action.SHINY) {
-            window.localStorage.shuckleShiny = "1";
+            let tempInfo = JSON.parse(localStorage.shuckleInfo);
+            tempInfo["shiny"] = true;
+            localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
         }
         else if (shuckleInfo[1] === action.SICK) {
             //wander();
@@ -448,9 +457,9 @@ function ShuckleCursor(props)
 		<>
             {shuckleChildren.length > 0
                 && ( <> { animBabies(shuckleChildren, babyPosList) } </> )}
-			{window.localStorage.shuckleShiny === "0" && 
+			{!(JSON.parse(localStorage.shuckleInfo)["shiny"]) && 
                 animate("shuckle", shucklePos, [16, 32]) }
-			{window.localStorage.shuckleShiny === "1" && 
+			{JSON.parse(localStorage.shuckleInfo)["shiny"] && 
                 animate("shuckleShiny", shucklePos, [16, 32]) }
 
 			{shuckleInfo[0] === focus.MOUSE && shuckleInfo[1] === action.SING

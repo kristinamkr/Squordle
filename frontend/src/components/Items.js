@@ -39,7 +39,7 @@ const items = [<Poffin name = "spicyPoffin"
                        price = "100"
                        tag = "Juice"
                        id = "4" />,
-               <Poffin name = "ticket0"
+               <Poffin name = "ticket"
                        price = "495"
                        tag = "Ticket"
                        id = "5" />,

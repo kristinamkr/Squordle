@@ -24,8 +24,8 @@ function Squordle(props)
     const pokeList = props.pokeList;
 
     const [pokeDollars, setPokeDollars] = 
-        useState(Number(window.localStorage.pokeDollars));
-    window.localStorage.pokeDollars = pokeDollars; 
+        useState(Number(localStorage.pokeDollars));
+    localStorage.pokeDollars = pokeDollars; 
 
     function dollarHandler(delta) { 
         setPokeDollars(pokeDollars + delta); 
@@ -50,7 +50,7 @@ function Squordle(props)
         }
 
         if (isGameOver[0] == false) {
-            if (window.localStorage.gameMode == 0)
+            if (JSON.parse(localStorage.gameMode) == 0)
                 getDaily()
                     .then(function(result) { 
                         setPokemon(result[0].name.toLowerCase());
@@ -73,7 +73,7 @@ function Squordle(props)
                         isGameOver = {isGameOver}
                         setGameOver = {setGameOver} />
 
-                { window.localStorage.adoptedShuckle === "true" &&
+                { JSON.parse(localStorage.shuckleInfo)["adopted"] &&
                     <ShuckleMechanics /> }
             </div>
 

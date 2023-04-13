@@ -17,21 +17,25 @@ const gsInit = Array(6);
 function GSDiv(props) 
 {
     console.log("GSDIV!");
+    console.log("FOCUS ["+focus[0]+", "+focus[1]+"]");
     const pokeList = props.pokeList;
     const pokeAnswer = props.pokemon; 
 
-	useEffect(() => {
-        document.addEventListener("keydown", keyDownHandler);
-  		return () => document.removeEventListener("keydown", keyDownHandler);
-    });
-
     const validKeys = "qwertyuiopasdfghjklzxcvbnm".split('');
 
-    // GAMESPACE WOO -----------------------------------------------------------
 	const [gameSpace, setGameSpace] = useState(null);
 	const [letterStates, setLetterStates] = useState(null);
 
+	useEffect(() => {
+        if (!(JSON.parse(localStorage.backdrop))) {
+            document.addEventListener("keydown", keyDownHandler);
+            console.log("WTF");
+            return () => document.removeEventListener("keydown", keyDownHandler);
+        }
+    });
+
     useEffect(() => { 
+        console.log("INIT GAMESPACE");
         initGameSpace();
     }, [pokeAnswer]);
 
@@ -79,7 +83,7 @@ function GSDiv(props)
         for (var i = 0; i < pokeAnswer.length; i++)
             guess = guess + gameSpace[focus[0]].boxes[i].letter;
 
-        if (!(props.isGameOver[0])) { // ONLY ALLOW GUESSES IF GAME NOT WON/LOST
+        if (!(props.isGameOver[0]) && !(JSON.parse(localStorage.backdrop))) { // ONLY ALLOW GUESSES IF GAME NOT WON/LOST
             if (input === "Enter" && focus[1] === pokeAnswer.length 
                 && checkValidity(guess)) {
                     var currentRow = checkAnswer(gameSpace[focus[0]]);
@@ -140,9 +144,10 @@ function GSDiv(props)
             props.setGameOver([true, 'win']);
             setGameSpace(null);
             focus[0] = -1;
-            window.localStorage.gameMode = 1;
+            localStorage.gameMode = 1;
             pointsWon += 200;
-            updateHatching();
+            if (JSON.parse(localStorage.shuckleInfo)[2])
+                updateHatching();
         }
         else {
             if (focus[0] === 5 && focus[1] === pokeAnswer.length) {
@@ -185,7 +190,9 @@ function GSDiv(props)
     } 
 
     function updateHatching(){
-        var shuckleChildren = JSON.parse(window.localStorage.shuckleChildren)
+        let tempInfo = JSON.parse(localStorage.shuckleInfo);
+        var shuckleChildren = tempInfo[2]; 
+
         for (var i = 0; i < shuckleChildren.length; i++) {
             if (shuckleChildren[i].state === "shuckleEgg0") {
                 shuckleChildren[i].state = "shuckleEgg1";
@@ -198,7 +205,9 @@ function GSDiv(props)
                 break
             }
         }
-        window.localStorage.shuckleChildren = JSON.stringify(shuckleChildren);
+
+        tempInfo[2] = shuckleChildren;
+        localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
     }
 
 	return (

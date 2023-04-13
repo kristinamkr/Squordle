@@ -9,31 +9,30 @@ import { Routes, Route } from 'react-router-dom';
 
 function App()
 { 
-    console.log("APP!");
+    console.log("APP! user - " + localStorage.user);
 
     // USER AUTH ---------------------------------------------------------------
-    const [user, setUser] = useState(null);
+    let uData = { name: localStorage.user,
+                  region: localStorage.region,
+                  pokeDollars: Number(localStorage.pokeDollars),
+                  shuckleInfo: JSON.parse(localStorage.shuckleInfo),
+                  inventory: JSON.parse(localStorage.inventory) };
+    const [user, setUser] = useState(uData);
 
-    function userHandler(data) {
-        setUser(data);
-    }
+    console.log("WHY GOD WHY " + JSON.stringify(uData));
+
+    function userHandler(data) { setUser(data); }
 
     useEffect(() => {
-        if (user) {
-            localStorage.region = user.userData.region;
-            localStorage.pokeDollars = user.userData.pokeDollars;
-            localStorage.adoptedShuckle = user.userData.shuckleInfo.adopted;
-            localStorage.shuckleShiny = user.userData.shuckleInfo.shiny;
-            localStorage.shuckleChildren = user.userData.shuckleInfo.children;
-            localStorage.spicyPoffin = user.userData.inventory.spicyPoffin;
-            localStorage.sweetPoffin = user.userData.inventory.sweetPoffin;
-            localStorage.goldPoffin = user.userData.inventory.goldPoffin;
-            localStorage.lemonade = user.userData.inventory.lemonade;
-            localStorage.ticket0 = user.userData.inventory.ticket;
+        if (!(user.name === "guest")) {
+            localStorage.user = user.name;
+            localStorage.firstTime = false;
+            localStorage.region = user.region;
+            localStorage.pokeDollars = user.pokeDollars;
+            localStorage.shuckleInfo = JSON.stringify(user.shuckleInfo);
+            localStorage.inventory = JSON.stringify(user.inventory);
         } 
     }, [user]);
-
-    // -------------------------------------------------------------------------
 
     // FETCH POKELIST... SHOULD ONLY EXECUTE ONCE ------------------------------
     const [pokeList, setPokeList] = useState(null);

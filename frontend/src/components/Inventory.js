@@ -36,7 +36,8 @@ function Inventory(props)
     {
         var nodes = Array.prototype.slice.call(e.currentTarget.children);
         const item = nodes[0].name;
-        const itemCount = localStorage.getItem(item);
+        const itemCount = JSON.parse(localStorage.inventory)[`${item}`];
+        console.log("ITEMCOUNT - " + itemCount);
 
         if (itemCount > 0 && itemInfo[0] === '' && 
             (!haltInv || item === "lemonade")) {  // test
@@ -53,7 +54,9 @@ function Inventory(props)
             <tr className = {classes.item}>
                 <th style = {{background: bg_color}}>
                     {item.props.tag} 
-                    <div> {localStorage.getItem(item.props.name)} </div>
+                    <div> 
+                    {JSON.parse(localStorage.inventory)[`${item.props.name}`]} 
+                    </div>
                 </th>
                 <td className = {classes.draggable}
                     onClick = {selectItem}>

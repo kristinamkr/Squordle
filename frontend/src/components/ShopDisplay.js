@@ -1,7 +1,3 @@
-/*
- * ShopDisplay.js
-*/ 
-
 import classes from "./style/ShopDisplay.module.css";
 import items from './Items.js';
 
@@ -32,48 +28,54 @@ function ShopDisplay(props)
                     "Welcome back! Feel free to browse."]
 
 	const dollarHandler = props.dollarHandler;
-
-	const [shopHeader, setShopHeader] = 
-        useState(shopText[Number(window.localStorage.shopState)]);
+	const [counter, setCounter] = useState(Number(localStorage.shopState));
 
 	function shopAdvance()
     {
-		window.localStorage.shopState = Number(window.localStorage.shopState) + 1;
-		setShopHeader(shopText[Number(window.localStorage.shopState)]);
+		localStorage.shopState = Number(localStorage.shopState) + 1;
+		setCounter(Number(localStorage.shopState));
 	}
 
 	function shopDialogue()
     {
-		if (window.localStorage.adoptedShuckle === "false" && 
-            window.localStorage.shopState === '6')
-            props.shopHandler();
-		else if (window.localStorage.adoptedShuckle === "true" && 
-                 window.localStorage.shopState === '7') {
-			shopAdvance();
-			props.shopHandler();
-		}
-        else shopAdvance();
-	}
+       if (!(JSON.parse(localStorage.shuckleInfo)["adopted"])) {
+            if (Number(localStorage.shopState) < 6) 
+                shopAdvance(); 
+            else if (Number(localStorage.shopState) === 6)
+                props.shopHandler();
+        }
+        else if (JSON.parse(localStorage.shuckleInfo)["adopted"]) {
+            if (Number(localStorage.shopState) === 7) {
+                shopAdvance();
+                props.shopHandler();
+            }
+        }
+    }
 
 	function shuckleAdopter()
     {
-		if (Number(window.localStorage.pokeDollars) >= 1000) {
-			window.localStorage.adoptedShuckle = true;
-			window.localStorage.shopState = 7; 
-			window.localStorage.spicyPoffin = 1; 
-			setShopHeader(shopText[Number(window.localStorage.shopState)]);
+        let tempInfo = JSON.parse(localStorage.shuckleInfo);
+        tempInfo["adopted"] = true;
+        let tempItems = JSON.parse(localStorage.inventory);
+        tempItems["spicyPoffin"] = 1;
+
+		if (Number(localStorage.pokeDollars) >= 1000) {
+			localStorage.shopState = 7; 
+			localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
+            localStorage.setItem("inventory", JSON.stringify(tempItems));
 			dollarHandler(-1000);
 		}
 	}
 
-    // to scared to really question why this is like this
-    let currEmote;
-    if (Number(window.localStorage.shopState) <= 3)
-            currEmote = Number(window.localStorage.shopState);
-    else currEmote = emote.NEUTRAL; 
-
-    if (window.localStorage.adoptedShuckle === "true")
-            currEmote = emote.HAPPY;
+    function shuckleEmotion()
+    {
+        if (JSON.parse(localStorage.shuckleInfo)["adopted"])
+            return emote.HAPPY;
+    
+        if (Number(localStorage.shopState) <= 3)
+            return Number(localStorage.shopState);
+        return emote.NEUTRAL; 
+    }
     // -------------------------------------------------------------------------
 
 	function shuckleShop() 
@@ -83,13 +85,15 @@ function ShopDisplay(props)
                 <img className = {classes.header}
                      src = {require("../assets/shopHeaderLight.png")}/>
                 <div className = {classes.subheader}>
-                    {shopText[Number(window.localStorage.shopState)]}
+                    {shopText[Number(localStorage.shopState)]}
                 </div>
                 <img className = {classes.shucklePic}
-                     src = {require("../assets/213Shuckle" + currEmote + ".png")}/>
+                     src = {require("../assets/213Shuckle" + shuckleEmotion() + ".png")}/>
 
-                {window.localStorage.adoptedShuckle === "false" &&
-                    <div style = {{display:"flex",width:"248px",justifyContent:"space-between"}}>
+                {!(JSON.parse(localStorage.shuckleInfo)["adopted"]) &&
+                    <div style = {{display: "flex",
+                                   width: "248px",
+                                   justifyContent:"space-between"}}>
                         <div>
                             <div className = {classes.sellInfo}> 
                                 <img src = {require("../assets/pokedollarLight.png")}/>
@@ -106,13 +110,12 @@ function ShopDisplay(props)
                         </div>
                     </div>
                 }
-                {window.localStorage.adoptedShuckle === "true" &&
+                {JSON.parse(localStorage.shuckleInfo)["adopted"] &&
                     <div className = {classes.icon}>
                         <button onClick = {shopDialogue}>
                             <ExitIcon className = {classes.exitIcon}/>
                         </button>
                     </div>
-
                 }
             </div>
         )
@@ -122,7 +125,7 @@ function ShopDisplay(props)
     {
         return (
             <div className = {classes.item}>
-                <div className = {item.props.name=="lemonade" && classes.lemonade || null}>
+                <div className = {item.props.name === "lemonade" && classes.lemonade || null}>
                     {item}
                 </div>
                 <div className = {classes.attempt}>
@@ -138,9 +141,13 @@ function ShopDisplay(props)
 
 	function buy(item)
     {
-		if (Number(window.localStorage.pokeDollars) >= item.props.price) {
-            const itemCount = localStorage.getItem(item.props.name);
-            localStorage.setItem(item.props.name, Number(itemCount) + 1); 
+		if (Number(localStorage.pokeDollars) >= item.props.price) {
+            let tempItems = JSON.parse(localStorage.inventory);
+            if (item.props.name === "ticket")
+                tempItems[`${item.props.name}`] = true;
+            else
+                tempItems[`${item.props.name}`] = tempItems[`${item.props.name}`] + 1;
+            localStorage.setItem("inventory", JSON.stringify(tempItems)); 
 			dollarHandler(-(item.props.price));
 		}
 	}
@@ -152,7 +159,7 @@ function ShopDisplay(props)
                 <img className = {classes.header}
                      src = {require("../assets/shopHeaderLight.png")}/>
                 <div className = {classes.subheader}>
-                    {shopText[Number(window.localStorage.shopState)]}
+                    {shopText[Number(localStorage.shopState)]}
                 </div>
 
                 <div className = {classes.menu}> 
@@ -165,13 +172,14 @@ function ShopDisplay(props)
                         {display(items[3])}
                     </div>
                     <div className = {classes.rowDisplay}>
-                        {window.localStorage.ticket0 === "0" &&
+                        {!(JSON.parse(localStorage.inventory)["ticket"]) &&
                             display(items[4])
                         }
-                        {window.localStorage.ticket0 === "1" &&
+                        {JSON.parse(localStorage.inventory)["ticket"] &&
                             display(items[5])
                         }
-                        <div className = {classes.icon} style={{marginLeft:"60px"}}>
+                        <div className = {classes.icon} 
+                             style = {{marginLeft: "60px"}}>
                             <button onClick = {props.shopHandler}>
                                 <ExitIcon className = {classes.exitIcon}/>
                             </button>
@@ -184,8 +192,8 @@ function ShopDisplay(props)
 
 	return (
 		<>
-			{Number(window.localStorage.shopState) <= 7 && shuckleShop()}
-			{Number(window.localStorage.shopState) > 7 && regularShop()}
+			{Number(localStorage.shopState) <= 7 && shuckleShop()}
+			{Number(localStorage.shopState) > 7 && regularShop()}
 		</>
 	)
 }

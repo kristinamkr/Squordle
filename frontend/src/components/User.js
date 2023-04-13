@@ -15,18 +15,24 @@ function User(props)
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        signIn();
-        // signUp();
+        // signIn();
+        signUp();
     }
 
     function signUp() {
+        let data = { user: name,
+                     pass: password,
+                     pokeDollars: 153 };
+ 
+        console.log(JSON.stringify(data));
+
         async function postUser() {
             return await fetch(`http://localhost:3000/signUp`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({name, password}),
+                body: JSON.stringify(data),
             }).then(res => res.json());
         }
 
@@ -47,7 +53,6 @@ function User(props)
         }
 
         fetchUser().then(function(result) {
-            console.log(result[0]);
             props.userHandler(result[0]);
         }).catch(err => {
             console.log("User DNE");
@@ -56,32 +61,57 @@ function User(props)
 
     function saveData()
     {
-        console.log("DATA SAVED");
-    }    
+    /*
+        let data = { name: user.name,
+                     region: localStorage.region,
+                     pokeDollars: Number(localStorage.pokeDollars),
+                     shuckleInfo: JSON.parse(localStorage.shuckleInfo),
+                     inventory: JSON.parse(localStorage.inventory) };
+    */
+
+        async function updateUserInfo() {
+            const response = await fetch(`http://localhost:3000/saveData`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ name: user.name })
+            });
+
+            const content = await response.json(); 
+            console.log(content);
+        }
+
+        if (updateUserInfo) console.log("Successfully saved user info!");
+        else console.log("Something wrong :( x2");
+    } 
+
+    console.log(user.name);
 
 	return (
-        <> {!user &&
-        <form onSubmit={handleSubmit}>
-            <label> username:
-                <input
-                   value = {name} 
-                   onChange = {(e) => setName(e.target.value)}
+        <> {user.name === "guest" &&
+            <form onSubmit={handleSubmit}>
+                <label> username:
+                    <input
+                       value = {name} 
+                       onChange = {(e) => setName(e.target.value)}
+                    />
+                </label>
+                <br/>
+                <label> password:
+                    <input
+                        value = {password}
+                        onChange = {(e) => setPassword(e.target.value)}
+                    />
+                </label>
+                <br/>
+                <input type = "submit" 
+                       onClick = {() => signIn}
                 />
-            </label>
-            <br/>
-            <label> password:
-                <input
-                    value = {password}
-                    onChange = {(e) => setPassword(e.target.value)}
-                />
-            </label>
-            <br/>
-            <input type = "submit" 
-                   onClick = {() => signIn}
-            />
-        </form>}
-        {user && 
-            <> <h1> WELCOME {props.user.name} ! </h1>
+            </form>}
+        {!(user.name === "guest") && 
+            <> <h1> WELCOME {user.name} ! </h1>
 			<button onClick = {saveData}> Save </button>
             </>
         }

@@ -24,7 +24,6 @@ function ShuckleMechanics(props)
 
     // [0] - itemName, [1] - xPos, [2] - yPos, [3] - isMoving?
     const [itemInfo, setItemInfo] = useState(['', 0, 0, -1]);
-
     // [0] - itemRealized?, [1] - realizedItemNum
     const [realizeItem, setRealizeItem] = useState([false, -1]); 
 
@@ -43,9 +42,11 @@ function ShuckleMechanics(props)
 
     function realize(item)
     {
-        const itemCount = localStorage.getItem(item);
+        let tempInv = JSON.parse(localStorage.inventory);
+        const itemCount = tempInv[`${item}`];
         if (itemCount > 0) {
-            localStorage.setItem(itemInfo[0], Number(itemCount) - 1);
+            tempInv[`${item}`] = itemCount - 1;
+            localStorage.setItem("inventory", JSON.stringify(tempInv));
             setRealizeItem([true, Number(getPoffinId(itemInfo[0]))]);
             derealize();
         }

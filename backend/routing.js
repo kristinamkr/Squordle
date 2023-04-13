@@ -42,7 +42,6 @@ router.route('/potd').get(async function (req, res)
 });
 
 // USERS -----------------------------------------------------------------------
-/*
 router.route('/userList').get(async function (req, res) 
 {
     dbo.getDb('squordle')
@@ -58,21 +57,15 @@ router.route('/userList').get(async function (req, res)
                res.json(result);
         });
 });
-*/
 
 router.route('/signUp').post(async function (req, response) {
-    let users = await dbo.getDb('squordle').collection('users');
+    console.log("REQ BODY - " + JSON.stringify(req.body));
+    const users = dbo.getDb('squordle').collection('users');
 
-    let newUser = {
-        name: req.body.name,
-        password: req.body.password,
-        created: new Date()
-    }
+    const user = { name: req.body["name"],
+                   created: new Date() }
 
-    users.insertOne(newUser, function (err, res) {
-        if (err) throw err;
-        response.json(res);
-    });
+    const result = await users.insertOne(user); 
 });
 
 router.route('/signIn').post(async function (req, res) {
@@ -81,13 +74,22 @@ router.route('/signIn').post(async function (req, res) {
        .collection('users')
        .aggregate([{ $project: { _id: 0 } },
                    { $match: { name: user.name,
-                               password: user.password } },
-                   { $sort:  { 'name': 1 } } 
+                               password: user.password } }
                  ])
        .toArray(function (err, result) {
            if (err) throw err;
            res.json(result);
     });
+});
+
+router.route('/saveData').post(async function (req, res) {
+    let users = await dbo.getDb('squordle').collection('users');
+
+    let user = req.body;
+    console.log("USER - " + typeof(user) + " : " + JSON.stringify(user.name));
+    users.updateOne({ name: user["name"] }, 
+                    { $set: { name: "poopoo" } });
+    return -1;
 });
 
 module.exports = router;
