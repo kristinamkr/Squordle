@@ -64,7 +64,10 @@ router.route('/signUp').post(async function (req, response) {
 
     const user = { name: req.body["user"],
                    password: req.body["pass"],
+                   inventory: req.body["inventory"],
                    pokeDollars: req.body["pokeDollars"],
+                   region: req.body["region"],
+                   shuckleInfo: req.body["shuckleInfo"],
                    created: new Date() }
 
     const result = await users.insertOne(user); 
@@ -86,12 +89,18 @@ router.route('/signIn').post(async function (req, res) {
 
 router.route('/saveData').post(async function (req, res) {
     let users = await dbo.getDb('squordle').collection('users');
-
     let user = req.body;
+
     console.log("USER - " + typeof(user) + " : " + JSON.stringify(user.name));
-    users.updateOne({ name: user["name"] }, 
-                    { $set: { name: "poopoo" } });
-    return -1;
+    users.updateOne({ name: user["user"] }, 
+                    { $set: { 
+                           inventory: user["inventory"],
+                           pokeDollars: user["pokeDollars"],
+                           region: user["region"],
+                           shuckleInfo: user["shuckleInfo"],
+                           lastModified: new Date()
+                            }
+                    });
 });
 
 module.exports = router;

@@ -22,7 +22,10 @@ function User(props)
     function signUp() {
         let data = { user: username,
                      pass: pwd,
-                     pokeDollars: localStorage.pokeDollars };
+                     inventory: JSON.parse(localStorage.inventory),
+                     pokeDollars: Number(localStorage.pokeDollars),
+                     region: localStorage.region,
+                     shuckleInfo: JSON.parse(localStorage.shuckleInfo) };
  
         console.log(JSON.stringify(data));
 
@@ -62,13 +65,13 @@ function User(props)
 
     function saveData()
     {
-    /*
-        let data = { name: user.name,
-                     region: localStorage.region,
+        let data = { user: localStorage.user,
+                     inventory: JSON.parse(localStorage.inventory),
                      pokeDollars: Number(localStorage.pokeDollars),
-                     shuckleInfo: JSON.parse(localStorage.shuckleInfo),
-                     inventory: JSON.parse(localStorage.inventory) };
-    */
+                     region: localStorage.region,
+                     shuckleInfo: JSON.parse(localStorage.shuckleInfo) };
+ 
+        console.log("DATA:",data);
 
         async function updateUserInfo() {
             const response = await fetch(`http://localhost:3000/saveData`, {
@@ -77,15 +80,14 @@ function User(props)
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ name: user.name })
+                body: JSON.stringify(data)
             });
 
             const content = await response.json(); 
             console.log(content);
         }
 
-        if (updateUserInfo) console.log("Successfully saved user info!");
-        else console.log("Something wrong :( x2");
+        console.log(updateUserInfo());
     } 
 
     console.log(user.name);

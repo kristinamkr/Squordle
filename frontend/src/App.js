@@ -23,8 +23,6 @@ function App()
 
     function userHandler(data) { setUser(data); }
 
-    console.log("USERDATA")
-
     useEffect(() => {
         if (!(user.name === "guest")) {
             localStorage.user = user.name;
@@ -33,11 +31,11 @@ function App()
             localStorage.pokeDollars = user.pokeDollars;
             localStorage.shuckleInfo = JSON.stringify(user.shuckleInfo);
             localStorage.inventory = JSON.stringify(user.inventory);
-            console.log("USERDATA3", localStorage)
+            if(user.shuckleInfo['adopted'] === true){
+                localStorage.shopState = 8;
+            }
         } 
     }, [user]);
-
-    console.log("USERDATA2")
 
     // FETCH POKELIST... SHOULD ONLY EXECUTE ONCE ------------------------------
     const [pokeList, setPokeList] = useState(null);
