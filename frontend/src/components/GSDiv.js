@@ -27,11 +27,9 @@ function GSDiv(props)
 	const [letterStates, setLetterStates] = useState(null);
 
 	useEffect(() => {
-        if (!(JSON.parse(localStorage.backdrop))) {
-            document.addEventListener("keydown", keyDownHandler);
-            console.log("WTF");
-            return () => document.removeEventListener("keydown", keyDownHandler);
-        }
+        document.addEventListener("keydown", keyDownHandler);
+        console.log("WTF");
+        return () => document.removeEventListener("keydown", keyDownHandler);
     });
 
     useEffect(() => { 
@@ -104,8 +102,11 @@ function GSDiv(props)
             }
         }
 
-        setGameSpace([...gameSpace]);
-	    console.log(pokeAnswer);
+        if(localStorage.backdrop === "false"){
+            setGameSpace([...gameSpace]);
+            console.log(pokeAnswer);
+        }
+
     }
 
     // HELPER FUNCTIONS -------------------------------------------------------
