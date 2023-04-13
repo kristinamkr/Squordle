@@ -25,7 +25,7 @@ function loadSave()
             let info = { adopted:    false,
                          shiny:      false,
                          children:   [] };
-            localStorage.setItem("shuckleInfo", JSON.stringify(info));
+            localStorage.shuckleInfo = JSON.stringify(info);
         }
         if (!(localStorage.inventory)) {
             let items = { spicyPoffin: 0,
@@ -33,7 +33,7 @@ function loadSave()
                           goldPoffin:  0,
                           lemonade:    0,
                           ticket:      false };
-            localStorage.setItem("inventory", JSON.stringify(items));
+            localStorage.inventory = JSON.stringify(items);
         } 
     };
 };

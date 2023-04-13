@@ -9,8 +9,8 @@ import ReactDOM from 'react-dom/client';
 
 function User(props)
 {
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState("");
+    const [pwd, setPwd] = useState('');
     const user = props.user;
 
     const handleSubmit = (event) => {
@@ -20,9 +20,9 @@ function User(props)
     }
 
     function signUp() {
-        let data = { user: name,
-                     pass: password,
-                     pokeDollars: 153 };
+        let data = { user: username,
+                     pass: pwd,
+                     pokeDollars: localStorage.pokeDollars };
  
         console.log(JSON.stringify(data));
 
@@ -36,8 +36,8 @@ function User(props)
             }).then(res => res.json());
         }
 
-        if (postUser) console.log("Successfully added user!");
-        else console.log("Something wrong :(");
+        var jsonResponse = postUser();
+        console.log("PostUSER-Return: "+jsonResponse);
     }
 
     function signIn() {
@@ -47,7 +47,7 @@ function User(props)
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({name, password}),
+                body: JSON.stringify({username, pwd}),
             }).then(res => res.json())
                .catch((err) => console.error(err));
         }
@@ -94,15 +94,15 @@ function User(props)
             <form onSubmit={handleSubmit}>
                 <label> username:
                     <input
-                       value = {name} 
-                       onChange = {(e) => setName(e.target.value)}
+                       value = {username} 
+                       onChange = {(e) => setUsername(e.target.value)}
                     />
                 </label>
                 <br/>
                 <label> password:
                     <input
-                        value = {password}
-                        onChange = {(e) => setPassword(e.target.value)}
+                        value = {pwd}
+                        onChange = {(e) => setPwd(e.target.value)}
                     />
                 </label>
                 <br/>

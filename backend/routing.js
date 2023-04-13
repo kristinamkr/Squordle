@@ -62,7 +62,9 @@ router.route('/signUp').post(async function (req, response) {
     console.log("REQ BODY - " + JSON.stringify(req.body));
     const users = dbo.getDb('squordle').collection('users');
 
-    const user = { name: req.body["name"],
+    const user = { name: req.body["user"],
+                   password: req.body["pass"],
+                   pokeDollars: req.body["pokeDollars"],
                    created: new Date() }
 
     const result = await users.insertOne(user); 
