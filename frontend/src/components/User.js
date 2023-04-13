@@ -7,6 +7,12 @@ import classes from "./style/User.module.css";
 import { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
+//TO-DO:
+// 1) fix point system
+// 2) make handleSubmit operate for both signIn() and signUp() (signIn checks DB, if no user in DB then signUp)
+// 3) signUp() check for a unique username (or order signIn + signUp)
+// 4) make saveData password secure (include password OR use cryptographic login key)
+
 function User(props)
 {
     const [username, setUsername] = useState("");
