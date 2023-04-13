@@ -18,17 +18,18 @@ let usedPokemon = [];
 loadSave();
 function Squordle(props) 
 {
-    console.log("SQUORDLE");
+    console.log("SQUORDLE", JSON.parse(localStorage.shuckleInfo)["adopted"]);
 
     const [pokemon, setPokemon] = useState(['eddie']);
     const pokeList = props.pokeList;
 
     const [pokeDollars, setPokeDollars] = 
         useState(Number(localStorage.pokeDollars));
-    localStorage.pokeDollars = pokeDollars; 
+    //localStorage.pokeDollars = pokeDollars; 
 
     function dollarHandler(delta) { 
-        setPokeDollars(pokeDollars + delta); 
+        setPokeDollars(pokeDollars + delta);
+        localStorage.pokeDollars = pokeDollars + delta;
     }
 
     const [isGameOver, setGameOver] = useState([false, '']);
@@ -68,7 +69,6 @@ function Squordle(props)
                         user = {props.user}
                         userHandler = {props.userHandler}
                         pokemon = {pokemon}
-                        pokeDollars = {pokeDollars}
                         dollarHandler = {dollarHandler}
                         isGameOver = {isGameOver}
                         setGameOver = {setGameOver} />

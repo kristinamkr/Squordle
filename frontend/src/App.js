@@ -19,9 +19,11 @@ function App()
                   inventory: JSON.parse(localStorage.inventory) };
     const [user, setUser] = useState(uData);
 
-    console.log("WHY GOD WHY " + JSON.stringify(uData));
+    console.log("APP: " + JSON.stringify(uData));
 
     function userHandler(data) { setUser(data); }
+
+    console.log("USERDATA")
 
     useEffect(() => {
         if (!(user.name === "guest")) {
@@ -31,8 +33,11 @@ function App()
             localStorage.pokeDollars = user.pokeDollars;
             localStorage.shuckleInfo = JSON.stringify(user.shuckleInfo);
             localStorage.inventory = JSON.stringify(user.inventory);
+            console.log("USERDATA3", localStorage)
         } 
     }, [user]);
+
+    console.log("USERDATA2")
 
     // FETCH POKELIST... SHOULD ONLY EXECUTE ONCE ------------------------------
     const [pokeList, setPokeList] = useState(null);

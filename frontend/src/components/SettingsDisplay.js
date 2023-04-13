@@ -16,7 +16,7 @@ function SettingsDisplay(props)
             <User user = {props.user}
                   userHandler = {props.userHandler} />
 
-			<button onClick = {props.settingsHandler}> Close </button>
+			<button onClick = {props.reload}> Close </button>
 			<p/>
 		</div>
     );

@@ -21,6 +21,9 @@ function Backdrop()
 
 function DisplayMan(props)
 {
+
+    console.log("DISPLAYMAN", localStorage);
+
 	const [displayState, setDisplayState] = 
            useState({ showShop:     false,
                       showSettings: false,
@@ -74,7 +77,9 @@ function DisplayMan(props)
     // CHANGE S.T. ONLY HEADER & GSDIV ARE RE-RENDERED
 	function reload()
     {
-		setDisplayState({showInfo:     false,
+		setDisplayState({showShop: false,
+                         showSettings: false,
+                         showInfo:     false,
                          showWinLose:  false,
                          showBackdrop: false});
         props.setGameOver([false, '']);
@@ -85,7 +90,7 @@ function DisplayMan(props)
             <header className = {classes.menuBar}>
                 <div className = {classes.pHeader}>
                     <img src = {require("../assets/pokedollarLight.png")}/>
-                    {" "}{props.pokeDollars}
+                    {" "}{localStorage.pokeDollars}
                 </div>
 
                 <div className = {classes.gameTitle}>
@@ -110,7 +115,7 @@ function DisplayMan(props)
                     <ShopDisplay dollarHandler = {props.dollarHandler} 
                                  shopHandler = {shopHandler}/>}
                 {displayState["showSettings"] && 
-                    <SettingsDisplay settingsHandler = {settingsHandler}
+                    <SettingsDisplay reload = {reload}
                                      user = {props.user}
                                      userHandler = {props.userHandler} />} 
                 {displayState["showInfo"] && 

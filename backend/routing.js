@@ -75,8 +75,8 @@ router.route('/signIn').post(async function (req, res) {
     dbo.getDb('squordle')
        .collection('users')
        .aggregate([{ $project: { _id: 0 } },
-                   { $match: { name: user.name,
-                               password: user.password } }
+                   { $match: { name: user["user"],
+                               password: user["pass"] } }
                  ])
        .toArray(function (err, result) {
            if (err) throw err;

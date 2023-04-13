@@ -15,8 +15,8 @@ function User(props)
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // signIn();
-        signUp();
+        signIn();
+        //signUp();
     }
 
     function signUp() {
@@ -47,12 +47,13 @@ function User(props)
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({username, pwd}),
+                body: JSON.stringify({user: username, pass: pwd}),
             }).then(res => res.json())
                .catch((err) => console.error(err));
         }
 
         fetchUser().then(function(result) {
+            console.log("RESULTS", result[0]);
             props.userHandler(result[0]);
         }).catch(err => {
             console.log("User DNE");
