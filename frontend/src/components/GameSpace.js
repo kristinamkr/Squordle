@@ -30,7 +30,7 @@ function GameRow(props)
 
 	return (
 		<div className = {classes.gameRow}
-             style = {{gridTemplateColumns: "1fr ".repeat(props.length + 2)}}>
+             style = {{gridTemplateColumns: "1fr " + "40px ".repeat(props.length) + "1fr"}}>
 			<img className = {classes.pokeSprite} 
                  style = {{top: props.upDownPos}}
                  src = {spriteRef} />

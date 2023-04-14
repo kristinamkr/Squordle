@@ -11,3 +11,29 @@
 .settingsDisplay img {
     width: 80%;
 }
+
+.header {
+    border-bottom: 2px solid #808080;
+    padding-bottom: 20px;
+}
+
+.freeplay {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+    border-bottom: 2px solid #808080;
+}
+
+.freeplay p{
+    display: flex;
+    width: 150px;
+}
+
+.freeplay button{
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 120px;
+    height: 100px;
+}

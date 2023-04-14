@@ -9,8 +9,6 @@ import { Routes, Route } from 'react-router-dom';
 
 function App()
 { 
-    console.log("APP! user - " + localStorage.user);
-
     // USER AUTH ---------------------------------------------------------------
     let uData = { name: localStorage.user,
                   region: localStorage.region,
@@ -18,8 +16,6 @@ function App()
                   shuckleInfo: JSON.parse(localStorage.shuckleInfo),
                   inventory: JSON.parse(localStorage.inventory) };
     const [user, setUser] = useState(uData);
-
-    console.log("APP: " + JSON.stringify(uData));
 
     function userHandler(data) { setUser(data); }
 

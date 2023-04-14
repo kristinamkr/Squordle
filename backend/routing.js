@@ -58,41 +58,59 @@ router.route('/userList').get(async function (req, res)
         });
 });
 
-router.route('/signUp').post(async function (req, response) {
-    console.log("REQ BODY - " + JSON.stringify(req.body));
+router.route('/signUp').post(async function (req, res) {
     const users = dbo.getDb('squordle').collection('users');
-
-    const user = { name: req.body["user"],
-                   password: req.body["pass"],
-                   inventory: req.body["inventory"],
-                   pokeDollars: req.body["pokeDollars"],
-                   region: req.body["region"],
-                   shuckleInfo: req.body["shuckleInfo"],
+    let user = req.body
+    const newUser = { name: user["user"],
+                   password: user["pass"],
+                   inventory: user["inventory"],
+                   pokeDollars: user["pokeDollars"],
+                   region: user["region"],
+                   shuckleInfo: user["shuckleInfo"],
                    created: new Date() }
 
-    const result = await users.insertOne(user); 
+    users
+    .aggregate([{ $project: { _id: 0 } },
+                { $match: { name: user["user"] } }
+                ])
+    .toArray(function (err, result) {
+        if (err) throw err;
+        if (result.length > 0) {
+            res.json(false);
+        } else {
+            res.json(true)
+            users.insertOne(newUser)
+        }
+    })
 });
 
 router.route('/signIn').post(async function (req, res) {
+    users = await dbo.getDb('squordle').collection('users');
     let user = req.body;
-    dbo.getDb('squordle')
-       .collection('users')
-       .aggregate([{ $project: { _id: 0 } },
-                   { $match: { name: user["user"],
-                               password: user["pass"] } }
-                 ])
-       .toArray(function (err, result) {
-           if (err) throw err;
-           res.json(result);
+
+    users
+    .aggregate([{ $project: { _id: 0 } },
+                { $match: { name: user["user"],
+                            password: user["pass"] } }
+                ])
+    .toArray(function (err, result) {
+        if (err) throw err;
+        res.json(result);
     });
+    
+    users.updateOne({ name: user["user"] }, 
+                    { $set: { 
+                            saveKey: user['saveKey'],
+                            lastLogin: new Date()
+                            }
+                    });
 });
 
 router.route('/saveData').post(async function (req, res) {
     let users = await dbo.getDb('squordle').collection('users');
     let user = req.body;
 
-    console.log("USER - " + typeof(user) + " : " + JSON.stringify(user.name));
-    users.updateOne({ name: user["user"] }, 
+    users.updateOne({ name: user["user"], saveKey: user["saveKey"] }, 
                     { $set: { 
                            inventory: user["inventory"],
                            pokeDollars: user["pokeDollars"],

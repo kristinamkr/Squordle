@@ -18,8 +18,6 @@ let usedPokemon = [];
 loadSave();
 function Squordle(props) 
 {
-    console.log("SQUORDLE", JSON.parse(localStorage.shuckleInfo)["adopted"]);
-
     const [pokemon, setPokemon] = useState(['eddie']);
     const pokeList = props.pokeList;
 

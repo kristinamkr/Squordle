@@ -33,6 +33,5 @@ img.pokeSprite {
     display: grid;
     align-items: center;
     grid-gap: 5px;
-    width: 508px;
     height: 380px;
 }

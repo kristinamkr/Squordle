@@ -15,8 +15,6 @@ const gsInit = Array(6);
 
 function GSDiv(props) 
 {
-    console.log("GSDIV!");
-    console.log("FOCUS ["+focus[0]+", "+focus[1]+"]");
     const pokeList = props.pokeList;
     const pokeAnswer = props.pokemon; 
 
@@ -27,12 +25,10 @@ function GSDiv(props)
 
 	useEffect(() => {
         document.addEventListener("keydown", keyDownHandler);
-        console.log("WTF");
         return () => document.removeEventListener("keydown", keyDownHandler);
     });
 
     useEffect(() => { 
-        console.log("INIT GAMESPACE");
         initGameSpace();
     }, [pokeAnswer]);
 
@@ -191,7 +187,7 @@ function GSDiv(props)
         return true;
     }
 
-    function checkValidity(guess) { 
+    function checkValidity(guess) {
         for (let i = 0; i < pokeList.length; i++)
             if (pokeList[i] === guess)
                 return true;

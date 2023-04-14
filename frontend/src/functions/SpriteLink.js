@@ -17,6 +17,8 @@ function spriteLink(pokeString)
         "mrmime"   : "mr-mime",
         "mimejr"   : "mime-jr",
         "porygonz" : "porygon-z",
+        "porygontwo" : "porygon2",
+        "hooh"     : "ho-oh",
         "mrrime"   : "mr-rime",
         "enamorus" : "enamorus-incarnate"
     }

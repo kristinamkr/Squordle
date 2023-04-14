@@ -6,7 +6,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 750px;
+    width: 900px;
     padding-top: 8px;
     padding-bottom: 8px;
     border-bottom: 2px solid #808080;
@@ -18,7 +18,7 @@
     align-items: center;
     position: relative;
     left: 15px;
-    width: 70px;
+    width: 114px;
     font-size: 3rem;
     padding-left: 5px;
     padding-right: 5px;
@@ -76,7 +76,6 @@
 
 .icon button:first-of-type {
     margin-left: -50%;
-    padding-right: 20%;
 }
 
 .icon button {
@@ -86,6 +85,6 @@
 }
 
 .settingsIcon {
-    height: 35px;
-    width: 35px;
+    height: 30px;
+    width: 30px;
 }

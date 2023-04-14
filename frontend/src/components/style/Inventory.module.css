@@ -26,7 +26,7 @@
 .storage {
 	position: relative;
 	top: 16px;
-	left: -370px;
+	left: -435px;
 
     width: 125.08px;
     text-align: center;
@@ -47,7 +47,7 @@
 .expansionArrow {
 	position: relative;
 	top: 18px;
-	left: -330px;
+	left: -395px;
 }
 
 .expansionArrow img {

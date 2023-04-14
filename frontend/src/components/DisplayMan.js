@@ -22,8 +22,6 @@ function Backdrop()
 function DisplayMan(props)
 {
 
-    console.log("DISPLAYMAN", localStorage);
-
 	const [displayState, setDisplayState] = 
            useState({ showShop:     false,
                       showSettings: false,
@@ -38,7 +36,6 @@ function DisplayMan(props)
                 enableBackdrop = true;
         }
         localStorage.backdrop = enableBackdrop;
-        console.log("BACKDROP ? " + localStorage.backdrop);
     }, [displayState]);
 
     if (JSON.parse(localStorage.firstTime)) {

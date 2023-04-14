@@ -4,12 +4,18 @@
 
 function loadSave()
 {
-    if (localStorage.length !== 9)
+    if (localStorage.length !== 11)
     {
         if (!(localStorage.user))
             localStorage.user = "guest";
+        if (!(localStorage.saveKey))
+            localStorage.saveKey = "";
         if (!(localStorage.firstTime))
             localStorage.firstTime = true;
+        if (!(localStorage.wonPOTD))
+            localStorage.wonPOTD = false;
+        if (!(localStorage.winState))
+            localStorage.winState = []
         if (!(localStorage.backdrop))
             localStorage.backdrop = false;
         if (!(localStorage.gameMode))

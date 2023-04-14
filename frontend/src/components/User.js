@@ -7,22 +7,28 @@ import classes from "./style/User.module.css";
 import { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
-//TO-DO:
-// 1) fix point system
-// 2) make handleSubmit operate for both signIn() and signUp() (signIn checks DB, if no user in DB then signUp)
-// 3) signUp() check for a unique username (or order signIn + signUp)
-// 4) make saveData password secure (include password OR use cryptographic login key)
+
+function saveKeyGen() {
+    return Math.floor(Math.random() * 1000000000000)
+           .toString()
+}
 
 function User(props)
 {
     const [username, setUsername] = useState("");
     const [pwd, setPwd] = useState('');
+
+    //An error of 0 exists when there is no error
+    //1 on failed sign in (user/password incorrect)
+    //2 on failed sign up (user already exists)
+    //3 on successful sign up
+    const [userErr, setUserErr] = useState(0);
+
     const user = props.user;
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        signIn();
-        //signUp();
+        console.log(event);
     }
 
     function signUp() {
@@ -32,8 +38,6 @@ function User(props)
                      pokeDollars: Number(localStorage.pokeDollars),
                      region: localStorage.region,
                      shuckleInfo: JSON.parse(localStorage.shuckleInfo) };
- 
-        console.log(JSON.stringify(data));
 
         async function postUser() {
             return await fetch(`http://localhost:3000/signUp`, {
@@ -45,27 +49,46 @@ function User(props)
             }).then(res => res.json());
         }
 
-        var jsonResponse = postUser();
-        console.log("PostUSER-Return: "+jsonResponse);
+        postUser().then(function(result) {
+            if (result) {
+                setUserErr(3);
+            } else {
+                throw 1
+            }
+        }).catch(err => {
+            console.log("User already exists")
+            setUserErr(2);
+        })
     }
 
     function signIn() {
+
+        //generate and store save-validating string of pseudorandom characters.
+        //protects against people saving over a user's data just by changing localStorage.user and pressing save.
+        var saveKey = saveKeyGen();
+        window.localStorage.saveKey = saveKey;
+
         async function fetchUser() {
             return await fetch(`http://localhost:3000/signIn`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({user: username, pass: pwd}),
+                body: JSON.stringify({user: username, pass: pwd, saveKey: saveKey}),
             }).then(res => res.json())
                .catch((err) => console.error(err));
         }
 
         fetchUser().then(function(result) {
-            console.log("RESULTS", result[0]);
-            props.userHandler(result[0]);
+            if (result.length > 0) {
+                setUserErr(0);
+                props.userHandler(result[0]);
+            } else {
+                throw 1;
+            }
         }).catch(err => {
             console.log("User DNE");
+            setUserErr(1);
         });
     }
 
@@ -75,9 +98,8 @@ function User(props)
                      inventory: JSON.parse(localStorage.inventory),
                      pokeDollars: Number(localStorage.pokeDollars),
                      region: localStorage.region,
-                     shuckleInfo: JSON.parse(localStorage.shuckleInfo) };
- 
-        console.log("DATA:",data);
+                     shuckleInfo: JSON.parse(localStorage.shuckleInfo),
+                     saveKey: localStorage.saveKey };
 
         async function updateUserInfo() {
             const response = await fetch(`http://localhost:3000/saveData`, {
@@ -93,31 +115,41 @@ function User(props)
             console.log(content);
         }
 
-        console.log(updateUserInfo());
+        console.log("RETURNED:", updateUserInfo());
     } 
 
-    console.log(user.name);
-
 	return (
-        <> {user.name === "guest" &&
-            <form onSubmit={handleSubmit}>
-                <label> username:
+        <> 
+            {userErr === 0 && <p/>}
+            {userErr === 1 && <p>The username or password is incorrect.</p>}
+            {userErr === 2 && <p>This username is already in use.</p>}
+            {userErr === 3 && <p>Registered successfully, you can log in.</p>}
+            {user.name === "guest" &&
+            <form className = {classes.loginForm} onSubmit={handleSubmit}>
+                <div className = {classes.typingField}>
+                    <label> username:</label>
                     <input
                        value = {username} 
                        onChange = {(e) => setUsername(e.target.value)}
                     />
-                </label>
-                <br/>
-                <label> password:
+                </div>
+                <div className = {classes.typingField}>
+                    <label> password:</label>
                     <input
                         value = {pwd}
                         onChange = {(e) => setPwd(e.target.value)}
                     />
-                </label>
-                <br/>
-                <input type = "submit" 
-                       onClick = {() => signIn}
-                />
+                </div>
+                <div className = {classes.submitOps}>
+                    <input type = "submit"
+                           value = "Log In" 
+                           onClick = {signIn}
+                    />
+                    <input type = "submit" 
+                           value = "Register"
+                           onClick = {signUp}
+                    />
+                </div>
             </form>}
         {!(user.name === "guest") && 
             <> <h1> WELCOME {user.name} ! </h1>
