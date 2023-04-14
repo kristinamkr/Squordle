@@ -4,7 +4,7 @@
 
 function loadSave()
 {
-    if (localStorage.length !== 11)
+    if (localStorage.length !== 12)
     {
         if (!(localStorage.user))
             localStorage.user = "guest";
@@ -12,14 +12,16 @@ function loadSave()
             localStorage.saveKey = "";
         if (!(localStorage.firstTime))
             localStorage.firstTime = true;
-        if (!(localStorage.wonPOTD))
-            localStorage.wonPOTD = false;
-        if (!(localStorage.winState))
-            localStorage.winState = []
-        if (!(localStorage.backdrop))
-            localStorage.backdrop = false;
+
         if (!(localStorage.gameMode))
             localStorage.gameMode = 0;
+        if (!(localStorage.POTD))
+            localStorage.POTD = false;
+        if (!(localStorage.POTDBoardState))
+            localStorage.POTDBoardState = {"gameSpace": "", "letterStates": "", "focus": ""}
+
+        if (!(localStorage.backdrop))
+            localStorage.backdrop = false;
         if (!(localStorage.shopState))
             localStorage.shopState = 0;
 

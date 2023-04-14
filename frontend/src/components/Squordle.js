@@ -15,7 +15,6 @@ import { Link } from 'react-router-dom';
 
 let usedPokemon = []; 
 
-//Make logout button in SettingsDisplay.js
 //INCLUDE LOCALSTORAGE.POTDSTATE and LOCALSTORAGE.wonPOTD in GSDIV IF LOCALSTORAGE.GAMEMODE = "0"
 
 loadSave();
@@ -52,15 +51,18 @@ function Squordle(props)
             return pokeList[i];
         }
 
+        //redundancy for log-in and log-out cases
         if (!(JSON.parse(localStorage.inventory)["ticket"])){
             localStorage.gameMode = 0;
         }
 
         if (isGameOver[0] == false) {
+            console.log("GO0");
             if (JSON.parse(localStorage.gameMode) == 0)
                 getDaily()
                     .then(function(result) { 
-                        setPokemon(result[0].name.toLowerCase());
+                        var dailyPokemon = result[0].name.toLowerCase();
+                        setPokemon(dailyPokemon);
                     }).catch((err) => console.error(err));
             else
                 setPokemon(getRandom());

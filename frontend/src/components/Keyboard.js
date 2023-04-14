@@ -51,6 +51,7 @@ function KeyRow(props)
 {
 	function keyInWord(letterStates, id)
     {
+        console.log(letterStates.correctGuess)
 		if (letterStates.correctGuess.has(id))
 			return "correct";
 		else if (letterStates.inWord.has(id))

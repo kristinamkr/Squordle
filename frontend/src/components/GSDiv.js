@@ -9,9 +9,7 @@ import Keyboard from "./Keyboard.js";
 
 import { useState, useEffect } from 'react';
 
-let focus = [0, 0];  // (row #, box #)
-
-const gsInit = Array(6);
+import boardInit from "../functions/boardInit.js";
 
 function GSDiv(props) 
 {
@@ -22,6 +20,7 @@ function GSDiv(props)
 
 	const [gameSpace, setGameSpace] = useState(null);
 	const [letterStates, setLetterStates] = useState(null);
+    const [focus, setFocus] = useState([0, 0]) // (row #, box #)
 
 	useEffect(() => {
         document.addEventListener("keydown", keyDownHandler);
@@ -34,35 +33,19 @@ function GSDiv(props)
 
     function initGameSpace()
     {
-        for (var i = 0; i < gsInit.length; i++) {
-            var row = {};
-            row.id = "r" + i;
-            row.state = "empty";
-            row.length = pokeAnswer.length;
-            row.boxes = Array(pokeAnswer.length);
-            row.guess = "";
-            row.winnings = 0;
-
-            for(var k = 0; k < row.boxes.length; k++) {
-                var box = {};
-                box.id = row.id + "b" + k;
-                box.delay = k * 100 + "ms"
-                box.state = "empty";
-                box.letter = "";
-                row.boxes[k] = box;
+        if (localStorage.gameMode === "0" && localStorage.POTD === pokeAnswer) {
+            var boardState = JSON.parse(localStorage.POTDBoardState);
+        } else {
+            var boardState = boardInit(pokeAnswer);
+            if(localStorage.gameMode === "0") {
+                localStorage.POTD = pokeAnswer;
+                localStorage.POTDBoardState = JSON.stringify(boardState);
             }
-            gsInit[i] = row;
-        };
+        }
 
-        var lsInit = {
-            inWord : new Set(),
-            correctGuess : new Set(),
-            notInWord : new Set()
-        };
-    
-        focus = [0, 0];
-        setGameSpace(gsInit);
-        setLetterStates(lsInit);
+        setFocus(boardState["focus"]);
+        setGameSpace(boardState["gameSpace"]);
+        setLetterStates(boardState["letterStates"]);
     }
 
     // -------------------------------------------------------------------------
@@ -140,11 +123,13 @@ function GSDiv(props)
             }
         }
 
+        //INSERT LOG TO LOCALSTORAGE HERE
+
         if (isWinner(row)) {
             row.state = "winner";
             props.setGameOver([true, 'win']);
             setGameSpace(null);
-            focus[0] = -1;
+            setFocus([-1, focus[1]]);
             pointsWon += 200;
             if (JSON.parse(localStorage.shuckleInfo)[2])
                 updateHatching();
@@ -153,7 +138,7 @@ function GSDiv(props)
             if (focus[0] === 5 && focus[1] === pokeAnswer.length) {
                 props.setGameOver([true, 'loss']);
                 setGameSpace(null);
-                focus[0] = -1;
+                setFocus([-1, focus[1]]);
             }
             row.state = "filled";
         }
@@ -215,7 +200,7 @@ function GSDiv(props)
     }
 
 	return (
-        <> { gameSpace &&  
+        <> { gameSpace && letterStates && 
             <div className = {classes.gsDiv}>
                 <GameSpace id = "gameSpace"
                            gameSpace = {gameSpace}

@@ -2,17 +2,6 @@
  * ShuckleCursor.js
 */ 
 
-//DONE*update baby shuckle position
-//DONE*install baby shuckle localStorage dataType
-//DONE*place HTML element for baby shuckles
-//DONE*CSS the baby shuckles
-//DONE*Eat poffin + offscreen + Lay egg - 1
-//DONE*Create egg wobble + wobble+leap for stages of hatching - 2
-//Hatch egg (three right guesses) - 2
-//DONE*Fix key attacking issues - 3
-//Implement baby attack - 4
-//All will chase Gold - 7
-
 import classes from "./style/ShuckleCursor.module.css";
 import { useState, useEffect} from 'react';
 
