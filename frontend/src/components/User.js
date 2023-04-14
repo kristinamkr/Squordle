@@ -42,7 +42,7 @@ function User(props)
                      shuckleInfo: JSON.parse(localStorage.shuckleInfo) };
 
         async function postUser() {
-            return await fetch(`https://squordle-backend.herokuapp.com/signUp`, {
+            return await fetch(`http://localhost:3000/signUp`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -71,7 +71,7 @@ function User(props)
         window.localStorage.saveKey = saveKey;
 
         async function fetchUser() {
-            return await fetch(`https://squordle-backend.herokuapp.com/signIn`, {
+            return await fetch(`http://localhost:3000/signIn`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -105,7 +105,7 @@ function User(props)
                      saveKey: localStorage.saveKey };
 
         async function updateUserInfo() {
-            return await fetch(`https://squordle-backend.herokuapp.com/saveData`, {
+            return await fetch(`http://localhost:3000/saveData`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
