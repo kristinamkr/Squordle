@@ -26,15 +26,6 @@ function SettingsDisplay(props)
 		forceUpdate();
 	}
 
-	function enabledMode() {
-		return (
-			<>
-				{localStorage.gameMode === "0" && <a>Daily</a>}
-				{localStorage.gameMode === "1" && <a>Freeplay</a>}
-			</>
-		)
-	}
-
 	return (
 		<div className = {classes.settingsDisplay}>
 			<p/>
@@ -48,7 +39,8 @@ function SettingsDisplay(props)
 	        {JSON.parse(localStorage.inventory)["ticket"] && <div className = {classes.freeplay}>
 	        	<p>Click the ticket to toggle between Daily Mode and Freeplay Mode.</p>
 	        	<div className = {classes.modeSelect}>
-		        	{enabledMode()}
+		        	{localStorage.gameMode === "0" && <a>Daily</a>}
+					{localStorage.gameMode === "1" && <a>Freeplay</a>}
 	                <button onClick = {toggleFreeplay}>
 	                    <img src = {require("../assets/ticket0.png")}/>
 	                </button>
@@ -57,7 +49,6 @@ function SettingsDisplay(props)
             {!(JSON.parse(localStorage.inventory)["ticket"]) && <div className = {classes.freeplay}>
 	        	<p>Come back when you have purchased the freeplay ticket!</p>
 	        	<div className = {classes.modeSelect}>
-	        		{enabledMode()}
 	                <button>
 	                    <img className = {classes.grayedOut} src = {require("../assets/ticket0.png")}/>
 	                </button>
