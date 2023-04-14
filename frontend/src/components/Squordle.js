@@ -15,8 +15,6 @@ import { Link } from 'react-router-dom';
 
 let usedPokemon = []; 
 
-//INCLUDE LOCALSTORAGE.POTDSTATE and LOCALSTORAGE.wonPOTD in GSDIV IF LOCALSTORAGE.GAMEMODE = "0"
-
 loadSave();
 function Squordle(props) 
 {
@@ -57,7 +55,6 @@ function Squordle(props)
         }
 
         if (isGameOver[0] == false) {
-            console.log("GO0");
             if (JSON.parse(localStorage.gameMode) == 0)
                 getDaily()
                     .then(function(result) { 

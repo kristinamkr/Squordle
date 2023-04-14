@@ -16,7 +16,9 @@ function loadSave()
         if (!(localStorage.gameMode))
             localStorage.gameMode = 0;
         if (!(localStorage.POTD))
-            localStorage.POTD = false;
+            localStorage.POTD = "";
+        if (!(localStorage.wonPOTD))
+            localStorage.wonPOTD = false;
         if (!(localStorage.POTDBoardState))
             localStorage.POTDBoardState = {"gameSpace": "", "letterStates": "", "focus": ""}
 

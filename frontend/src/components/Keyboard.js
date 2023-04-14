@@ -13,6 +13,7 @@ var bgColors = {
 
 function KeyBox(props)
 {
+
     if (props.id == "Enter") {
         return (
             <button id = {props.id} 
@@ -51,13 +52,18 @@ function KeyRow(props)
 {
 	function keyInWord(letterStates, id)
     {
-        console.log(letterStates.correctGuess)
-		if (letterStates.correctGuess.has(id))
-			return "correct";
-		else if (letterStates.inWord.has(id))
-			return "inWord";
-		else if (letterStates.notInWord.has(id))
-			return "incorrect";
+        for(var i = 0; i < letterStates.correctGuess.length; i++) {
+            if (letterStates.correctGuess[i] === id)
+                return "correct";
+        }
+        for(var i = 0; i < letterStates.inWord.length; i++) {
+            if (letterStates.inWord[i] === id)
+                return "inWord";
+        }
+        for(var i = 0; i < letterStates.notInWord.length; i++) {
+            if (letterStates.notInWord[i] === id)
+                return "incorrect";
+        }
         return "normal";
 	}
 

@@ -39,6 +39,7 @@ function GSDiv(props)
             var boardState = boardInit(pokeAnswer);
             if(localStorage.gameMode === "0") {
                 localStorage.POTD = pokeAnswer;
+                localStorage.wonPOTD = false;
                 localStorage.POTDBoardState = JSON.stringify(boardState);
             }
         }
@@ -58,11 +59,11 @@ function GSDiv(props)
         for (var i = 0; i < pokeAnswer.length; i++)
             guess = guess + gameSpace[focus[0]].boxes[i].letter;
 
-        if (!(props.isGameOver[0]) && !(JSON.parse(localStorage.backdrop))) { // ONLY ALLOW GUESSES IF GAME NOT WON/LOST
+        if (!(props.isGameOver[0]) && !(JSON.parse(localStorage.backdrop)) && (localStorage.wonPOTD === "false" || localStorage.gameMode === "1")) { // ONLY ALLOW GUESSES IF GAME NOT WON/LOST
             if (input === "Enter" && focus[1] === pokeAnswer.length 
                 && checkValidity(guess)) {
+                    gameSpace[focus[0]].guess = guess;
                     var currentRow = checkAnswer(gameSpace[focus[0]]);
-                    currentRow.guess = guess;
                     focus[0] += 1;
                     focus[1] = 0;
             }
@@ -81,7 +82,6 @@ function GSDiv(props)
 
         if(localStorage.backdrop === "false"){
             setGameSpace([...gameSpace]);
-            console.log(pokeAnswer);
         }
 
     }
@@ -94,11 +94,21 @@ function GSDiv(props)
         var boxes = row.boxes;
         let pointsWon = 0; 
 
-
 	    for (var i = 0; i < pokeAnswer.length; i++) {
             if (boxes[i].letter === pokeAnswer[i]) {  // green
                 boxes[i].state = "correct";
-                lsChange["correctGuess"].add(boxes[i].letter);
+
+                //cleanable, basically the equivalent of Set().add(), but for an array instead bc JSON can't store sets >.<
+                var found = false;
+                for (var k = 0; k < lsChange.correctGuess.length; k++) {
+                    if (lsChange.correctGuess[k] === boxes[i].letter) {
+                        found = true;
+                    }
+                }
+                if(!found){
+                    lsChange.correctGuess.push(boxes[i].letter);
+                }
+
                 setLetterStates(lsChange);
                 tileList.splice(i, 1);
                 pointsWon += 20;
@@ -114,19 +124,44 @@ function GSDiv(props)
             //check if the rest are in the word somewhere
             if (isInAnswer(boxes[i].letter, tileList)) {   // yellow
                 boxes[i].state = "inWord";
-                lsChange["inWord"].add(boxes[i].letter);
+
+                //cleanable, basically the equivalent of Set().add(), but for an array instead bc JSON can't store sets >.<
+                var found = false;
+                for (var k = 0; k < lsChange.inWord.length; k++) {
+                    if (lsChange.inWord[k] === boxes[i].letter) {
+                        found = true;
+                    }
+                }
+                if(!found){
+                    lsChange.inWord.push(boxes[i].letter);
+                }
+
                 pointsWon += 5;
             }
             else {                               // gray
                 boxes[i].state = "incorrect";
-                lsChange["notInWord"].add(boxes[i].letter);
+
+                //cleanable, basically the equivalent of Set().add(), but for an array instead bc JSON can't store sets >.<
+                var found = false;
+                for (var k = 0; k < lsChange.notInWord.length; k++) {
+                    if (lsChange.notInWord[k] === boxes[i].letter) {
+                        found = true;
+                    }
+                }
+                if(!found){
+                    lsChange.notInWord.push(boxes[i].letter);
+                }
             }
         }
 
-        //INSERT LOG TO LOCALSTORAGE HERE
+        var boardState = {"gameSpace": gameSpace, "letterStates": letterStates, "focus": [focus[0]+1,0]};
+        if (localStorage.gameMode === "0") {
+            localStorage.POTDBoardState = JSON.stringify(boardState);
+        }
 
         if (isWinner(row)) {
             row.state = "winner";
+            localStorage.wonPOTD = true;
             props.setGameOver([true, 'win']);
             setGameSpace(null);
             setFocus([-1, focus[1]]);
