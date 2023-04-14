@@ -37,7 +37,7 @@ function App()
     const [pokeList, setPokeList] = useState(null);
 
     async function pokePromise() { 
-        return await fetch(`http://localhost:3000/pokeList`)
+        return await fetch(`https://squordle-backend.herokuapp.com/pokeList`)
                 .then(result => result.json())
                 .catch((err) => console.error(err));
     }

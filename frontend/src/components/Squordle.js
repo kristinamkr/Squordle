@@ -35,7 +35,7 @@ function Squordle(props)
     
     useEffect(() => {
         async function getDaily() {
-            return await fetch(`http://localhost:3000/potd`)
+            return await fetch(`https://squordle-backend.herokuapp.com/potd`)
                 .then((result) => result.json())
         }
 
