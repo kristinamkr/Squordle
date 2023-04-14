@@ -120,7 +120,7 @@ function User(props)
 
 	return (
         <> 
-            {userErr === 0 && <p/>}
+            {userErr === 0 && user.name === "guest" && <p>Enter your login information:</p>}
             {userErr === 1 && <p>The username or password is incorrect.</p>}
             {userErr === 2 && <p>This username is already in use.</p>}
             {userErr === 3 && <p>Registered successfully, you can log in.</p>}
@@ -152,9 +152,10 @@ function User(props)
                 </div>
             </form>}
         {!(user.name === "guest") && 
-            <> <h1> WELCOME {user.name} ! </h1>
-			<button onClick = {saveData}> Save </button>
-            </>
+            <div className = {classes.loginForm}>
+                <h2> WELCOME {user.name} ! </h2>
+    			<button onClick = {saveData}> Save </button>
+            </div>
         }
     </>
     );

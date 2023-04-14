@@ -26,8 +26,8 @@ function Squordle(props)
     //localStorage.pokeDollars = pokeDollars; 
 
     function dollarHandler(delta) { 
-        setPokeDollars(pokeDollars + delta);
-        localStorage.pokeDollars = pokeDollars + delta;
+        setPokeDollars(Number(localStorage.pokeDollars) + delta);
+        localStorage.pokeDollars = Number(localStorage.pokeDollars) + delta;
     }
 
     const [isGameOver, setGameOver] = useState([false, '']);
