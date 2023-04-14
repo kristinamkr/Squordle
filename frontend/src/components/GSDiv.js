@@ -145,7 +145,6 @@ function GSDiv(props)
             props.setGameOver([true, 'win']);
             setGameSpace(null);
             focus[0] = -1;
-            localStorage.gameMode = 1;
             pointsWon += 200;
             if (JSON.parse(localStorage.shuckleInfo)[2])
                 updateHatching();

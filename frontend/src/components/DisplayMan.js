@@ -29,6 +29,8 @@ function DisplayMan(props)
                       showWinLose:  false,
                       showBackdrop: false });
 
+    const [toggledGM, setToggledGM] = useState(false);
+
     useEffect(() => {
         let enableBackdrop = false;
         for(let key in displayState) {
@@ -80,6 +82,10 @@ function DisplayMan(props)
                          showWinLose:  false,
                          showBackdrop: false});
         props.setGameOver([false, '']);
+        if (toggledGM) {
+            setToggledGM(false);
+            props.forceNewPokemon();
+        }
     }
 
     return (
@@ -112,7 +118,9 @@ function DisplayMan(props)
                     <ShopDisplay dollarHandler = {props.dollarHandler} 
                                  shopHandler = {shopHandler}/>}
                 {displayState["showSettings"] && 
-                    <SettingsDisplay reload = {reload}
+                    <SettingsDisplay toggledGM = {toggledGM}
+                                     setToggledGM = {setToggledGM}
+                                     reload = {reload}
                                      user = {props.user}
                                      userHandler = {props.userHandler} />} 
                 {displayState["showInfo"] && 

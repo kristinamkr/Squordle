@@ -10,10 +10,13 @@ import ShuckleMechanics from "./ShuckleMechanics.js";
 
 import loadSave from "../functions/loadSave.js";
 
-import { useState, useEffect } from 'react';
+import { useReducer, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 let usedPokemon = []; 
+
+//Make logout button in SettingsDisplay.js
+//INCLUDE LOCALSTORAGE.POTDSTATE and LOCALSTORAGE.wonPOTD in GSDIV IF LOCALSTORAGE.GAMEMODE = "0"
 
 loadSave();
 function Squordle(props) 
@@ -25,12 +28,13 @@ function Squordle(props)
         useState(Number(localStorage.pokeDollars));
     //localStorage.pokeDollars = pokeDollars; 
 
+    const [isGameOver, setGameOver] = useState([false, '']);
+    const [newPokemon, forceNewPokemon] = useReducer(x => x + 1, 0);
+
     function dollarHandler(delta) { 
         setPokeDollars(Number(localStorage.pokeDollars) + delta);
         localStorage.pokeDollars = Number(localStorage.pokeDollars) + delta;
     }
-
-    const [isGameOver, setGameOver] = useState([false, '']);
     
     useEffect(() => {
         async function getDaily() {
@@ -48,6 +52,10 @@ function Squordle(props)
             return pokeList[i];
         }
 
+        if (!(JSON.parse(localStorage.inventory)["ticket"])){
+            localStorage.gameMode = 0;
+        }
+
         if (isGameOver[0] == false) {
             if (JSON.parse(localStorage.gameMode) == 0)
                 getDaily()
@@ -58,7 +66,7 @@ function Squordle(props)
                 setPokemon(getRandom());
         }
         else usedPokemon.push(pokemon);
-    }, [isGameOver[0]]);
+    }, [newPokemon]);
 
 	return (
         <>
@@ -69,7 +77,8 @@ function Squordle(props)
                         pokemon = {pokemon}
                         dollarHandler = {dollarHandler}
                         isGameOver = {isGameOver}
-                        setGameOver = {setGameOver} />
+                        setGameOver = {setGameOver}
+                        forceNewPokemon = {forceNewPokemon}/>
 
                 { JSON.parse(localStorage.shuckleInfo)["adopted"] &&
                     <ShuckleMechanics /> }

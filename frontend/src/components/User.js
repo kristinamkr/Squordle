@@ -22,13 +22,15 @@ function User(props)
     //1 on failed sign in (user/password incorrect)
     //2 on failed sign up (user already exists)
     //3 on successful sign up
+    //4 on successful save
+    //5 on successful log-out
+    //6 on failed save
     const [userErr, setUserErr] = useState(0);
 
     const user = props.user;
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(event);
     }
 
     function signUp() {
@@ -82,6 +84,7 @@ function User(props)
         fetchUser().then(function(result) {
             if (result.length > 0) {
                 setUserErr(0);
+                props.setToggledGM(true);
                 props.userHandler(result[0]);
             } else {
                 throw 1;
@@ -102,21 +105,38 @@ function User(props)
                      saveKey: localStorage.saveKey };
 
         async function updateUserInfo() {
-            const response = await fetch(`http://localhost:3000/saveData`, {
+            return await fetch(`http://localhost:3000/saveData`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify(data)
-            });
-
-            const content = await response.json(); 
-            console.log(content);
+            }).then(res => res.json())
+              .catch((err) => console.error(err));
         }
 
-        console.log("RETURNED:", updateUserInfo());
+        updateUserInfo().then(function(result) {
+            console.log(result);
+            if (result) {
+                console.log("TEST")
+                setUserErr(4);
+            } else {
+                throw 1;
+            }
+        }).catch(err => {
+            console.log("Save failed.")
+            setUserErr(6);
+        });
     } 
+
+    function logOut()
+    {
+        localStorage.user = "guest";
+        localStorage.saveKey = "";
+        props.userHandler({...props.user, name: localStorage.user, saveKey: localStorage.saveKey});
+        setUserErr(5);
+    }
 
 	return (
         <> 
@@ -124,6 +144,10 @@ function User(props)
             {userErr === 1 && <p>The username or password is incorrect.</p>}
             {userErr === 2 && <p>This username is already in use.</p>}
             {userErr === 3 && <p>Registered successfully, you can log in.</p>}
+            {userErr === 4 && <a style = {{paddingTop: "1em"}}>Save successful.</a>}
+            {userErr === 5 && user.name === "guest" && <p>Log-out successful.</p>}
+            {userErr === 6 && <p>Save was not successful.</p>}
+
             {user.name === "guest" &&
             <form className = {classes.loginForm} onSubmit={handleSubmit}>
                 <div className = {classes.typingField}>
@@ -154,7 +178,16 @@ function User(props)
         {!(user.name === "guest") && 
             <div className = {classes.loginForm}>
                 <h2> WELCOME {user.name} ! </h2>
-    			<button onClick = {saveData}> Save </button>
+                <form className = {classes.submitOps} onSubmit = {handleSubmit}>
+                    <input type = "submit"
+                           value = "Save" 
+                           onClick = {saveData}
+                    />
+                    <input type = "submit" 
+                           value = "Log Out"
+                           onClick = {logOut}
+                    />
+                </form>
             </div>
         }
     </>
