@@ -89,7 +89,7 @@ function Squordle(props)
                         pokeList = {pokeList}
                         dollarHandler = {dollarHandler}                        
                         isGameOver = {isGameOver} 
-                        setGameOver = {setGameOver} />}
+                        setGameOver = {setGameOver}/>}
         </>
 	)
 }

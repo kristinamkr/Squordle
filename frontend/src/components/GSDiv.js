@@ -33,6 +33,7 @@ function GSDiv(props)
 
     function initGameSpace()
     {
+        //Ugly, please make the if-logic more attractive
         if (localStorage.gameMode === "0" && localStorage.POTD === pokeAnswer) {
             var boardState = JSON.parse(localStorage.POTDBoardState);
         } else {
@@ -52,6 +53,7 @@ function GSDiv(props)
     // -------------------------------------------------------------------------
 	function keyDownHandler(e)
     {
+        console.log(pokeAnswer);
         const input = e.key || e.target.value;
         const validKeySet = new Set(validKeys);
 
@@ -161,7 +163,9 @@ function GSDiv(props)
 
         if (isWinner(row)) {
             row.state = "winner";
-            localStorage.wonPOTD = true;
+            if (localStorage.gameMode === "0") {
+                localStorage.wonPOTD = true;                
+            }
             props.setGameOver([true, 'win']);
             setGameSpace(null);
             setFocus([-1, focus[1]]);

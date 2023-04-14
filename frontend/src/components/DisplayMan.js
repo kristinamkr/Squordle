@@ -81,11 +81,11 @@ function DisplayMan(props)
                          showInfo:     false,
                          showWinLose:  false,
                          showBackdrop: false});
-        props.setGameOver([false, '']);
-        if (toggledGM) {
+        if (toggledGM || props.isGameOver[0]) {
             setToggledGM(false);
             props.forceNewPokemon();
         }
+        props.setGameOver([false, '']);
     }
 
     return (
