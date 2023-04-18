@@ -1,0 +1,20 @@
+# netlify.toml
+
+[build]
+    functions = "lambda" # Directory w/ serverless functions 
+    base = "/"
+    publish = "build/"
+    command = "CI= npm run build"
+
+[context.production]
+    base = "/"
+    publish = "build/"
+    command = "CI= npm run build"
+
+[[plugins]]
+    package = "@netlify/plugin-lighthouse"
+
+[[redirects]]
+    from = "/*"
+    to = "/index.html"
+    status = 200
