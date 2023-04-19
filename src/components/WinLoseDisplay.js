@@ -19,14 +19,17 @@ function WinLoseDisplay(props)
 
     function winOrLose()
     {
+        let dailyText = ".";
+        if (Number(localStorage.gameMode) % 2 === 0)
+            dailyText = ". Check back again tomorrow for a new pokémon!"
         if (props.isGameOver[1] === 'win') {
             imgName = "WinTextLight";
             gameOverTxt = "The pokémon was " + answer[0].toUpperCase() + 
-                answer.slice(1);
+                answer.slice(1) + dailyText;
         } else {
             imgName = "LoseTextLight";
             gameOverTxt = "The correct pokémon was " + answer[0].toUpperCase() +
-                answer.slice(1);
+                answer.slice(1) + dailyText;
         }
     }
 
@@ -37,8 +40,9 @@ function WinLoseDisplay(props)
                  src = {require("../assets/" + imgName + ".png")}/>
             <img className = {classes.spriteDisplay}
                  src = {spriteRef}/>
-            <p> {gameOverTxt} </p>
-            <button onClick = {() => props.reload()}> Play Again? </button>
+            <p> {gameOverTxt} </p>           
+            {Number(localStorage.gameMode) % 2 === 0 && <button onClick = {() => props.reload()}> Close </button>}
+            {Number(localStorage.gameMode) % 2 === 1 && <button onClick = {() => props.reload()}> Play Again? </button>}
         </div>
 	);
 }

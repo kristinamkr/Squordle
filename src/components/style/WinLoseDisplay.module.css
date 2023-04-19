@@ -22,3 +22,7 @@
     margin-top: 1.5%;
     margin-bottom: 3.5%;
 }
+
+.winLoseDisplay p {
+    text-align: center;
+}

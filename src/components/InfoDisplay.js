@@ -6,9 +6,8 @@ import classes from "./style/InfoDisplay.module.css";
 
 function InfoDisplay(props)
 {
-	var infoText = ["You have six tries to guess the name of the Pokémon.",
-                    "Each guess must be a real Pokémon. "
-                     + "Hit enter to submit your guess.",
+	var infoText = ["You have six tries to guess the name of the daily Pokémon.",
+                    'Each guess must be a real Pokémon. (check for "Guess anything" in settings)',
                     "Green letters are in the correct spot, "
                      + "yellow letters are in the wrong spot, "
                      + "and gray letters are not in the name.",
