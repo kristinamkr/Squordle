@@ -26,6 +26,20 @@ function SettingsDisplay(props)
 		forceUpdate();
 	}
 
+	function toggleEasyMode() {
+		if (localStorage.easyMode === "0") {
+			localStorage.easyMode = "1";
+		} else {
+			localStorage.easyMode = "0";
+		}
+		if (props.toggledGM) {
+			props.setToggledGM(false);
+		} else {
+			props.setToggledGM(true);
+		}
+		forceUpdate();
+	}
+
 	return (
 		<div className = {classes.settingsDisplay}>
 			<p/>
@@ -61,12 +75,17 @@ function SettingsDisplay(props)
 	                </button>
 	            </div>
             </div>}
-
-            <div className = {classes.exit}>
-                <button onClick = {props.reload}>
-                    <ExitIcon className = {classes.exitIcon}/>
-                </button>
-            </div>
+            <div className = {classes.easyMode}>
+            	<div className = {classes.modeSelect}>
+            		<label for="easyMode"> Guess anything </label>
+            		<input type="checkbox" id="easyMode" onChange = {(e) => toggleEasyMode()}/>
+            	</div>
+	            <div className = {classes.exit}>
+	                <button onClick = {props.reload}>
+	                    <ExitIcon className = {classes.exitIcon}/>
+	                </button>
+	            </div>
+	        </div>
 		</div>
     );
 }

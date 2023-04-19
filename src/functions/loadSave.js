@@ -4,7 +4,7 @@
 
 function loadSave()
 {
-    if (localStorage.length !== 12)
+    if (localStorage.length !== 13)
     {
         if (!(localStorage.firstTime))
             localStorage.firstTime = true;
@@ -15,6 +15,8 @@ function loadSave()
         // GAMEMODE INFO ---
         if (!(localStorage.gameMode))
             localStorage.gameMode = 0;
+        if (!(localStorage.easyMode))
+            localStorage.easyMode = 0;
         if (!(localStorage.potd)) {
             let info = { daily: "",
                          isWon: false };

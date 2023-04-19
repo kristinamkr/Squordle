@@ -31,7 +31,7 @@ function Squordle(props)
         setPokeDollars(Number(localStorage.pokeDollars) + delta);
         localStorage.pokeDollars = Number(localStorage.pokeDollars) + delta;
     }
-    
+
     useEffect(() => {
         async function getDaily() {
             return await fetch(`/.netlify/functions/potd`)
@@ -54,7 +54,7 @@ function Squordle(props)
         }
 
         if (isGameOver[0] == false) {
-            if (JSON.parse(localStorage.gameMode) == 0)
+            if (Number(localStorage.gameMode) === 0)
                 getDaily()
                     .then(function(result) { 
                         var dailyPokemon = result[0].name.toLowerCase();
@@ -79,13 +79,14 @@ function Squordle(props)
                         forceNewPokemon = {forceNewPokemon}/>
 
                 { JSON.parse(localStorage.shuckleInfo)["adopted"] &&
-                    <ShuckleMechanics /> }
+                    <ShuckleMechanics/> }
             </div>
 
-			{ !(pokemon == "eddie") &&  
+			{ !(pokemon === "eddie") &&  
                 <GSDiv  id = "gsdiv"
                         pokemon = {pokemon} 
                         pokeList = {pokeList}
+                        newPokemon = {newPokemon}
                         dollarHandler = {dollarHandler}                        
                         isGameOver = {isGameOver} 
                         setGameOver = {setGameOver}/>}

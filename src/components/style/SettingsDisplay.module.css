@@ -5,7 +5,7 @@
 .settingsDisplay {
     composes: display from "./DisplayMan.module.css";
     width: 400px;
-    height: 480px;
+    height: 490px;
 }
 
 .settingsDisplay img {
@@ -52,10 +52,29 @@
     filter: grayscale(100%);
 }
 
+.easyMode {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 90%;
+}
+
+.easyMode label{
+    display: flex;
+    width: 80px;
+    text-align: center;
+    padding-top: 6px;
+}
+
+.easyMode .modeSelect{
+    flex-direction: column-reverse;
+}
+
 .exit {
     display: flex;
     align-items: flex-end;
-    height: 100%;
+    height: 90%;
+    padding-top: 12px;
 }
 
 .exit button{
@@ -64,5 +83,4 @@
     border: none;
     width: 60px;
     height: 75px;
-    margin-bottom: 20px;
 }

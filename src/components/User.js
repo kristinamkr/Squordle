@@ -26,6 +26,8 @@ function User(props)
     //5 on successful log-out
     //6 on failed save
     //7 on successful save
+    //8 on invalid username for sign up
+
     const [userErr, setUserErr] = useState(0);
 
     const user = props.user;
@@ -47,12 +49,16 @@ function User(props)
             }).then(res => res.json());
         } 
 
-        postUser()
-            .then(function(result) {
-                if (result.length == 1)
-                    setUserErr(2);
-                else setUserErr(3);
-            });
+        if(username !== "" && username !== "admin" && username !== "guest") {
+            postUser()
+                .then(function(result) {
+                    if (result.length == 1)
+                        setUserErr(2);
+                    else setUserErr(3);
+                });
+        } else {
+            setUserErr(8);
+        }
     }
 
     function signIn() {
@@ -124,7 +130,7 @@ function User(props)
 
 	return (
         <> 
-            {userErr === 0 && 
+            {userErr === 0 && localStorage.user === "guest" &&
                 <p> Enter your login information: </p>}
             {userErr === 1 && 
                 <p> The username or password is incorrect. </p>}
@@ -140,6 +146,8 @@ function User(props)
                 <p> Save was not successful. </p>}
             {userErr === 7 && 
                 <a style = {{paddingTop: "1em"}}> Remember to save your game! </a>}
+            {userErr === 8 && 
+                <p> This is not a valid username. </p>}
 
             {user.name === "guest" &&
             <form className = {classes.loginForm} onSubmit={handleSubmit}>

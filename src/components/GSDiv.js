@@ -13,6 +13,7 @@ import boardInit from "../functions/boardInit.js";
 
 function GSDiv(props) 
 {
+
     const pokeList = props.pokeList;
     const pokeAnswer = props.pokemon; 
 
@@ -29,15 +30,14 @@ function GSDiv(props)
 
     useEffect(() => { 
         initGameSpace();
-    }, [pokeAnswer]);
+    }, [pokeAnswer, props.newPokemon]);
 
     function initGameSpace()
     {
         let boardState;
         if (Number(localStorage.gameMode) === 0 && 
-            localStorage.potd === pokeAnswer) {
+            JSON.parse(localStorage.potd)["daily"] === pokeAnswer) {
             boardState = JSON.parse(localStorage.boardState);
-            console.log("BOARD STATE - " + localStorage.boardState);
         }
         else {
             boardState = boardInit(pokeAnswer);
@@ -64,13 +64,13 @@ function GSDiv(props)
 
 	    var guess = "";
         for (var i = 0; i < pokeAnswer.length; i++) {
-            if (gameSpace[focus[0]])
+            //if (gameSpace[focus[0]])
                 guess = guess + gameSpace[focus[0]].boxes[i].letter;
         }
 
         if (!(props.isGameOver[0]) && 
             !(JSON.parse(localStorage.backdrop)) &&
-            (!(JSON.parse(localStorage.potd)[1])|| 
+            (!(JSON.parse(localStorage.potd)["isWon"])|| 
              Number(localStorage.gameMode) === 1)) 
         {
             if (input === "Enter" && focus[1] === pokeAnswer.length 
@@ -93,8 +93,9 @@ function GSDiv(props)
             }
         }
 
-        if (!(JSON.parse(localStorage.backdrop)))
+        if (!(JSON.parse(localStorage.backdrop)) && !(JSON.parse(localStorage.potd)["isWon"])){
             setGameSpace([...gameSpace]);
+        }
     }
 
     // HELPER FUNCTIONS -------------------------------------------------------
@@ -178,9 +179,10 @@ function GSDiv(props)
             row.state = "winner";
             if (Number(localStorage.gameMode) === 0) {
                 let temp = JSON.parse(localStorage.potd);
-                temp[1] = true;
+                temp["isWon"] = true;
                 localStorage.potd = JSON.stringify(temp); 
             }
+            updateHatching();
             props.setGameOver([true, 'win']);
             setGameSpace(null);
             setFocus([-1, focus[1]]);
@@ -231,7 +233,7 @@ function GSDiv(props)
     // needs to/should be moved to shuckle. 
     function updateHatching(){
         let tempInfo = JSON.parse(localStorage.shuckleInfo);
-        var shuckleChildren = tempInfo[2]; 
+        var shuckleChildren = tempInfo["children"]; 
 
         for (var i = 0; i < shuckleChildren.length; i++) {
             if (shuckleChildren[i].state === "shuckleEgg0") {
@@ -246,7 +248,7 @@ function GSDiv(props)
             }
         }
 
-        tempInfo[2] = shuckleChildren;
+        tempInfo["children"] = shuckleChildren;
         localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
     }
 
