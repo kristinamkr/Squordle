@@ -12,7 +12,9 @@ function loadSave()
             localStorage.backdrop = false;
         if (!(localStorage.shopState))
             localStorage.shopState = 0;
+
         // GAMEMODE INFO ---
+        // 0: daily, 1: freeplay, 2: daily + ez, 3: freeplay + ez
         if (!(localStorage.gameMode))
             localStorage.gameMode = 0;
         if (!(localStorage.potd)) {

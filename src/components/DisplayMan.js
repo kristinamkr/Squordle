@@ -21,7 +21,6 @@ function Backdrop()
 
 function DisplayMan(props)
 {
-
 	const [displayState, setDisplayState] = 
            useState({ showShop:     false,
                       showSettings: false,

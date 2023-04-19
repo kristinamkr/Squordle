@@ -10,34 +10,25 @@ import { useReducer } from 'react';
 
 function SettingsDisplay(props)
 {
-     const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
-	function toggleFreeplay() {
-		if (localStorage.gameMode === "0") {
-			localStorage.gameMode = "1";
-		} else {
-			localStorage.gameMode = "0";
-		}
-		if (props.toggledGM) {
-			props.setToggledGM(false);
-		} else {
-			props.setToggledGM(true);
-		}
+    function toggleFreeplay() 
+    {
+		if (Number(localStorage.gameMode) % 2 === 0)
+			localStorage.gameMode = Number(localStorage.gameMode) + 1;
+		else 
+			localStorage.gameMode = Number(localStorage.gameMode) - 1;
+
+        props.setToggledGM(!(props.toggledGM));
 		forceUpdate();
 	}
 
-	//TO MAKE LIFE EASIER FOR YOU KRISTINA
-	function toggleEasyMode() {
-		if (localStorage.easyMode === "0") {
-			localStorage.easyMode = "1";
-		} else {
-			localStorage.easyMode = "0";
-		}
-		if (props.toggledGM) {
-			props.setToggledGM(false);
-		} else {
-			props.setToggledGM(true);
-		}
+	function toggleEasyMode() 
+    {
+        if (Number(localStorage.gameMode) < 2)
+            localStorage.gameMode = Number(localStorage.gameMode) + 2;
+        else
+            localStorage.gameMode = Number(localStorage.gameMode) - 2;
 		forceUpdate();
 	}
 
@@ -55,10 +46,11 @@ function SettingsDisplay(props)
 
 	        {JSON.parse(localStorage.inventory)["ticket"] && 
                 <div className = {classes.freeplay}>
-	        	<p> Click the ticket to toggle between Daily Mode and Freeplay Mode. </p>
+	        	<p> Click the ticket to toggle between Daily Mode
+                    and Freeplay Mode </p>
 	        	<div className = {classes.modeSelect}>
-		        	{localStorage.gameMode === "0" && <a>Daily</a>}
-					{localStorage.gameMode === "1" && <a>Freeplay</a>}
+		        	{Number(localStorage.gameMode) % 2 === 0 && <a>Daily</a>}
+					{Number(localStorage.gameMode) % 2 === 1 && <a>Freeplay</a>}
 	                <button onClick = {toggleFreeplay}>
 	                    <img src = {require("../assets/ticket0.png")}
                              alt = "ticket"/>
@@ -76,10 +68,27 @@ function SettingsDisplay(props)
 	                </button>
 	            </div>
             </div>}
-            <div className = {classes.exit}>
-                <button onClick = {props.reload}>
-                    <ExitIcon className = {classes.exitIcon}/>
-                </button>
+            <div className = {classes.easyMode}>
+                { (Number(localStorage.gameMode) < 2) &&
+                    <div className = {classes.modeSelect}>
+                        <label> Guess anything </label>
+                        <input type="checkbox" 
+                               id="easyMode" 
+                               onChange = {(e) => toggleEasyMode()}/>
+                    </div> }
+                { (Number(localStorage.gameMode) >= 2) &&
+                    <div className = {classes.modeSelect}>
+                        <label> Guess anything </label>
+                        <input type="checkbox" 
+                               id="easyMode" 
+                               onChange = {(e) => toggleEasyMode()}
+                               checked />
+                    </div> }
+                <div className = {classes.exit}>
+                    <button onClick = {props.reload}>
+                        <ExitIcon className = {classes.exitIcon}/>
+                    </button>
+                </div>
             </div>
 		</div>
     );

@@ -26,22 +26,26 @@ function GuessBox(props)
 function GameRow(props)
 {
     const guess = props.guess;
-    const spriteRef = spriteLink(guess);
+
+    let spriteRef;
+    if (!(props.checkValidity(guess)))
+        spriteRef = "https://img.pokemondb.net/s.png";
+    else
+        spriteRef = spriteLink(guess);
 
 	return (
 		<div className = {classes.gameRow}
-             style = {{gridTemplateColumns: "1fr " + "40px ".repeat(props.length) + "1fr"}}>
+             style = {{gridTemplateColumns: 
+                "1fr " + "40px ".repeat(props.length) + "1fr"}}>
 			<img className = {classes.pokeSprite} 
                  style = {{top: props.upDownPos}}
-                 src = {spriteRef} 
-                 alt = "pokemon sprite"/>
+                 src = {spriteRef} /> 
 			{props.boxes.map((box) => (<GuessBox key = {box.id}
 			                                     state = {box.state}
 			                                     letter = {box.letter}/>))}
 			<img className = {classes.pokeSprite} 
                  style = {{top: -props.upDownPos - 10}}
-                 src = {spriteRef} 
-                 alt = "pokemon sprite"/>
+                 src = {spriteRef} />
         </div>
 	)
 }
@@ -63,7 +67,8 @@ function GameSpace(props)
                           length = {row.length}
                           boxes = {row.boxes}
                           guess = {row.guess} 
-                          upDownPos = {-10 * (counter % 2)}/>)) }
+                          upDownPos = {-10 * (counter % 2)}
+                          checkValidity = {props.checkValidity}/>)) }
         </div>
   )
 }
