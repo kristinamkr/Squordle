@@ -89,8 +89,8 @@ function GSDiv(props)
                 if ((Number(localStorage.gameMode) < 2 && checkValidity(guess)) 
                    || Number(localStorage.gameMode) >= 2) 
                 {
-                    checkAnswer(gameSpace[focus[0]]);
                     gameSpace[focus[0]].guess = guess;
+                    checkAnswer(gameSpace[focus[0]]);
                     focus[0] += 1;
                     focus[1] = 0;
                 }
