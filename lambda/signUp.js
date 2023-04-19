@@ -23,12 +23,12 @@ const connectToDatabase = async (uri) => {
 };
 
 const signUp = async (db, data) => {
-    const userData = { name: data.user,
-                       password: data.pass,
-                       inventory: data.inventory,
-                       pokeDollars: data.pokeDollars,
-                       region: data.region,
-                       shuckleInfo: data.shuckleInfo,
+    const userData = { name: data["user"],
+                       password: data["pass"],
+                       inventory: data["inventory"],
+                       pokeDollars: data["pokeDollars"],
+                       region: data["region"],
+                       shuckleInfo: data["shuckleInfo"],
                        created: new Date() }
 
     const usr = await db

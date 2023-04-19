@@ -25,6 +25,7 @@ function User(props)
     //4 on successful save
     //5 on successful log-out
     //6 on failed save
+    //7 on successful save
     const [userErr, setUserErr] = useState(0);
 
     const user = props.user;
@@ -75,7 +76,7 @@ function User(props)
         fetchUser()
             .then(function(result) {
                 if (result.length > 0) {
-                    setUserErr(0);
+                    setUserErr(7);
                     props.setToggledGM(true);
                     props.userHandler(result[0]);
                 } else throw 1;
@@ -123,7 +124,7 @@ function User(props)
 
 	return (
         <> 
-            {userErr === 0 && user.name === "guest" && 
+            {userErr === 0 && 
                 <p> Enter your login information: </p>}
             {userErr === 1 && 
                 <p> The username or password is incorrect. </p>}
@@ -137,6 +138,8 @@ function User(props)
                 <p> Log-out successful. </p>}
             {userErr === 6 && 
                 <p> Save was not successful. </p>}
+            {userErr === 7 && 
+                <a style = {{paddingTop: "1em"}}> Remember to save your game! </a>}
 
             {user.name === "guest" &&
             <form className = {classes.loginForm} onSubmit={handleSubmit}>

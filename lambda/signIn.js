@@ -31,7 +31,8 @@ const signIn = async (db, data) => {
                               lastLogin: new Date() } });
 
     const usr = await users
-        .aggregate([{ $match: { name: data["user"] } }])
+        .aggregate([{ $match: { name: data["user"],
+                                password: data["pass"] } }])
         .toArray(function (err, result) {
             console.log("RESULT - " + JSON.stringify(result));
             if (err)

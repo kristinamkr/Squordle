@@ -25,11 +25,11 @@ const connectToDatabase = async (uri) => {
 const save = async (db, data) => {
     await db
         .collection('users') 
-        .updateOne({ name: data.user, saveKey: data.saveKey }, 
-                   { $set: { inventory: data.inventory,
-                             pokeDollars: data.pokeDollars,
-                             region: data.region,
-                             shuckleInfo: data.shuckleInfo,
+        .updateOne({ name: data["user"], saveKey: data["saveKey"] }, 
+                   { $set: { inventory: data["inventory"],
+                             pokeDollars: data["pokeDollars"],
+                             region: data["region"],
+                             shuckleInfo: data["shuckleInfo"],
                              lastModified: new Date()
                            }
                   });

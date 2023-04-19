@@ -11,8 +11,6 @@ import { useState, useEffect } from 'react';
 
 import boardInit from "../functions/boardInit.js";
 
-let lettersUsed = []; // why was removed...
-
 function GSDiv(props) 
 {
     const pokeList = props.pokeList;
@@ -103,35 +101,70 @@ function GSDiv(props)
 	function checkAnswer(row)
     {
 	    var lsChange = letterStates;
-        // var tileList = pokeAnswer.split("");
-        // var boxes = row.boxes;
+        var tileList = pokeAnswer.split("");
+        var boxes = row.boxes;
         let pointsWon = 0; 
 
-        // console.log("tiles - " + tileList);
+        for (var i = 0; i < pokeAnswer.length; i++) {
 
-	    for (let i = 0; i < pokeAnswer.length; i++) {
-            let currentBox = row.boxes[i]; 
+            if (boxes[i].letter === pokeAnswer[i]) {  // green
+                boxes[i].state = "correct";
 
-            if (currentBox.letter === pokeAnswer[i]) { //green
-                currentBox.state = "correct";
-                lsChange["correctGuess"].add(currentBox.letter);
+                //cleanable, basically the equivalent of Set().add(), but for an array instead bc JSON can't store sets >.<
+                var found = false;
+                for (var k = 0; k < lsChange.correctGuess.length; k++) {
+                    if (lsChange.correctGuess[k] === boxes[i].letter) {
+                        found = true;
+                    }
+                }
+                if(!found){
+                    lsChange.correctGuess.push(boxes[i].letter);
+                }
+
                 setLetterStates(lsChange);
-                if (!(lettersUsed.includes(currentBox.letter)))
-                    pointsWon += 20;
+                tileList.splice(i, 1);
+                pointsWon += 20;
+
             }
-            else if (isInAnswer(currentBox.letter)) {  // yellow
-                currentBox.state = "inWord";
-                lsChange["inWord"].add(currentBox.letter);
-                if (!(lettersUsed.includes(currentBox.letter)))
-                    pointsWon += 5;
-            }
-            else {
-                currentBox.state = "incorrect";
-                lsChange["notInWord"].add(currentBox.letter);
+        }
+
+        for (var i = 0; i < pokeAnswer.length; i++) {
+            //skip over correct answers
+            if (boxes[i].state === "correct") {
+                continue;
             }
 
-            if (!(lettersUsed.includes(currentBox.letter)))
-                lettersUsed.push(currentBox.letter);
+            //check if the rest are in the word somewhere
+            if (isInAnswer(boxes[i].letter, tileList)) {   // yellow
+                boxes[i].state = "inWord";
+
+                //cleanable, basically the equivalent of Set().add(), but for an array instead bc JSON can't store sets >.<
+                var found = false;
+                for (var k = 0; k < lsChange.inWord.length; k++) {
+                    if (lsChange.inWord[k] === boxes[i].letter) {
+                        found = true;
+                    }
+                }
+                if(!found){
+                    lsChange.inWord.push(boxes[i].letter);
+                }
+
+                pointsWon += 5;
+            }
+            else {                               // gray
+                boxes[i].state = "incorrect";
+                
+                //cleanable, basically the equivalent of Set().add(), but for an array instead bc JSON can't store sets >.<
+                var found = false;
+                for (var k = 0; k < lsChange.notInWord.length; k++) {
+                    if (lsChange.notInWord[k] === boxes[i].letter) {
+                        found = true;
+                    }
+                }
+                if(!found){
+                    lsChange.notInWord.push(boxes[i].letter);
+                }
+            }
         }
 
         var boardState = {gameSpace: gameSpace, 
