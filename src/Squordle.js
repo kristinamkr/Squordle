@@ -50,11 +50,14 @@ function Squordle(props)
 
         //redundancy for log-in and log-out cases
         if (!(JSON.parse(localStorage.inventory)["ticket"])){
-            localStorage.gameMode = 0;
+            if (localStorage.gameMode > 1)
+                localStorage.gameMode = 2;
+            else
+                localStorage.gameMode = 0;
         }
 
         if (isGameOver[0] == false) {
-            if (Number(localStorage.gameMode) === 0)
+            if (Number(localStorage.gameMode)%2 === 0)
                 getDaily()
                     .then(function(result) { 
                         var dailyPokemon = result[0].name.toLowerCase();
