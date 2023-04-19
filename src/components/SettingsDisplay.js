@@ -26,6 +26,7 @@ function SettingsDisplay(props)
 		forceUpdate();
 	}
 
+	//TO MAKE LIFE EASIER FOR YOU KRISTINA
 	function toggleEasyMode() {
 		if (localStorage.easyMode === "0") {
 			localStorage.easyMode = "1";
@@ -75,17 +76,11 @@ function SettingsDisplay(props)
 	                </button>
 	            </div>
             </div>}
-            <div className = {classes.easyMode}>
-            	<div className = {classes.modeSelect}>
-            		<label for="easyMode"> Guess anything </label>
-            		<input type="checkbox" id="easyMode" onChange = {(e) => toggleEasyMode()}/>
-            	</div>
-	            <div className = {classes.exit}>
-	                <button onClick = {props.reload}>
-	                    <ExitIcon className = {classes.exitIcon}/>
-	                </button>
-	            </div>
-	        </div>
+            <div className = {classes.exit}>
+                <button onClick = {props.reload}>
+                    <ExitIcon className = {classes.exitIcon}/>
+                </button>
+            </div>
 		</div>
     );
 }

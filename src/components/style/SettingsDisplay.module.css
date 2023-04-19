@@ -73,8 +73,7 @@
 .exit {
     display: flex;
     align-items: flex-end;
-    height: 90%;
-    padding-top: 12px;
+    height: 100%;
 }
 
 .exit button{
@@ -83,4 +82,5 @@
     border: none;
     width: 60px;
     height: 75px;
+    margin-bottom: 20px;
 }
