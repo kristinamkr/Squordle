@@ -13,7 +13,6 @@ import boardInit from "../functions/boardInit.js";
 
 function GSDiv(props) 
 {
-
     const pokeList = props.pokeList;
     const pokeAnswer = props.pokemon; 
 
@@ -50,13 +49,12 @@ function GSDiv(props)
     {
         console.log(pokeAnswer);
         let boardState;
-        if (Number(localStorage.gameMode) === 0 && 
-            JSON.parse(localStorage.potd)["daily"] === pokeAnswer) {
+        if (Number(localStorage.gameMode) % 2 === 0 && 
+            JSON.parse(localStorage.potd)["daily"] === pokeAnswer)
             boardState = JSON.parse(localStorage.boardState);
-        }
         else {
             boardState = boardInit(pokeAnswer);
-            if (Number(localStorage.gameMode) === 0) {
+            if (Number(localStorage.gameMode) % 2 === 0) {
                 let temp = JSON.parse(localStorage.potd);
                 temp["daily"] = pokeAnswer;
                 temp["isWon"] = false; 
@@ -78,22 +76,24 @@ function GSDiv(props)
         const validKeySet = new Set(validKeys);
 
 	    var guess = "";
-        for (var i = 0; i < pokeAnswer.length; i++) {
-            //if (gameSpace[focus[0]])
+        for (var i = 0; i < pokeAnswer.length; i++)
                 guess = guess + gameSpace[focus[0]].boxes[i].letter;
-        }
 
         if (!(props.isGameOver[0]) && 
             !(JSON.parse(localStorage.backdrop)) &&
-            (!(JSON.parse(localStorage.potd)["isWon"])|| 
-             Number(localStorage.gameMode) === 1)) 
+            (!(JSON.parse(localStorage.potd)["isWon"]) || 
+             Number(localStorage.gameMode) % 2 === 1)) 
         {
-            if (input === "Enter" && focus[1] === pokeAnswer.length 
-                && checkValidity(guess)) {
+            if (input === "Enter" && focus[1] === pokeAnswer.length) 
+            { 
+                if ((Number(localStorage.gameMode) < 2 && checkValidity(guess)) 
+                   || Number(localStorage.gameMode) >= 2) 
+                {
                     checkAnswer(gameSpace[focus[0]]);
                     gameSpace[focus[0]].guess = guess;
                     focus[0] += 1;
                     focus[1] = 0;
+                }
             }
             else if (input === "Backspace" && focus[1] !== 0) { 
                 focus[1] -= 1;
@@ -108,9 +108,9 @@ function GSDiv(props)
             }
         }
 
-        if (!(JSON.parse(localStorage.backdrop)) && !(JSON.parse(localStorage.potd)["isWon"])){
+        if (!(JSON.parse(localStorage.backdrop)) && 
+            !(JSON.parse(localStorage.potd)["isWon"]))
             setGameSpace([...gameSpace]);
-        }
     }
 
     // HELPER FUNCTIONS -------------------------------------------------------
@@ -126,16 +126,13 @@ function GSDiv(props)
             if (boxes[i].letter === pokeAnswer[i]) {  // green
                 boxes[i].state = "correct";
 
-                //cleanable, basically the equivalent of Set().add(), but for an array instead bc JSON can't store sets >.<
                 var found = false;
                 for (var k = 0; k < lsChange.correctGuess.length; k++) {
-                    if (lsChange.correctGuess[k] === boxes[i].letter) {
+                    if (lsChange.correctGuess[k] === boxes[i].letter) 
                         found = true;
-                    }
                 }
-                if(!found){
+                if(!found)
                     lsChange.correctGuess.push(boxes[i].letter);
-                }
 
                 setLetterStates(lsChange);
                 tileList.splice(i, 1);
@@ -146,31 +143,24 @@ function GSDiv(props)
 
         for (var i = 0; i < pokeAnswer.length; i++) {
             //skip over correct answers
-            if (boxes[i].state === "correct") {
+            if (boxes[i].state === "correct")
                 continue;
-            }
 
             //check if the rest are in the word somewhere
             if (isInAnswer(boxes[i].letter, tileList)) {   // yellow
                 boxes[i].state = "inWord";
-
-                //cleanable, basically the equivalent of Set().add(), but for an array instead bc JSON can't store sets >.<
                 var found = false;
                 for (var k = 0; k < lsChange.inWord.length; k++) {
-                    if (lsChange.inWord[k] === boxes[i].letter) {
+                    if (lsChange.inWord[k] === boxes[i].letter)
                         found = true;
-                    }
                 }
-                if(!found){
+                if(!found)
                     lsChange.inWord.push(boxes[i].letter);
-                }
-
                 pointsWon += 5;
             }
             else {                               // gray
                 boxes[i].state = "incorrect";
                 
-                //cleanable, basically the equivalent of Set().add(), but for an array instead bc JSON can't store sets >.<
                 var found = false;
                 for (var k = 0; k < lsChange.notInWord.length; k++) {
                     if (lsChange.notInWord[k] === boxes[i].letter) {
@@ -187,12 +177,12 @@ function GSDiv(props)
                           letterStates: letterStates, 
                           focus: [focus[0]+1 ,0]};
 
-        if (Number(localStorage.gameMode) === 0)
+        if (Number(localStorage.gameMode) % 2 === 0)
             localStorage.boardState = JSON.stringify(boardState);
 
         if (isWinner(row)) {
             row.state = "winner";
-            if (Number(localStorage.gameMode) === 0) {
+            if (Number(localStorage.gameMode) % 2 === 0) {
                 let temp = JSON.parse(localStorage.potd);
                 temp["isWon"] = true;
                 localStorage.potd = JSON.stringify(temp); 
@@ -272,7 +262,8 @@ function GSDiv(props)
             <div className = {classes.gsDiv}>
                 <GameSpace id = "gameSpace"
                            gameSpace = {gameSpace}
-                           wordLength = {pokeAnswer.length}/>
+                           wordLength = {pokeAnswer.length}
+                           checkValidity = {checkValidity} />
                 { letterStates && 
                     <Keyboard  id = "keyboard" 
                                letterStates = {letterStates} 
