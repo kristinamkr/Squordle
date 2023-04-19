@@ -18,7 +18,7 @@ let usedPokemon = [];
 loadSave();
 function Squordle(props) 
 {
-    const [pokemon, setPokemon] = useState(['eddie']);
+    const [pokemon, setPokemon] = useState('eddie');
     const pokeList = props.pokeList;
 
     const [pokeDollars, setPokeDollars] = 

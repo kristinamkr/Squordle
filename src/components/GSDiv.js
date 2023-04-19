@@ -30,10 +30,25 @@ function GSDiv(props)
 
     useEffect(() => { 
         initGameSpace();
-    }, [pokeAnswer, props.newPokemon]);
+    }, [pokeAnswer]);
+
+    useEffect(() => {
+        reloadGameSpace();
+    }, [props.newPokemon])
+
+    function reloadGameSpace()
+    {
+        let boardState;
+        boardState = JSON.parse(localStorage.boardState);
+
+        setFocus(boardState["focus"]);
+        setGameSpace(boardState["gameSpace"]);
+        setLetterStates(boardState["letterStates"]);
+    }
 
     function initGameSpace()
     {
+        console.log(pokeAnswer);
         let boardState;
         if (Number(localStorage.gameMode) === 0 && 
             JSON.parse(localStorage.potd)["daily"] === pokeAnswer) {
