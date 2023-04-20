@@ -5,7 +5,7 @@
 .settingsDisplay {
     composes: display from "./DisplayMan.module.css";
     width: 400px;
-    height: 490px;
+    height: 534px;
 }
 
 .settingsDisplay img {

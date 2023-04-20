@@ -130,6 +130,7 @@ function User(props)
 
 	return (
         <> 
+            <a style= {{paddingTop: "1em", textAlign: "center", fontWeight: "bold"}}> *WARNING* <br/> YOUR PASSWORD WILL NOT BE SECURED</a>
             {userErr === 0 && localStorage.user === "guest" &&
                 <p> Enter your login information: </p>}
             {userErr === 1 && 
@@ -139,13 +140,13 @@ function User(props)
             {userErr === 3 && 
                 <p> Registered successfully, you can log in. </p>}
             {userErr === 4 && 
-                <a style = {{paddingTop: "1em"}}> Save successful. </a>}
+                <p style = {{paddingTop: "1em"}}> Save successful. </p>}
             {userErr === 5 && user.name === "guest" && 
                 <p> Log-out successful. </p>}
             {userErr === 6 && 
                 <p> Save was not successful. </p>}
             {userErr === 7 && 
-                <a style = {{paddingTop: "1em"}}> Remember to save your game! </a>}
+                <p style = {{paddingTop: "1em"}}> Remember to save your game! </p>}
             {userErr === 8 && 
                 <p> This is not a valid username. </p>}
 
