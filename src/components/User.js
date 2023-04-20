@@ -130,11 +130,11 @@ function User(props)
 
 	return (
         <> 
-            <a style= {{paddingTop: "1em", textAlign: "center", fontWeight: "bold"}}> *WARNING* <br/> YOUR PASSWORD WILL NOT BE SECURED</a>
+            <a style= {{paddingTop: "1em", textAlign: "center", fontWeight: "bold"}}> *WARNING* <br/> YOUR SAVE KEY WILL NOT BE SECURED</a>
             {userErr === 0 && localStorage.user === "guest" &&
                 <p> Enter your login information: </p>}
             {userErr === 1 && 
-                <p> The username or password is incorrect. </p>}
+                <p> The username or save key is incorrect. </p>}
             {userErr === 2 && 
                 <p> This username is already in use. </p>}
             {userErr === 3 && 
@@ -160,7 +160,7 @@ function User(props)
                     />
                 </div>
                 <div className = {classes.typingField}>
-                    <label> password:</label>
+                    <label> save key:</label>
                     <input
                         value = {pwd}
                         onChange = {(e) => setPwd(e.target.value)}
