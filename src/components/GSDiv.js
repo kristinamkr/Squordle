@@ -11,6 +11,8 @@ import { useState, useEffect } from 'react';
 
 import boardInit from "../functions/boardInit.js";
 
+let lettersUsed = []; // here? 
+
 function GSDiv(props) 
 {
     const pokeList = props.pokeList;
@@ -117,81 +119,66 @@ function GSDiv(props)
 	function checkAnswer(row)
     {
 	    var lsChange = letterStates;
-        var tileList = pokeAnswer.split("");
-        var boxes = row.boxes;
+        let ans = pokeAnswer;
         let pointsWon = 0; 
 
-        for (var i = 0; i < pokeAnswer.length; i++) {
+        for (let i = 0; i < pokeAnswer.length; i++) {
+            let currentBox = row.boxes[i];
 
-            if (boxes[i].letter === pokeAnswer[i]) {  // green
-                boxes[i].state = "correct";
+            // check for duplicates in guess that are NOT in ans
+            if (currentBox.letter === pokeAnswer[i] &&  // green 
+                ans.indexOf(currentBox.letter) !== -1) 
+            { 
+                currentBox.state = "correct";
+                lsChange["correctGuess"].push(currentBox.letter);
 
-                var found = false;
-                for (var k = 0; k < lsChange.correctGuess.length; k++) {
-                    if (lsChange.correctGuess[k] === boxes[i].letter) 
-                        found = true;
-                }
-                if(!found)
-                    lsChange.correctGuess.push(boxes[i].letter);
+                if (!(lettersUsed.includes(currentBox.letter)) ||
+                        ans.indexOf(currentBox.letter) !== -1)
+                    pointsWon += 20;
 
-                setLetterStates(lsChange);
-                tileList.splice(i, 1);
-                pointsWon += 20;
-
+                ans = ans.replace(currentBox.letter, ''); 
             }
+            else if (isInAnswer(currentBox.letter, ans)) { // yellow
+                currentBox.state = "inWord";
+                lsChange["inWord"].push(currentBox.letter);
+
+                if (!(lettersUsed.includes(currentBox.letter)) ||
+                        ans.indexOf(currentBox.letter) !== -1)
+                    pointsWon += 5;
+
+                ans = ans.replace(currentBox.letter, ''); 
+            } else {
+                currentBox.state = "incorrect";
+                lsChange["notInWord"].push(currentBox.letter);
+            }
+
+            if (!(lettersUsed.includes(currentBox.letter)))
+                lettersUsed.push(currentBox.letter);
         }
 
-        for (var i = 0; i < pokeAnswer.length; i++) {
-            //skip over correct answers
-            if (boxes[i].state === "correct")
-                continue;
-
-            //check if the rest are in the word somewhere
-            if (isInAnswer(boxes[i].letter, tileList)) {   // yellow
-                boxes[i].state = "inWord";
-                var found = false;
-                for (var k = 0; k < lsChange.inWord.length; k++) {
-                    if (lsChange.inWord[k] === boxes[i].letter)
-                        found = true;
-                }
-                if(!found)
-                    lsChange.inWord.push(boxes[i].letter);
-                pointsWon += 5;
-            }
-            else {                               // gray
-                boxes[i].state = "incorrect";
-                
-                var found = false;
-                for (var k = 0; k < lsChange.notInWord.length; k++) {
-                    if (lsChange.notInWord[k] === boxes[i].letter) {
-                        found = true;
-                    }
-                }
-                if(!found){
-                    lsChange.notInWord.push(boxes[i].letter);
-                }
-            }
-        }
-
-        var boardState = {gameSpace: gameSpace, 
+        let boardState = {gameSpace: gameSpace, 
                           letterStates: letterStates, 
-                          focus: [focus[0]+1 ,0]};
-
+                          focus: [focus[0] + 1, 0]};
         if (Number(localStorage.gameMode) % 2 === 0)
             localStorage.boardState = JSON.stringify(boardState);
 
         if (isWinner(row)) {
             row.state = "winner";
+
             if (Number(localStorage.gameMode) % 2 === 0) {
                 let temp = JSON.parse(localStorage.potd);
                 temp["isWon"] = true;
                 localStorage.potd = JSON.stringify(temp); 
             }
-            updateHatching();
+
             props.setGameOver([true, 'win']);
             setGameSpace(null);
             setFocus([-1, focus[1]]);
             pointsWon += 200;
+
+            // TO BE MOVED
+            if (JSON.parse(localStorage.shuckleInfo)[2])
+                updateHatching();
         } else {
             if (focus[0] === 5 && focus[1] === pokeAnswer.length) {
                 props.setGameOver([true, 'loss']);
@@ -207,13 +194,11 @@ function GSDiv(props)
         return row;
 	}
 
-    function isInAnswer(letter, tileList)
+    function isInAnswer(letter, ans)
     {
-        for (var i = 0; i < tileList.length; i++){
-            if (letter === tileList[i]) {
-                tileList.splice(i, 1);
+        for (let i = 0; i < ans.length; i++) {
+            if (letter === ans[i])
                 return true;
-            }
         }
         return false;
     }
