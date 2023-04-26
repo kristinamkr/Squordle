@@ -5,7 +5,6 @@
 import Squordle from "./Squordle.js";
 
 import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
 
 function App()
 { 
@@ -17,7 +16,10 @@ function App()
                   inventory: JSON.parse(localStorage.inventory) };
     const [user, setUser] = useState(uData);
 
-    function userHandler(data) { setUser(data); }
+    function userHandler(data) 
+    { 
+        setUser(data); 
+    }
 
     useEffect(() => {
         if (!(user.name === "guest")) {
@@ -32,8 +34,24 @@ function App()
         } 
     }, [user]);
 
+    console.log("GAMEMODE - " + localStorage.gameMode);
+
     // FETCH POKELIST... SHOULD ONLY EXECUTE ONCE ------------------------------
     const [pokeList, setPokeList] = useState(null);
+
+    useEffect(() => {
+        if (!pokeList) {
+            if (localStorage.pokeList === 'null') { 
+                pokePromise().then((res) => {
+                    console.log("ACQUIRING POKELIST...");
+                    localStorage.pokeList = JSON.stringify(res);
+                    setPokeList(res);
+                }).catch(err => console.error(err));
+            }
+            else
+                setPokeList(JSON.parse(localStorage.pokeList));
+        }
+    }, [pokeList]);
 
     async function pokePromise() { 
         return await fetch(`/.netlify/functions/pokeList`)
@@ -41,27 +59,15 @@ function App()
                 .catch((err) => console.error(err));
     }
 
-    useEffect(() => {
-        if (!pokeList) {
-            pokePromise()
-                .then(function(result) {
-                  setPokeList(result.map(p => p.name.toLowerCase()));
-                }).catch(err => console.error(err));
-        }
-    }, [pokeList]);
     // -------------------------------------------------------------------------
 
     return (
         <div>
             { pokeList && 
-                <Routes>
-                <Route path = '/' 
-                       element = {<Squordle id='squordle' 
-                                            user = {user}
-                                            userHandler = {userHandler} 
-                                            pokeList = {pokeList} />} />
-                </Routes>
-            }
+                <Squordle id='squordle' 
+                          user = {user}
+                          userHandler = {userHandler} 
+                          pokeList = {pokeList} /> }
         </div>
     );
 }

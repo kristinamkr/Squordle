@@ -16,7 +16,8 @@ let lettersUsed = []; // here?
 function GSDiv(props) 
 {
     const pokeList = props.pokeList;
-    const pokeAnswer = props.pokemon; 
+    const pokeAnswer = props.pokemon.toLowerCase(); 
+    let ans = pokeAnswer.toLowerCase();
 
     const validKeys = "qwertyuiopasdfghjklzxcvbnm".split('');
 
@@ -79,7 +80,7 @@ function GSDiv(props)
 
 	    var guess = "";
         for (var i = 0; i < pokeAnswer.length; i++)
-                guess = guess + gameSpace[focus[0]].boxes[i].letter;
+            guess = guess + gameSpace[focus[0]].boxes[i].letter;
 
         if (!(props.isGameOver[0]) && 
             !(JSON.parse(localStorage.backdrop)) &&
@@ -88,11 +89,13 @@ function GSDiv(props)
         {
             if (input === "Enter" && focus[1] === pokeAnswer.length) 
             { 
-                if ((Number(localStorage.gameMode) < 2 && checkValidity(guess)) 
+                console.log("?");
+                if ((Number(localStorage.gameMode) < 2 ) && checkValidity(guess)
                    || Number(localStorage.gameMode) >= 2) 
                 {
                     gameSpace[focus[0]].guess = guess;
                     checkAnswer(gameSpace[focus[0]]);
+                    console.log("PKANS - " + pokeAnswer.toLowerCase());
                     focus[0] += 1;
                     focus[1] = 0;
                 }
@@ -119,7 +122,6 @@ function GSDiv(props)
 	function checkAnswer(row)
     {
 	    var lsChange = letterStates;
-        let ans = pokeAnswer;
         let pointsWon = 0; 
 
         for (let i = 0; i < pokeAnswer.length; i++) {
@@ -132,8 +134,7 @@ function GSDiv(props)
                 currentBox.state = "correct";
                 lsChange["correctGuess"].push(currentBox.letter);
 
-                if (!(lettersUsed.includes(currentBox.letter)) ||
-                        ans.indexOf(currentBox.letter) !== -1)
+                if (!(lettersUsed.includes(currentBox.letter)))
                     pointsWon += 20;
 
                 ans = ans.replace(currentBox.letter, ''); 
@@ -142,8 +143,7 @@ function GSDiv(props)
                 currentBox.state = "inWord";
                 lsChange["inWord"].push(currentBox.letter);
 
-                if (!(lettersUsed.includes(currentBox.letter)) ||
-                        ans.indexOf(currentBox.letter) !== -1)
+                if (!(lettersUsed.includes(currentBox.letter)))
                     pointsWon += 5;
 
                 ans = ans.replace(currentBox.letter, ''); 
@@ -196,26 +196,23 @@ function GSDiv(props)
 
     function isInAnswer(letter, ans)
     {
-        for (let i = 0; i < ans.length; i++) {
+        for (let i = 0; i < ans.length; i++)
             if (letter === ans[i])
                 return true;
-        }
         return false;
     }
 
     function isWinner(row)
     {
-        for (var i = 0; i < row.length; i++) {
-            const boxes = row.boxes;
-            if (!(boxes[i].state === "correct"))
+        for (var i = 0; i < row.length; i++) 
+            if (!(row.boxes[i].state === "correct"))
                 return false;
-        }
         return true;
     }
 
     function checkValidity(guess) {
         for (let i = 0; i < pokeList.length; i++)
-            if (pokeList[i] === guess)
+            if (pokeList[i].name.toLowerCase() === guess)
                 return true;
         return false;
     } 

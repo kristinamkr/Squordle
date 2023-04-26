@@ -41,8 +41,7 @@ function SettingsDisplay(props)
 
 	        <User user = {props.user}
 	              userHandler = {props.userHandler}
-	              setToggledGM = {props.setToggledGM}
-	              forceUpdate = {forceUpdate}/>
+	              setToggledGM = {props.setToggledGM}/>
 
 	        {JSON.parse(localStorage.inventory)["ticket"] && 
                 <div className = {classes.freeplay}>

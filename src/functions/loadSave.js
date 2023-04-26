@@ -4,7 +4,7 @@
 
 function loadSave()
 {
-    if (localStorage.length !== 12)
+    if (localStorage.length !== 13)
     {
         if (!(localStorage.firstTime))
             localStorage.firstTime = true;
@@ -12,6 +12,9 @@ function loadSave()
             localStorage.backdrop = false;
         if (!(localStorage.shopState))
             localStorage.shopState = 0;
+        
+        if (!(localStorage.pokeList))
+            localStorage.pokeList = null;
 
         // GAMEMODE INFO ---
         // 0: daily, 1: freeplay, 2: daily + ez, 3: freeplay + ez

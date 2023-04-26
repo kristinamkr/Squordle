@@ -11,7 +11,6 @@ import ShuckleMechanics from "./components/ShuckleMechanics.js";
 import loadSave from "./functions/loadSave.js";
 
 import { useReducer, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 let usedPokemon = []; 
 
@@ -27,46 +26,50 @@ function Squordle(props)
     const [isGameOver, setGameOver] = useState([false, '']);
     const [newPokemon, forceNewPokemon] = useReducer(x => x + 1, 0);
 
-    function dollarHandler(delta) { 
+    function dollarHandler(delta) 
+    { 
         setPokeDollars(Number(localStorage.pokeDollars) + delta);
         localStorage.pokeDollars = Number(localStorage.pokeDollars) + delta;
     }
 
     useEffect(() => {
-        async function getDaily() {
-            return await fetch(`/.netlify/functions/potd`)
-                .then((result) => result.json())
+        function getDaily() 
+        {
+             let tempList = pokeList.filter(p => p.potd === "TRUE");
+             tempList = tempList.sort(
+                function(a, b) { return b.lastModified > a.lastModified }
+             );
+             return tempList[0].name;
         }
 
-        function getRandom() {
+        function getRandom() 
+        {
             const max = Object.keys(pokeList).length;
             let i = Math.floor(Math.random() * max);
             // REPEAT IF POKEMON ALREADY CYCLED || INAPPROPRIATE LENGTH
-            while ((pokeList[i].length < 5 || pokeList[i].length > 8) ||  
-                usedPokemon.includes(pokeList[i])) 
+            while ((pokeList[i].name.length < 5 || pokeList[i].name.length > 8) ||  
+                usedPokemon.includes(pokeList[i].name)) {
                 i = Math.floor(Math.random() * max);
-            return pokeList[i];
+            }
+            return pokeList[i].name;
         }
 
         //redundancy for log-in and log-out cases
-        if (!(JSON.parse(localStorage.inventory)["ticket"])){
+        if (!(JSON.parse(localStorage.inventory)["ticket"])) {
             if (localStorage.gameMode > 1)
                 localStorage.gameMode = 2;
             else
                 localStorage.gameMode = 0;
         }
 
-        if (isGameOver[0] == false) {
-            if (Number(localStorage.gameMode)%2 === 0)
-                getDaily()
-                    .then(function(result) { 
-                        var dailyPokemon = result[0].name.toLowerCase();
-                        setPokemon(dailyPokemon);
-                    }).catch((err) => console.error(err));
+        if (!isGameOver[0]) {
+            if (Number(localStorage.gameMode) % 2 === 0)
+                setPokemon(getDaily());
             else
                 setPokemon(getRandom());
         }
-        else usedPokemon.push(pokemon);
+        else 
+            usedPokemon.push(pokemon);
     }, [newPokemon]);
 
 	return (

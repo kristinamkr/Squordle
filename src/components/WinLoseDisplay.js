@@ -9,7 +9,7 @@ import {useState, useEffect} from 'react';
 
 function WinLoseDisplay(props)
 {
-	var answer = props.pokeAnswer;
+	var answer = props.pokeAnswer.toLowerCase();
     var spriteRef = spriteLink(answer);
     let imgName, gameOverTxt;
 
@@ -41,8 +41,10 @@ function WinLoseDisplay(props)
             <img className = {classes.spriteDisplay}
                  src = {spriteRef}/>
             <p> {gameOverTxt} </p>           
-            {Number(localStorage.gameMode) % 2 === 0 && <button onClick = {() => props.reload()}> Close </button>}
-            {Number(localStorage.gameMode) % 2 === 1 && <button onClick = {() => props.reload()}> Play Again? </button>}
+            {Number(localStorage.gameMode) % 2 === 0 && 
+                <button onClick = {() => props.reload()}> Close </button>}
+            {Number(localStorage.gameMode) % 2 === 1 && 
+                <button onClick = {() => props.reload()}> Play Again? </button>}
         </div>
 	);
 }

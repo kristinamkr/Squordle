@@ -27,11 +27,8 @@ function GameRow(props)
 {
     const guess = props.guess;
 
-    let spriteRef;
-    if (!(props.checkValidity(guess)))
-        spriteRef = "https://img.pokemondb.net/s.png";
-    else
-        spriteRef = spriteLink(guess);
+    let spriteRef = spriteLink(guess);
+    console.log("HALLO");
 
 	return (
 		<div className = {classes.gameRow}
@@ -67,8 +64,7 @@ function GameSpace(props)
                           length = {row.length}
                           boxes = {row.boxes}
                           guess = {row.guess} 
-                          upDownPos = {-10 * (counter % 2)}
-                          checkValidity = {props.checkValidity}/>)) }
+                          upDownPos = {-10 * (counter % 2)} /> )) }
         </div>
   )
 }

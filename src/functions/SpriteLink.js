@@ -41,8 +41,7 @@ function spriteLink(pokeString)
         pokePath = "sprites/" + pokePath + pokeString + ".png";
         return(pokeLink + pokePath);
     }
-    else
-        return(pokeLink + "s.png"); 
+    return(pokeLink + "s.png"); 
 }
 
 export default spriteLink;
