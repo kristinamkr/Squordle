@@ -19,7 +19,7 @@ function loadSave()
         // GAMEMODE INFO ---
         // 0: daily, 1: freeplay, 2: daily + ez, 3: freeplay + ez
         if (!(localStorage.gameMode))
-            localStorage.gameMode = 0;
+            localStorage.gameMode = 2;
         if (!(localStorage.potd)) {
             let info = { daily: "",
                          isWon: false };

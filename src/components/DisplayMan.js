@@ -21,6 +21,8 @@ function Backdrop()
 
 function DisplayMan(props)
 {
+    const gameMode = props.gameMode;
+    const toggleGameMode = props.toggleGameMode;
 	const [displayState, setDisplayState] = 
            useState({ showShop:     false,
                       showSettings: false,
@@ -28,14 +30,11 @@ function DisplayMan(props)
                       showWinLose:  false,
                       showBackdrop: false });
 
-    const [toggledGM, setToggledGM] = useState(false);
-
     useEffect(() => {
         let enableBackdrop = false;
-        for(let key in displayState) {
+        for(let key in displayState)
             if (displayState[key])
                 enableBackdrop = true;
-        }
         localStorage.backdrop = enableBackdrop;
     }, [displayState]);
 
@@ -80,9 +79,9 @@ function DisplayMan(props)
                          showInfo:     false,
                          showWinLose:  false,
                          showBackdrop: false});
-        if (toggledGM || props.isGameOver[0]) {
-            setToggledGM(false);
-            props.forceNewPokemon();
+        if (gameMode || props.isGameOver[0]) {
+            toggleGameMode(false);
+            // props.forceNewPokemon();
         }
         props.setGameOver([false, '']);
     }
@@ -119,10 +118,9 @@ function DisplayMan(props)
                     <ShopDisplay dollarHandler = {props.dollarHandler} 
                                  shopHandler = {shopHandler}/>}
                 {displayState["showSettings"] && 
-                    <SettingsDisplay toggledGM = {toggledGM}
-                                     setToggledGM = {setToggledGM}
+                    <SettingsDisplay gameMode = {gameMode}
+                                     toggleGameMode = {toggleGameMode}
                                      reload = {reload}
-                                     user = {props.user}
                                      userHandler = {props.userHandler} />} 
                 {displayState["showInfo"] && 
                     <InfoDisplay infoHandler = {infoHandler}/>}

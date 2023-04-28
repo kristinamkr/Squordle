@@ -4,6 +4,7 @@
 
 function boardInit(pokeAnswer)
 {
+    console.log("BOARD INIT...");
 	var gsInit = Array(6);
 
     for (var i = 0; i < gsInit.length; i++) {

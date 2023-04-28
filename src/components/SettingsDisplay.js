@@ -10,7 +10,7 @@ import { useReducer } from 'react';
 
 function SettingsDisplay(props)
 {
-    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+//    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
     function toggleFreeplay() 
     {
@@ -19,8 +19,8 @@ function SettingsDisplay(props)
 		else 
 			localStorage.gameMode = Number(localStorage.gameMode) - 1;
 
-        props.setToggledGM(!(props.toggledGM));
-		forceUpdate();
+        props.toggleGameMode();
+		// forceUpdate();
 	}
 
 	function toggleEasyMode() 
@@ -29,7 +29,7 @@ function SettingsDisplay(props)
             localStorage.gameMode = Number(localStorage.gameMode) + 2;
         else
             localStorage.gameMode = Number(localStorage.gameMode) - 2;
-		forceUpdate();
+		// forceUpdate();
 	}
 
 	return (
@@ -39,8 +39,7 @@ function SettingsDisplay(props)
                  src = {require("../assets/settings.png")}
                  alt = "settings header"/>
 
-	        <User user = {props.user}
-	              userHandler = {props.userHandler}
+	        <User userHandler = {props.userHandler}
 	              setToggledGM = {props.setToggledGM}/>
 
 	        {JSON.parse(localStorage.inventory)["ticket"] && 

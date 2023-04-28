@@ -16,7 +16,7 @@ const connectToDatabase = async (uri) => {
     const client = await MongoClient.connect(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        maxPoolSize: 1
+        maxPoolSize: 2
     });
     
     cachedDb = client.db(DB_NAME);

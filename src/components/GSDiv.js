@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 
 import boardInit from "../functions/boardInit.js";
 
-let lettersUsed = []; // here? 
+let lettersUsed = []; 
 
 function GSDiv(props) 
 {
@@ -31,40 +31,27 @@ function GSDiv(props)
     });
 
     useEffect(() => { 
-        initGameSpace();
-    }, [pokeAnswer]);
+        renderGameSpace();
+    }, [pokeAnswer, props.isGameOver[0]]);
 
-    useEffect(() => {
-        reloadGameSpace();
-    }, [props.newPokemon])
-
-    function reloadGameSpace()
+    function renderGameSpace()
     {
         let boardState;
-        boardState = JSON.parse(localStorage.boardState);
-
-        setFocus(boardState["focus"]);
-        setGameSpace(boardState["gameSpace"]);
-        setLetterStates(boardState["letterStates"]);
-    }
-
-    function initGameSpace()
-    {
-        console.log(pokeAnswer);
-        let boardState;
-        if (Number(localStorage.gameMode) % 2 === 0 && 
-            JSON.parse(localStorage.potd)["daily"] === pokeAnswer)
-            boardState = JSON.parse(localStorage.boardState);
-        else {
-            boardState = boardInit(pokeAnswer);
-            if (Number(localStorage.gameMode) % 2 === 0) {
+        if (Number(localStorage.gameMode) % 2 === 0) {  // DAILY
+            if (JSON.parse(localStorage.boardState)['gameSpace'] === null) { 
+                // UPDATE POTD - SET DAILY
                 let temp = JSON.parse(localStorage.potd);
                 temp["daily"] = pokeAnswer;
-                temp["isWon"] = false; 
                 localStorage.potd = JSON.stringify(temp);
+
+                boardState = boardInit(pokeAnswer);
                 localStorage.boardState = JSON.stringify(boardState);
             }
+            else
+                boardState = JSON.parse(localStorage.boardState);
         }
+        else // FREEPLAY
+            boardState = boardInit(pokeAnswer);
 
         setFocus(boardState["focus"]);
         setGameSpace(boardState["gameSpace"]);
@@ -105,8 +92,8 @@ function GSDiv(props)
                 gameSpace[focus[0]].boxes[focus[1]].state = "empty";
                 gameSpace[focus[0]].boxes[focus[1]].letter = '';
             }
-            else if (focus[1] < pokeAnswer.length &&  // default 
-                     validKeySet.has(input)) { 
+            else if (focus[1] < pokeAnswer.length && validKeySet.has(input)) { 
+                console.log("WHY LAG");
                 gameSpace[focus[0]].boxes[focus[1]].letter = input;
                 gameSpace[focus[0]].boxes[focus[1]].state = "filled"
                 focus[1] += 1;
@@ -176,9 +163,6 @@ function GSDiv(props)
             setFocus([-1, focus[1]]);
             pointsWon += 200;
 
-            // TO BE MOVED
-            if (JSON.parse(localStorage.shuckleInfo)[2])
-                updateHatching();
         } else {
             if (focus[0] === 5 && focus[1] === pokeAnswer.length) {
                 props.setGameOver([true, 'loss']);
@@ -216,28 +200,6 @@ function GSDiv(props)
                 return true;
         return false;
     } 
-
-    // needs to/should be moved to shuckle. 
-    function updateHatching(){
-        let tempInfo = JSON.parse(localStorage.shuckleInfo);
-        var shuckleChildren = tempInfo["children"]; 
-
-        for (var i = 0; i < shuckleChildren.length; i++) {
-            if (shuckleChildren[i].state === "shuckleEgg0") {
-                shuckleChildren[i].state = "shuckleEgg1";
-                break;
-            } else if (shuckleChildren[i].state === "shuckleEgg1") {
-                shuckleChildren[i].state = "shuckleEgg2";
-                break;
-            } else if (shuckleChildren[i].state === "shuckleEgg2") {
-                shuckleChildren[i].state = "shuckle";
-                break
-            }
-        }
-
-        tempInfo["children"] = shuckleChildren;
-        localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
-    }
 
 	return (
         <> { gameSpace && letterStates && 

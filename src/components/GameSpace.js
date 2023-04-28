@@ -28,7 +28,6 @@ function GameRow(props)
     const guess = props.guess;
 
     let spriteRef = spriteLink(guess);
-    console.log("HALLO");
 
 	return (
 		<div className = {classes.gameRow}

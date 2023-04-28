@@ -1,7 +1,3 @@
-/*
- * Squordle.js
-*/
-
 import classes from "./components/style/Squordle.module.css";
 
 import DisplayMan from "./components/DisplayMan.js";
@@ -12,25 +8,60 @@ import loadSave from "./functions/loadSave.js";
 
 import { useReducer, useState, useEffect } from 'react';
 
-let usedPokemon = []; 
-
 loadSave();
+
+let usedPokemon = []; 
 function Squordle(props) 
 {
-    const [pokemon, setPokemon] = useState('eddie');
-    const pokeList = props.pokeList;
+    console.log("RELOADING SQUORDLE");
+
+    // USER AUTH ---------------------------------------------------------------
+    let uData = { name: localStorage.user,
+                  region: localStorage.region,
+                  pokeDollars: Number(localStorage.pokeDollars),
+                  shuckleInfo: JSON.parse(localStorage.shuckleInfo),
+                  inventory: JSON.parse(localStorage.inventory) };
+    const [user, setUser] = useState(uData);
+
+    function userHandler(data) 
+    { 
+        setUser(data); 
+    }
+
+    useEffect(() => {
+        if (!(user.name === "guest")) {
+            localStorage.user = user.name;
+            localStorage.firstTime = false;
+            localStorage.region = user.region;
+            localStorage.pokeDollars = user.pokeDollars;
+            localStorage.shuckleInfo = JSON.stringify(user.shuckleInfo);
+            localStorage.inventory = JSON.stringify(user.inventory);
+            if (user.shuckleInfo['adopted'] === true)
+                localStorage.shopState = 8;
+        } 
+    }, [user]);
+    // -------------------------------------------------------------------------
+
+    const [gameMode, setGameMode] = useState(JSON.parse(localStorage.gameMode));
+
+    function toggleGameMode()
+    {
+        setGameMode(!(gameMode));
+    }
+
+    const [isGameOver, setGameOver] = useState([false, '']);
 
     const [pokeDollars, setPokeDollars] = 
         useState(Number(localStorage.pokeDollars));
-
-    const [isGameOver, setGameOver] = useState([false, '']);
-    const [newPokemon, forceNewPokemon] = useReducer(x => x + 1, 0);
 
     function dollarHandler(delta) 
     { 
         setPokeDollars(Number(localStorage.pokeDollars) + delta);
         localStorage.pokeDollars = Number(localStorage.pokeDollars) + delta;
     }
+
+    const [pokemon, setPokemon] = useState('eddie');
+    const pokeList = props.pokeList;
 
     useEffect(() => {
         function getDaily() 
@@ -54,35 +85,27 @@ function Squordle(props)
             return pokeList[i].name;
         }
 
-        //redundancy for log-in and log-out cases
-        if (!(JSON.parse(localStorage.inventory)["ticket"])) {
-            if (localStorage.gameMode > 1)
-                localStorage.gameMode = 2;
-            else
-                localStorage.gameMode = 0;
-        }
-
         if (!isGameOver[0]) {
             if (Number(localStorage.gameMode) % 2 === 0)
                 setPokemon(getDaily());
             else
                 setPokemon(getRandom());
         }
-        else 
-            usedPokemon.push(pokemon);
-    }, [newPokemon]);
+        usedPokemon.push(pokemon);
+    }, [isGameOver[0], gameMode]);  // ? ? ?
 
 	return (
         <>
             <div className = {classes.center}>
                 <DisplayMan id = "header"
-                        user = {props.user}
-                        userHandler = {props.userHandler}
+                        user = {user}
+                        userHandler = {userHandler}
+                        gameMode = {gameMode}
+                        toggleGameMode = {toggleGameMode}
                         pokemon = {pokemon}
                         dollarHandler = {dollarHandler}
                         isGameOver = {isGameOver}
-                        setGameOver = {setGameOver}
-                        forceNewPokemon = {forceNewPokemon}/>
+                        setGameOver = {setGameOver} />
 
                 { JSON.parse(localStorage.shuckleInfo)["adopted"] &&
                     <ShuckleMechanics/> }
@@ -92,7 +115,6 @@ function Squordle(props)
                 <GSDiv  id = "gsdiv"
                         pokemon = {pokemon} 
                         pokeList = {pokeList}
-                        newPokemon = {newPokemon}
                         dollarHandler = {dollarHandler}                        
                         isGameOver = {isGameOver} 
                         setGameOver = {setGameOver}/>}
