@@ -1,53 +1,47 @@
 /*
-* pokemon.js
+* pokeList.js
 */
 
 const { MongoClient } = require("mongodb");
+const { connectToDatabase } = require('./utils.js'); 
 
-const MONGODB_URI = process.env.MONGODB_URI;
-const DB_NAME = "squordle";
-
-let cachedDb = null;
-
-const connectToDatabase = async (uri) => {
-    if (cachedDb)
-        return cachedDb; 
-
-    const client = await MongoClient.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        maxPoolSize: 1
-    });
-    
-    cachedDb = client.db(DB_NAME);
-    return cachedDb; 
-};
+const COLLECTION_NAME = process.env.COLLECTION_NAME_0;
 
 const pokeList = async (db) => {
     const list = await db
-        .collection('pokemon')
+        .collection(COLLECTION_NAME)
         .aggregate([{ $project: { _id: 0 } },
                     { $match: { } },
                     { $sort: { 'entryNum': 1 } } 
                   ])
         .toArray(function (err, result) {
-            if (err) res.status(400).send('Error fetching pokemon collection');
-            else res.json(result);
+            if (err) 
+                res.status(400)
+                    .send(`Error fetching ${COLLECTION_NAME} collection`);
+            else 
+                res.json(result);
         });
         
     return {
         statusCode: 200,
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify(list),
     };
 };
 
 module.exports.handler = async (event, context) => {
-    // otherwise the connection will never complete
     context.callbackWaitsForEmptyEventLoop = false;
     
-    const db = await connectToDatabase(MONGODB_URI);
+    let db;
+    try {
+        db = await connectToDatabase();
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error connecting to MongoDB" })
+        };
+    }
+
     return pokeList(db);
 };

@@ -3,29 +3,13 @@
 */
 
 const { MongoClient } = require("mongodb");
+const { connectToDatabase } = require('./utils.js'); 
 
-const MONGODB_URI = process.env.MONGODB_URI;
-const DB_NAME = "squordle";
-
-let cachedDb = null;
-
-const connectToDatabase = async (uri) => {
-    if (cachedDb)
-        return cachedDb; 
-
-    const client = await MongoClient.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        maxPoolSize: 1
-    });
-    
-    cachedDb = client.db(DB_NAME);
-    return cachedDb; 
-};
+const COLLECTION_NAME = process.env.COLLECTION_NAME_1;
 
 const save = async (db, data) => {
     await db
-        .collection('users') 
+        .collection(COLLECTION_NAME) 
         .updateOne({ name: data["user"], saveKey: data["saveKey"] }, 
                    { $set: { inventory: data["inventory"],
                              pokeDollars: data["pokeDollars"],
@@ -36,7 +20,7 @@ const save = async (db, data) => {
                   });
 
     const usr = await db
-        .collection('users') 
+        .collection(COLLECTION_NAME) 
         .aggregate([{ $match: { name: data["user"] } }])
         .toArray(function (err, result) {
             return res.json(result);
@@ -44,17 +28,25 @@ const save = async (db, data) => {
 
     return {
         statusCode: 200,
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify(usr),
     };
 };
 
 module.exports.handler = async (event, context) => {
     // otherwise the connection will never complete
-    context.callbackWaitsForEmptyEventLoop = false;
-    
-    const db = await connectToDatabase(MONGODB_URI);
+    // context.callbackWaitsForEmptyEventLoop = false;
+
+    let db;
+    try {
+        db = await connectToDatabase();
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error connecting to MongoDB" })
+        };
+    }
+
     return save(db, JSON.parse(event.body));
 };

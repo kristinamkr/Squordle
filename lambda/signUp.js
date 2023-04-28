@@ -3,25 +3,9 @@
 */
 
 const { MongoClient } = require("mongodb");
+const { connectToDatabase } = require('./utils.js'); 
 
-const MONGODB_URI = process.env.MONGODB_URI;
-const DB_NAME = "squordle";
-
-let cachedDb = null;
-
-const connectToDatabase = async (uri) => {
-    if (cachedDb)
-        return cachedDb; 
-
-    const client = await MongoClient.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        maxPoolSize: 2
-    });
-    
-    cachedDb = client.db(DB_NAME);
-    return cachedDb; 
-};
+const COLLECTION_NAME = process.env.COLLECTION_NAME_1;
 
 const signUp = async (db, data) => {
     const userData = { name: data["user"],
@@ -33,28 +17,31 @@ const signUp = async (db, data) => {
                        created: new Date() }
 
     const usr = await db
-        .collection('users') 
+        .collection(COLLECTION_NAME) 
         .aggregate([{ $match: { name: data["user"] } }])
         .toArray(function (err, result) {
             return res.json(result);
         });
 
     if (usr.length == 0)
-        await db.collection('users').insertOne(userData);
+        await db.collection(COLLECTION_NAME).insertOne(userData);
 
     return {
         statusCode: 200,
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify(usr),
     };
 };
 
 module.exports.handler = async (event, context) => {
-    // otherwise the connection will never complete
-    context.callbackWaitsForEmptyEventLoop = false;
+    let db;
+    try {
+        db = await connectToDatabase();
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error connecting to MongoDB" })
+        };
+    }
     
-    const db = await connectToDatabase(MONGODB_URI);
     return signUp(db, JSON.parse(event.body));
 };

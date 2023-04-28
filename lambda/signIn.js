@@ -3,28 +3,12 @@
 */
 
 const { MongoClient } = require("mongodb");
+const { connectToDatabase } = require('./utils.js'); 
 
-const MONGODB_URI = process.env.MONGODB_URI;
-const DB_NAME = "squordle";
-
-let cachedDb = null;
-
-const connectToDatabase = async (uri) => {
-    if (cachedDb)
-        return cachedDb; 
-
-    const client = await MongoClient.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        maxPoolSize: 2
-    });
-    
-    cachedDb = client.db(DB_NAME);
-    return cachedDb; 
-};
+const COLLECTION_NAME = process.env.COLLECTION_NAME_1;
 
 const signIn = async (db, data) => {
-    let users = await db.collection('users');
+    let users = await db.collection(COLLECTION_NAME);
 
     users.updateOne({ name: data["user"],
                       password: data["pass"] },
@@ -35,26 +19,29 @@ const signIn = async (db, data) => {
         .aggregate([{ $match: { name: data["user"],
                                 password: data["pass"] } }])
         .toArray(function (err, result) {
-            console.log("RESULT - " + JSON.stringify(result));
             if (err)
-                res.status(400).send(`Error finding user: ${data["user"]}`);
+                res.status(400)
+                    .send(`Error finding user: ${data["user"]}`);
             else
                 res.json(result);
         });
 
     return {
         statusCode: 200,
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify(usr),
     };
 };
 
 module.exports.handler = async (event, context) => {
-    // otherwise the connection will never complete
-    context.callbackWaitsForEmptyEventLoop = false;
-    
-    const db = await connectToDatabase(MONGODB_URI);
+    let db;
+    try {
+        db = await connectToDatabase();
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error connecting to MongoDB" })
+        };
+    }
+
     return signIn(db, JSON.parse(event.body));
 };
