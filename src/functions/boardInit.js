@@ -14,6 +14,7 @@ function boardInit(pokeAnswer)
         row.length = pokeAnswer.length;
         row.boxes = Array(pokeAnswer.length);
         row.guess = "";
+        row.sprite = "NaN";
         row.winnings = 0;
 
         for(var k = 0; k < row.boxes.length; k++) {

@@ -3,7 +3,6 @@
 */
 
 import classes from "./style/GameSpace.module.css";
-import spriteLink from  "../functions/SpriteLink.js";
 import { useState, useEffect } from 'react';
 
 var bgColors = {
@@ -27,27 +26,39 @@ function GameRow(props)
 {
     const guess = props.guess;
 
-    let spriteRef = spriteLink(guess);
-
 	return (
 		<div className = {classes.gameRow}
              style = {{gridTemplateColumns: 
                 "1fr " + "40px ".repeat(props.length) + "1fr"}}>
-			<img className = {classes.pokeSprite} 
-                 style = {{top: props.upDownPos}}
-                 src = {spriteRef} /> 
+
+            {props.sprite == "NaN" && 
+                <img className = {classes.pokeSprite} 
+                     src = {require("../assets/transparency.png")} /> } 
+
+            {props.sprite != "NaN" && 
+                <img className = {classes.pokeSprite} 
+                     style = {{top: props.upDownPos}}
+                     src = {props.sprite} /> } 
+
 			{props.boxes.map((box) => (<GuessBox key = {box.id}
 			                                     state = {box.state}
 			                                     letter = {box.letter}/>))}
-			<img className = {classes.pokeSprite} 
-                 style = {{top: -props.upDownPos - 10}}
-                 src = {spriteRef} />
+
+            {props.sprite == "NaN" && 
+                <img className = {classes.pokeSprite} 
+                     src = {require("../assets/transparency.png")} /> } 
+
+            {props.sprite != "NaN" && 
+                <img className = {classes.pokeSprite} 
+                     style = {{top: -props.upDownPos - 10}}
+                     src = {props.sprite} /> } 
         </div>
 	)
 }
 
 function GameSpace(props)
 {
+    console.log("THINKING EMOJI");
     const [counter, setCounter] = useState(1); 
 
     useEffect(() => { 
@@ -63,6 +74,7 @@ function GameSpace(props)
                           length = {row.length}
                           boxes = {row.boxes}
                           guess = {row.guess} 
+                          sprite = {row.sprite}
                           upDownPos = {-10 * (counter % 2)} /> )) }
         </div>
   )

@@ -4,6 +4,9 @@
 
 function spriteLink(pokeString)
 {
+    console.log("---------------------------")
+    console.log("--------SPRITE-LINK--------")
+    console.log("---------------------------")
     const hyphenator = {
         "jangmoo"  : "jangmo-o",
         "hakamoo"  : "hakamo-o",
@@ -32,10 +35,18 @@ function spriteLink(pokeString)
     var pkmnHomeOnly = new Set(["wyrdeer", "kleavor", "ursaluna",
                                 "sneasler", "overqwil", "enamorus-incarnate"]);
 
+
     if (pkmnHomeOnly.has(pokeString))
         pokePath = "home/normal/1x/";
     else
         pokePath = "sword-shield/icon/";
+    
+    // UNOWN
+    if (pokeString.length === 1) {
+        pokePath = "sprites/heartgold-soulsilver/normal/unown-" + 
+            pokeString + ".png";  
+        return (pokeLink + pokePath);   
+    }
 
     if (pokeString !== "") {
         pokePath = "sprites/" + pokePath + pokeString + ".png";

@@ -6,6 +6,7 @@ import classes from "./style/GSDiv.module.css";
 
 import GameSpace from "./GameSpace.js";
 import Keyboard from "./Keyboard.js";
+import spriteLink from  "../functions/SpriteLink.js";
 
 import { useState, useEffect } from 'react';
 
@@ -68,6 +69,9 @@ function GSDiv(props)
 	    var guess = "";
         for (var i = 0; i < pokeAnswer.length; i++)
             guess = guess + gameSpace[focus[0]].boxes[i].letter;
+        
+        console.log("focus[0] - " + focus[0] + "\nfocus[1] - " + focus[1]);
+        console.log("pokeAnswer.len - " + pokeAnswer.length);
 
         if (!(props.isGameOver[0]) && 
             !(JSON.parse(localStorage.backdrop)) &&
@@ -76,11 +80,17 @@ function GSDiv(props)
         {
             if (input === "Enter" && focus[1] === pokeAnswer.length) 
             { 
-                console.log("?");
-                if ((Number(localStorage.gameMode) < 2 ) && checkValidity(guess)
-                   || Number(localStorage.gameMode) >= 2) 
+                let isValid = checkValidity(guess);
+                if ((Number(localStorage.gameMode) < 2 ) && isValid
+                   || Number(localStorage.gameMode) >= 2)
                 {
                     gameSpace[focus[0]].guess = guess;
+                    if (isValid)
+                        gameSpace[focus[0]].sprite = spriteLink(guess);
+                    else { // UNOWN 
+                        gameSpace[focus[0]].sprite = 
+                            spriteLink(gameSpace[focus[0]].boxes[0].letter);
+                    }
                     checkAnswer(gameSpace[focus[0]]);
                     console.log("PKANS - " + pokeAnswer.toLowerCase());
                     focus[0] += 1;
@@ -93,7 +103,6 @@ function GSDiv(props)
                 gameSpace[focus[0]].boxes[focus[1]].letter = '';
             }
             else if (focus[1] < pokeAnswer.length && validKeySet.has(input)) { 
-                console.log("WHY LAG");
                 gameSpace[focus[0]].boxes[focus[1]].letter = input;
                 gameSpace[focus[0]].boxes[focus[1]].state = "filled"
                 focus[1] += 1;
