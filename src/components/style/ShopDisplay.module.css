@@ -119,3 +119,71 @@
     width: 60px;
     height: 75px;
 }
+
+button.shuckleTabActive {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/shuckle_tab_ACTIVE.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 121px;
+
+    margin-top: -18%;
+    margin-left: -74.20%;
+    cursor: pointer;
+}
+
+button.shuckleTabInactive {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/shuckle_tab_INACTIVE.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 120px;
+
+    margin-top: -18%;
+    margin-left: -74.5%;
+    cursor: pointer;
+}
+
+button.shopTabActive {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/shop_tab_ACTIVE.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 120px;
+
+    margin-top: -18%;
+    margin-left: -19%;
+    cursor: pointer;
+}
+
+button.shopTabInactive {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/shop_tab_INACTIVE.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 120px;
+
+    margin-top: -17.5%;
+    margin-left: -19%;
+    cursor: pointer;
+}
+
+.shuckleTab span {
+    display: none;
+}

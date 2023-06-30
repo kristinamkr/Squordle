@@ -22,15 +22,13 @@ function ShopDisplay(props)
                      + "ourselves more time if someone would adopt him.",
                     "If you know anyone who can help, "
                      + "please send them our way.",
-                    "Thank you! Please take this poffin as well. " 
-                     + "If you come back again, "
-                     + "we will have items to sell you.",
-                    "Welcome back! Feel free to browse."]
+                    "Thank you! Please take this spicy poffin as a gift. "] 
 
 	const dollarHandler = props.dollarHandler;
 	const [counter, setCounter] = useState(Number(localStorage.shopState));
+    const [shopDisplay, setShopDisplay] = useState(false); // 0 - shuckle, 1 - shop
 
-	function shopAdvance()
+	function advanceDialogue()
     {
 		localStorage.shopState = Number(localStorage.shopState) + 1;
 		setCounter(Number(localStorage.shopState));
@@ -40,13 +38,13 @@ function ShopDisplay(props)
     {
        if (!(JSON.parse(localStorage.shuckleInfo)["adopted"])) {
             if (Number(localStorage.shopState) < 6) 
-                shopAdvance(); 
+                advanceDialogue(); 
             else if (Number(localStorage.shopState) === 6)
                 props.shopHandler();
         }
         else if (JSON.parse(localStorage.shuckleInfo)["adopted"]) {
             if (Number(localStorage.shopState) === 7) {
-                shopAdvance();
+                advanceDialogue();
                 props.shopHandler();
             }
         }
@@ -77,18 +75,26 @@ function ShopDisplay(props)
         return emote.NEUTRAL; 
     }
     // -------------------------------------------------------------------------
+    function toggleShopDisplay()
+    {
+        setShopDisplay(!shopDisplay);
+    }
 
 	function shuckleShop() 
     {
         return (
             <div className = {classes.shuckleDisplay}> 
+                <button className={classes.shuckleTabActive}/>
+                <button className={classes.shopTabInactive}
+                        onClick= {toggleShopDisplay}/> 
                 <img className = {classes.header}
                      src = {require("../assets/shopHeaderLight.png")}/>
                 <div className = {classes.subheader}>
                     {shopText[Number(localStorage.shopState)]}
                 </div>
                 <img className = {classes.shucklePic}
-                     src = {require("../assets/213Shuckle" + shuckleEmotion() + ".png")}/>
+                     src = {require("../assets/213Shuckle" + 
+                                shuckleEmotion() + ".png")}/>
 
                 {!(JSON.parse(localStorage.shuckleInfo)["adopted"]) &&
                     <div style = {{display: "flex",
@@ -96,7 +102,8 @@ function ShopDisplay(props)
                                    justifyContent:"space-between"}}>
                         <div>
                             <div className = {classes.sellInfo}> 
-                                <img src = {require("../assets/pokedollarLight.png")}/>
+                                <img src = 
+                                    {require("../assets/pokedollarLight.png")}/>
                                 <p> {" "} {1000} </p>
                             </div>
                             <button onClick = {shuckleAdopter}>
@@ -125,7 +132,8 @@ function ShopDisplay(props)
     {
         return (
             <div className = {classes.item}>
-                <div className = {item.props.name === "lemonade" && classes.lemonade || null}>
+                <div className = {item.props.name === "lemonade" && 
+                    classes.lemonade || null}>
                     {item}
                 </div>
                 <div className = {classes.attempt}>
@@ -156,6 +164,9 @@ function ShopDisplay(props)
     {
         return (
             <div className = {classes.shopDisplay}>
+                <button className={classes.shuckleTabInactive}
+                        onClick= {toggleShopDisplay}/> 
+                <button className={classes.shopTabActive}/>
                 <img className = {classes.header}
                      src = {require("../assets/shopHeaderLight.png")}/>
                 <div className = {classes.subheader}>
@@ -192,8 +203,10 @@ function ShopDisplay(props)
 
 	return (
 		<>
-			{Number(localStorage.shopState) <= 7 && shuckleShop()}
-			{Number(localStorage.shopState) > 7 && regularShop()}
+        { shopDisplay == 0 &&
+            shuckleShop() }
+        { shopDisplay == 1 &&
+            regularShop() }
 		</>
 	)
 }
