@@ -2,7 +2,6 @@
  * Items.js
 */
 
-// import {useState, useEffect} from 'react';
 import classes from "./style/Items.module.css";
 
 function Poffin(props) 

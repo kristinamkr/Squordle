@@ -139,9 +139,8 @@ function ShuckleCursor(props)
     useEffect(() => {
         setTimeout(() => {
             let currPosList = [[shucklePos[0], shucklePos[1]]];
-            for (var i = 0; i < babyPosList.length; i++) {
+            for (var i = 0; i < babyPosList.length; i++)
                 currPosList.push(babyPosList[i]);
-            }
 
             let targPosList = [];
             let targReachedList = [];
@@ -159,9 +158,9 @@ function ShuckleCursor(props)
                     newPosList.push(babyPosList[i]);
                 else {
                     let pos = translateSpritePos([targPosList[i][0], 
-                                                  targPosList[i][1]-32], 
-                                                 babyPosList[i], 
-                                                 6);
+                                                  targPosList[i][1] - 32], 
+                                                  babyPosList[i], 
+                                                  6);
                     newPosList.push(pos);
                 }
             }
@@ -185,12 +184,10 @@ function ShuckleCursor(props)
         // ASYNC FUNCTIONS ---------------------------------
         const eatItem = async () => {
             await resolveOnceTimedOut(5000); 
-
             let currFocus = focus.MOUSE;
 
-            if (props.realizeItem[1] === 1) {
+            if (props.realizeItem[1] === 1)
                 currFocus = focus.KEY;
-            }
 
             // is there a better way to do this (ANGRY CONDITION)
             if (shuckleInfo[1] === action.ANGRY && props.realizeItem[1] !== 3) {
@@ -198,36 +195,35 @@ function ShuckleCursor(props)
                 setKeyPos(null);
                 setShuckleInfo([currFocus, action.SING]);
             }
-            else {// EVERYTHING ELSE
+            else  // EVERYTHING ELSE
                 setShuckleInfo([currFocus, props.realizeItem[1]]);
-            }
+
             props.reset();
             setTargetReached(false);
         };
 
-        if (targetReached && shuckleInfo[0] === focus.ITEM && shuckleInfo[1] <= 1) {
-            if (shuckleInfo[0] === focus.ITEM) {
+        if (targetReached && 
+                shuckleInfo[0] === focus.ITEM && shuckleInfo[1] <= 1) {
+            if (shuckleInfo[0] === focus.ITEM)
                 eatItem();
-            }
         }
-
     }, [targetReached, selectedKey, shuckleInfo[0]]);
 
     useEffect(() => {
-        if (props.realizeItem[0] && selectedKey === null) {  // SET TO ITEM
+        if (props.realizeItem[0] && selectedKey === null)  // SET TO ITEM
             setShuckleInfo([focus.ITEM, shuckleInfo[1]]);
-        }
+
         if (shuckleInfo[0] === focus.KEY) {    // KEY FOCUS - ANGRY
-            if (selectedKey === null && remainingKeys.length > 0) {
+            if (selectedKey === null && remainingKeys.length > 0)
                 chooseKey();
-            };
+
             if (remainingKeys.length <= 0) {        // EXIT CASE
                 setShuckleInfo([focus.MOUSE, 0]);
                 setTargetReached(false);
                 setHaltInv(false);
                 setBusy(false);
-            };
-        };
+            }
+        }
     }, [props.realizeItem[0], keyPos]);
 
     useEffect(() => {
@@ -243,7 +239,8 @@ function ShuckleCursor(props)
             setKeyPos(null);
         };
 
-        if (shuckleInfo[0] === focus.KEY && targetReached && !busy) {    // KEY FOCUS - ANGRY
+        if (shuckleInfo[0] === focus.KEY &&  // KEY FOCUS - ANGRY  
+                targetReached && !busy) { 
             setBusy(true);
             destroy();
         }
@@ -262,12 +259,10 @@ function ShuckleCursor(props)
             setMobileTargetPos([300,-200]);
             setShuckleInfo([focus.MOBILE, shuckleInfo[1]]);
             await resolveOnceTimedOut(6000);
-            if (shuckleInfo[1] === action.BIRTHING) {
+            if (shuckleInfo[1] === action.BIRTHING)
                 setShuckleInfo([shuckleInfo[0], action.LAY_EGG]);
-            }
-            else {
+            else
                 processEmotion();
-            }
         }
 
         const layEgg = async () => {
@@ -289,67 +284,8 @@ function ShuckleCursor(props)
             setShuckleInfo([focus.MOUSE, action.SING]);
         }
 
-        /*
-        const poop = async () => {
-            //CREATE JITTERBUG
-            setShuckleInfo([focus.JITTER, shuckleInfo[1]]);
-            await resolveOnceTimedOut(2500);
-            setShuckleInfo([focus.STAY, shuckleInfo[1]]);
-            //CREATE POOPSPRITE
-            setShuckleInfo([focus.MOUSE, action.SING]);
-        }
-        */
-        /*
-        const wander = async () => {
-            //CREATE MYOPIABUG
-            setShuckleInfo([focus.MYOPIA, shuckleInfo[1]]);
-            await resolveOnceTimedOut(2500);
-            if (shuckleInfo[1] === action.SICK)
-                setShuckleInfo([focus.STAY, action.POOP]);
-            else if (shuckleInfo[1] === action.CONFUSED)
-                setShuckleInfo([focus.STAY, action.LAY_EGG]);
-        }
-        */
-
-            //Change the spawn location to the opposite side of the shuckle from the average of the positions of the babies.
-            /*if (shuckleChildren > 1) {
-                                    
-                //Find the average X and Y position of all the babies
-                var babyAvgX = 0;
-                var babyAvgY = 0;
-                for(var i = 0; i<babyPosList.length; i++){
-                    babyAvgX += babyPosList[i][0]/babyPosList.length;
-                    babyAvgY += babyPosList[i][1]/babyPosList.length;
-                }
-                //The spawnX and spawnY equations set a location on a circle around Shuckle with a radius of spawnDist
-                var spawnDist = 48;
-                var spawnX = Math.sqrt(babyAvgX^2*spawnDist^2)/Math.sqrt(babyAvgX^2+babyAvgY);
-                var spawnY = Math.sqrt(babyAvgY^2*spawnDist^2)/Math.sqrt(babyAvgX^2+babyAvgY);
-
-                //Flips the spawn location 180 degrees around Shuckle from the first baby
-                if (babyPosList[0][0]>0) {
-                    spawnX = -spawnX;
-                }
-                if (babyPosList[0][1]>0) {
-                    spawnY = -spawnY;
-                }
-            }
-            else {
-                spawnX = -48;
-                spawnY = 0;
-
-            }
-            setBabyPosList(babyPosList+[shucklePos[0]+16+spawnX, shucklePos[1]+16+spawnY])
-            */
-
         // move ?
-        if (shuckleInfo[1] === action.NONPLUSSED) {
-
-        }
-        else if (shuckleInfo[1] === action.ANGRY) {
-
-        }
-        else if (shuckleInfo[1] === action.HAPPY) {
+        if (shuckleInfo[1] === action.HAPPY) {
             processEmotion();
         }
         else if (shuckleInfo[1] === action.SING) {
@@ -362,25 +298,18 @@ function ShuckleCursor(props)
             let tempInfo = JSON.parse(localStorage.shuckleInfo);
             tempInfo["shiny"] = true;
             localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
-        }
-        else if (shuckleInfo[1] === action.SICK) {
-            //wander();
-        }
-        else if (shuckleInfo[1] === action.POOP) {
-            //poop();
+            processEmotion();
         }
         else if (shuckleInfo[1] === action.BIRTHING) {
             setHaltInv(true);
             offscreen();
         }
         else if (shuckleInfo[1] === action.LAY_EGG) {
-            if(props.realizeItem[0]){
+            if (props.realizeItem[0])
                 setShuckleInfo([focus.ITEM, action.NONPLUSSED]);
-            } else {
+            else
                 layEgg();
-            }
         }
-
     }, [shuckleInfo[1]]);
 
     // PROMISES ----------------------------------------------------------------
@@ -411,34 +340,30 @@ function ShuckleCursor(props)
 
         var sizes = [];
         var sizeOffset = [];
-        for(var i = 0; i<posList.length; i++){
-            if(posList[i] == undefined){
+        for (var i = 0; i < posList.length; i++){
+            if (posList[i] == undefined)
                 posList[i] = [0,0];
-            }
-            if(revChildren[i].state === "shuckle"){
+            if (revChildren[i].state === "shuckle") {
                 sizes = sizes.concat([["48px","48px"]]);
                 sizeOffset = sizeOffset.concat([-8]);
             } else {
                 sizes = sizes.concat([["32px","32px"]]);
                 sizeOffset = sizeOffset.concat([0]);
-
             }
         }
 
         revChildren.reverse();
 
         return (
-            <>
-                { revChildren.map((child) => (<img className = {classes.shuckle}
-                      style = {{top: (posList[child.number][0] + 
-                                      sizeOffset[child.number]).toString() + "px",
-                                left: (posList[child.number][1] + 
-                                      sizeOffset[child.number]).toString() + "px",
-                                width: sizes[child.number][0],
-                                height: sizes[child.number][1]}}
-                      src = {require("../assets/" + child.state + ".gif")}
-                      key = {child.number}/>))}
-            </>
+            <> { revChildren.map((child) => (<img className = {classes.shuckle}
+                  style = {{top: (posList[child.number][0] + 
+                                  sizeOffset[child.number]).toString() + "px",
+                            left: (posList[child.number][1] + 
+                                  sizeOffset[child.number]).toString() + "px",
+                            width: sizes[child.number][0],
+                            height: sizes[child.number][1]}}
+                  src = {require("../assets/" + child.state + ".gif")}
+                  key = {child.number}/>))} </>
         )
     }
 

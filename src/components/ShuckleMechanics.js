@@ -68,9 +68,8 @@ function ShuckleMechanics(props)
     function getPoffinId(name)
     {
         for (let i = 0; i < items.length; i++) {
-            if (items[i].props.name === name) {
+            if (items[i].props.name === name)
                 return items[i].props.id;
-            }
         }
     }
 

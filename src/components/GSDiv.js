@@ -166,7 +166,7 @@ function GSDiv(props)
                 temp["isWon"] = true;
                 localStorage.potd = JSON.stringify(temp); 
             }
-
+            updateHatching();
             props.setGameOver([true, 'win']);
             setGameSpace(null);
             setFocus([-1, focus[1]]);
@@ -209,6 +209,28 @@ function GSDiv(props)
                 return true;
         return false;
     } 
+
+    // needs to/should be moved to shuckle. 
+    function updateHatching(){
+        let tempInfo = JSON.parse(localStorage.shuckleInfo);
+        var shuckleChildren = tempInfo["children"]; 
+
+        for (var i = 0; i < shuckleChildren.length; i++) {
+            if (shuckleChildren[i].state === "shuckleEgg0") {
+                shuckleChildren[i].state = "shuckleEgg1";
+                break;
+            } else if (shuckleChildren[i].state === "shuckleEgg1") {
+                shuckleChildren[i].state = "shuckleEgg2";
+                break;
+            } else if (shuckleChildren[i].state === "shuckleEgg2") {
+                shuckleChildren[i].state = "shuckle";
+                break
+            }
+        }
+
+        tempInfo["children"] = shuckleChildren;
+        localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
+    }
 
 	return (
         <> { gameSpace && letterStates && 
