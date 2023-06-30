@@ -27,6 +27,8 @@ function ShopDisplay(props)
 	const dollarHandler = props.dollarHandler;
 	const [counter, setCounter] = useState(Number(localStorage.shopState));
     const [shopDisplay, setShopDisplay] = useState(false); // 0 - shuckle, 1 - shop
+    const [shuckleAdoption, setShuckleAdoption] = 
+        useState(JSON.parse(localStorage.shuckleInfo)['adopted']);
 
 	function advanceDialogue()
     {
@@ -164,9 +166,11 @@ function ShopDisplay(props)
     {
         return (
             <div className = {classes.shopDisplay}>
-                <button className={classes.shuckleTabInactive}
+                { !shuckleAdoption && 
+                <><button className={classes.shuckleTabInactive}
                         onClick= {toggleShopDisplay}/> 
-                <button className={classes.shopTabActive}/>
+                <button className={classes.shopTabActive}/></>
+                }
                 <img className = {classes.header}
                      src = {require("../assets/shopHeaderLight.png")}/>
                 <div className = {classes.subheader}>
@@ -203,9 +207,9 @@ function ShopDisplay(props)
 
 	return (
 		<>
-        { shopDisplay == 0 &&
+        { shopDisplay == 0 && !shuckleAdoption &&
             shuckleShop() }
-        { shopDisplay == 1 &&
+        { (shopDisplay == 1 || shuckleAdoption) && 
             regularShop() }
 		</>
 	)
