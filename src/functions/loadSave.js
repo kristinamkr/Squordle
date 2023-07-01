@@ -25,6 +25,15 @@ function loadSave()
                          isWon: false };
             localStorage.potd = JSON.stringify(info);
         }
+        if (!(localStorage.genFilter)) {
+            let filter = { g1: false,
+                           g2: false,
+                           g3: false,
+                           g4: false,
+                           g5: false,
+                           g6: false };
+            localStorage.genFilter = JSON.stringify(filter);
+        }
         if (!(localStorage.boardState)) {
             let info = { gameSpace: null,
                          letterStates: null,

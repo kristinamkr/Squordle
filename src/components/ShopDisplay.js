@@ -2,7 +2,7 @@ import classes from "./style/ShopDisplay.module.css";
 import items from './Items.js';
 
 import { ReactComponent as ExitIcon } from "../assets/exitIcon.svg";
-import { useState } from 'react'; // useEffect } from 'react';
+import { useState } from 'react'; 
 
 function ShopDisplay(props)
 {

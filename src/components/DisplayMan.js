@@ -120,6 +120,8 @@ function DisplayMan(props)
                 {displayState["showSettings"] && 
                     <SettingsDisplay gameMode = {gameMode}
                                      toggleGameMode = {toggleGameMode}
+                                     filter = {props.filter}
+                                     filterHandler = {props.filterHandler}
                                      reload = {reload}
                                      userHandler = {props.userHandler} />} 
                 {displayState["showInfo"] && 

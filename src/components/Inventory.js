@@ -37,8 +37,6 @@ function Inventory(props)
         const item = nodes[0].name;
         const itemCount = JSON.parse(localStorage.inventory)[`${item}`];
     
-        console.log("ITEMINFO[0]?  - " + itemInfo[0]);
-
         if (itemCount > 0 && 
             (!haltInv || item === "lemonade")) {  // test
             props.setItemInfo([item,

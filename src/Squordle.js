@@ -43,6 +43,18 @@ function Squordle(props)
     // -------------------------------------------------------------------------
 
     const [gameMode, setGameMode] = useState(JSON.parse(localStorage.gameMode));
+    const [filter, setFilter] = useState(JSON.parse(localStorage.genFilter));
+
+    function filterHandler(x)
+    {
+        console.log("TILE TOGGLED!");
+        const i = "g" + x;
+        const tempFilter = JSON.parse(localStorage.genFilter);
+        tempFilter[`${i}`] = !tempFilter[`${i}`];
+        // console.log("tempFilter - " + JSON.stringify(tempFilter));
+        localStorage.setItem("genFilter", JSON.stringify(tempFilter));
+        setFilter(tempFilter);
+    }
 
     function toggleGameMode()
     {
@@ -102,6 +114,8 @@ function Squordle(props)
                         userHandler = {userHandler}
                         gameMode = {gameMode}
                         toggleGameMode = {toggleGameMode}
+                        filter = {filter}
+                        filterHandler = {filterHandler}
                         pokemon = {pokemon}
                         dollarHandler = {dollarHandler}
                         isGameOver = {isGameOver}

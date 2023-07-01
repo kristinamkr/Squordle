@@ -11,9 +11,6 @@
     publish = "build/"
     command = "CI= npm run build"
 
-[[plugins]]
-    package = "@netlify/plugin-lighthouse"
-
 [[redirects]]
     from = "/*"
     to = "/index.html"
