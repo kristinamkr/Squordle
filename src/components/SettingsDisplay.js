@@ -12,10 +12,10 @@ function SettingsDisplay(props)
 {
     // 0 - user, 1 - gen
     const [settingsDisplay, setSettingsDisplay] = useState(false); 
-
     const filter = props.filter;
-    
-    console.log("FILTER ! --- \n" + JSON.stringify(filter) + "\n ----------------");
+    const filterHandler = props.filterHandler;
+
+    console.log("FILTER ---- ! " + JSON.stringify(filter) + "---------------\n");
 
     function toggleSettingsDisplay()
     {
@@ -39,6 +39,39 @@ function SettingsDisplay(props)
         else
             localStorage.gameMode = Number(localStorage.gameMode) - 2;
 	}
+
+    function GenTileButton({genNumber, classes, filterHandler}) 
+    {
+        const genFilter = JSON.parse(localStorage.getItem('genFilter'))[`g${genNumber}`];
+        const imgName = genFilter ? `${genNumber}_INACTIVE.png` : `${genNumber}.png`;
+
+        const imgPath = require(`../assets/genTiles/${imgName}`);
+        
+        return (
+            <button className = {classes[`genTile${genNumber}`]}
+                style = {{ backgroundImage: `url(${imgPath})` }}
+                onClick = {() => filterHandler(genNumber)}
+            />
+        );
+    }
+
+    function GenTiles({ classes, filterHandler}) 
+    {
+        const genNumbers = [1, 2, 3, 4, 5, 6];
+
+        return (
+            <div className={classes.menu}>
+                { genNumbers.map(genNumber => (
+                    <div className={classes.rowDisplay} key={genNumber}>
+                        <GenTileButton genNumber = {genNumber}
+                                       classes = {classes}
+                                       filterHandler = {filterHandler}
+                        />
+                    </div>
+                )) }
+            </div>
+        );
+    }
 
     function userSettings()
     {
@@ -105,11 +138,6 @@ function SettingsDisplay(props)
         );
     }
 
-    function setGen(x)
-    {
-        console.log("GEN " + x + "!");
-    }
-
     function genSettings()
     {
         const imgPath = '../assets/genTiles/'; 
@@ -125,41 +153,12 @@ function SettingsDisplay(props)
                      alt = "settings header"/>
 
                 <div className = {classes.menu}> 
-                    <div className = {classes.rowDisplay}> 
-                    { !JSON.parse(localStorage.genFilter)["g1"] &&
-                        <><button className={classes.genTile1}
-                                style={{backgroundImage: 'url(' + require('../assets/genTiles/1.png')}}
-                                onClick={() => props.filterHandler(1)}/></> } 
-                    { JSON.parse(localStorage.genFilter)["g1"] &&
-                        <><button className={classes.genTile1}
-                                style={{backgroundImage: 'url(' + require('../assets/genTiles/1_INACTIVE.png')}}
-                                onClick={() => props.filterHandler(1)}/></> } 
-
-                    { !JSON.parse(localStorage.genFilter)["g2"] &&
-                        <> <button className={classes.genTile2}
-                                style={{backgroundImage: 'url(' + require('../assets/genTiles/2.png')}}
-                                onClick={() => props.filterHandler(2)}/> </> } 
-                    { !JSON.parse(localStorage.genFilter)["g2"] &&
-                        <> <button className={classes.genTile2}
-                                style={{backgroundImage: 'url(' + require('../assets/genTiles/2_INACTIVE.png')}}
-                                onClick={() => props.filterHandler(2)}/> </> } 
-                    </div>
-                    <div className = {classes.rowDisplay}> 
-                        <button className={classes.genTile3}
-                                style={{backgroundImage: 'url(' + require('../assets/genTiles/3.png')}}
-                                onClick={() => setGen(3)}/> 
-                        <button className={classes.genTile4}
-                                style={{backgroundImage: 'url(' + require('../assets/genTiles/4.png')}}
-                                onClick={() => setGen(4)}/> 
-                    </div>
-                    <div className = {classes.rowDisplay}> 
-                        <button className={classes.genTile5}
-                                style={{backgroundImage: 'url(' + require('../assets/genTiles/5.png')}}
-                                onClick={() => setGen(5)}/> 
-                        <button className={classes.genTile6}
-                                style={{backgroundImage: 'url(' + require('../assets/genTiles/6.png')}}
-                                onClick={() => setGen(6)}/> 
-                    </div>
+                    { GenTiles({ classes, filterHandler})}  
+                </div>
+                <div className = {classes.exit}>
+                    <button onClick = {props.reload}>
+                        <ExitIcon className = {classes.exitIcon}/>
+                    </button>
                 </div>
             </div>
         );

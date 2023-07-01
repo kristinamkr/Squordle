@@ -47,11 +47,9 @@ function Squordle(props)
 
     function filterHandler(x)
     {
-        console.log("TILE TOGGLED!");
         const i = "g" + x;
         const tempFilter = JSON.parse(localStorage.genFilter);
         tempFilter[`${i}`] = !tempFilter[`${i}`];
-        // console.log("tempFilter - " + JSON.stringify(tempFilter));
         localStorage.setItem("genFilter", JSON.stringify(tempFilter));
         setFilter(tempFilter);
     }
