@@ -12,7 +12,8 @@ import ShopDisplay from "./ShopDisplay.js";
 import { ReactComponent as ShopIcon } from "../assets/shopIcon.svg";
 import { ReactComponent as InfoIcon } from "../assets/infoIcon.svg";
 import { ReactComponent as SettingsIcon } from "../assets/settingsIcon.svg";
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
+import { GameContext } from '../Squordle.js';
 
 function Backdrop() 
 {
@@ -21,8 +22,15 @@ function Backdrop()
 
 function DisplayMan(props)
 {
-    const gameMode = props.gameMode;
-    const toggleGameMode = props.toggleGameMode;
+    const { 
+        gameMode, 
+        toggleGameMode,
+        isGameOver, 
+        setGameOver, 
+        pokemon, 
+        dollarHandler 
+    } = useContext(GameContext); 
+
 	const [displayState, setDisplayState] = 
            useState({ showShop:     false,
                       showSettings: false,
@@ -79,11 +87,9 @@ function DisplayMan(props)
                          showInfo:     false,
                          showWinLose:  false,
                          showBackdrop: false});
-        if (gameMode || props.isGameOver[0]) {
+        if (gameMode || isGameOver[0])
             toggleGameMode(false);
-            // props.forceNewPokemon();
-        }
-        props.setGameOver([false, '']);
+        setGameOver([false, '']);
     }
 
     return (
@@ -115,23 +121,26 @@ function DisplayMan(props)
                 {displayState["showBackdrop"] && <Backdrop/>}
 
                 {displayState["showShop"] && 
-                    <ShopDisplay dollarHandler = {props.dollarHandler} 
-                                 shopHandler = {shopHandler}/>}
+                    <ShopDisplay shopHandler = {shopHandler}/>}
+
                 {displayState["showSettings"] && 
-                    <SettingsDisplay gameMode = {gameMode}
-                                     toggleGameMode = {toggleGameMode}
-                                     filter = {props.filter}
-                                     filterHandler = {props.filterHandler}
-                                     reload = {reload}
-                                     userHandler = {props.userHandler} />} 
+                    <SettingsDisplay 
+                        filter = {props.filter}
+                        filterHandler = {props.filterHandler}
+                        reload = {reload}
+                        userHandler = {props.userHandler} 
+                    />
+                } 
+
                 {displayState["showInfo"] && 
                     <InfoDisplay infoHandler = {infoHandler}/>}
 
-                {props.isGameOver[0] && 
-                    <WinLoseDisplay winLoseHandler = {winLoseHandler}
-                                    pokeAnswer = {props.pokemon} 
-                                    isGameOver = {props.isGameOver}
-                                    reload = {reload} />}
+                {isGameOver[0] && 
+                    <WinLoseDisplay 
+                        winLoseHandler = {winLoseHandler}
+                        reload = {reload} 
+                    />
+                }
             </header>
         </div>
     )

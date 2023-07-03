@@ -8,24 +8,34 @@ import GameSpace from "./GameSpace.js";
 import Keyboard from "./Keyboard.js";
 import spriteLink from  "../functions/SpriteLink.js";
 
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
+import { GameContext } from '../Squordle.js';
 
-import boardInit from "../functions/boardInit.js";
+const MAX_GUESSES = 6;
 
 let lettersUsed = []; // NOT PERSISTING BTW PAGE RELOADS 
 
 function GSDiv(props) 
 {
     console.log("RENDERING GSDIV...");
-    const pokeList = props.pokeList;
-    const pokeAnswer = props.pokemon.toLowerCase(); 
-    let ans = pokeAnswer.toLowerCase();
 
-    const validKeys = "qwertyuiopasdfghjklzxcvbnm".split('');
+    const { 
+        isGameOver, 
+        setGameOver, 
+        pokemon, 
+        dollarHandler 
+    } = useContext(GameContext); 
+
+    const pokeList = props.pokeList;
+    const pokeAnswer = pokemon.toLowerCase(); 
+
+    const validKeys = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm".split('');
+    const validKeySet = new Set(validKeys); 
 
 	const [gameSpace, setGameSpace] = useState(null);
 	const [letterStates, setLetterStates] = useState(null);
     const [focus, setFocus] = useState([0, 0]) // (row #, box #)
+    const [points, setPoints] = useState(0);
 
 	useEffect(() => {
         document.addEventListener("keydown", keyDownHandler);
@@ -33,200 +43,196 @@ function GSDiv(props)
     });
 
     useEffect(() => { 
-        renderGameSpace();
-    }, [pokeAnswer, props.isGameOver[0]]);
+        boardInit(pokeAnswer);
+    }, [pokeAnswer, isGameOver]);
 
-    function renderGameSpace()
-    {
-        let boardState;
-        if (Number(localStorage.gameMode) % 2 === 0) {  // DAILY
-            if (JSON.parse(localStorage.boardState)['gameSpace'] === null) { 
-                // UPDATE POTD - SET DAILY
-                let temp = JSON.parse(localStorage.potd);
-                temp["daily"] = pokeAnswer;
-                localStorage.potd = JSON.stringify(temp);
+    useEffect(() => { 
+        dollarHandler(points);
+    }, [points]);
 
-                boardState = boardInit(pokeAnswer);
-                localStorage.boardState = JSON.stringify(boardState);
-            }
-            else
-                boardState = JSON.parse(localStorage.boardState);
+    useEffect(() => { 
+        if (gameSpace) { 
+            let isWinningGuess = gameSpace?.some(r => r.state === 'winner');
+
+            if (isWinningGuess)
+                setGameOver([true, 'win']);
+            else if (!isWinningGuess && focus[0] === MAX_GUESSES) 
+                setGameOver([true, 'loss']);
         }
-        else // FREEPLAY
-            boardState = boardInit(pokeAnswer);
+    }, [gameSpace]);
 
-        setFocus(boardState["focus"]);
-        setGameSpace(boardState["gameSpace"]);
-        setLetterStates(boardState["letterStates"]);
-    }
+    // BOARD SET-UP ------------------------------------------------------------
+    function boardInit(pkmn)
+    {
+        console.log("BOARD INIT...");
+        const gsInit = Array.from({ length: MAX_GUESSES }, (_, i) => {
+            const row = {
+                id: 'r' + i,
+                state: 'empty',
+                length: pokeAnswer.length,
+                boxes: Array.from({ length: pokeAnswer.length }, (_, k) => ({
+                    id: `r${i}b${k}`, 
+                    delay: `{k * 100}ms`,
+                    state: 'empty',
+                    letter: '',
+                })),
+                guess: '',
+                sprite: 'NaN',
+                winnings: 0,
+            };
+
+            return row;
+        });
+
+        const lsInit = {
+            inWord: [],
+            correctGuess: [],
+            notInWord: [],
+        };
+
+        const focusInit = [0, 0];
+
+        setFocus(focusInit);
+        setGameSpace(gsInit);
+        setLetterStates(lsInit);
+    };
 
     // KEY DOWN HANDLER -------------------------------------------------------
     function keyDownHandler(e)
     {
-        const input = e.key || e.target.value;
-        const validKeySet = new Set(validKeys);
-        console.log("KEY PRESSED (" + input + ") !");
         console.log(pokeAnswer);
+        const input = e.key || e.target.value;
 
-        if (!(props.isGameOver[0]) &&
-            !(JSON.parse(localStorage.backdrop)) &&
-            !(JSON.parse(localStorage.potd)["isWon"]) ||
-            Number(localStorage.gameMode) % 2 === 1)
+        const isBackdropActive = JSON.parse(localStorage.backdrop);
+        const isPOTDWon = JSON.parse(localStorage.potd)['isWon'];
+        const isFreeplayMode = Number(localStorage.gameMode) % 2 === 1;
+
+        if (!(isGameOver[0]) && !isBackdropActive &&
+            !isPOTDWon || isFreeplayMode) 
         {
-            if (input === "Enter" && focus[1] === pokeAnswer.length)
+            if (input === 'Enter' && focus[1] === pokeAnswer.length)
                 handleEnterKey();
-            else if (input === "Backspace" && focus[1] !== 0)
+            else if (input === 'Backspace' && focus[1] > 0)
                 handleBackspaceKey();
             else if (focus[1] < pokeAnswer.length && validKeySet.has(input))
                 handleCharacterKey(input);
         }
 
-        if (!(JSON.parse(localStorage.backdrop)) &&
-            !(JSON.parse(localStorage.potd)["isWon"])) {
-                setGameSpace([...gameSpace]);
-        }
+        if (validKeySet.has(input) && focus[1] < pokeAnswer.length &&
+            !isBackdropActive && !isPOTDWon && !(isGameOver[0]))
+            setGameSpace([...gameSpace]);
     }
 
     // HELPER FUNCTIONS -------------------------------------------------------
     function handleEnterKey()
     {
-        let guess = "";
-        for (let i = 0; i < pokeAnswer.length; i++) {
-            guess = guess + gameSpace[focus[0]].boxes[i].letter;
-        }
+        setGameSpace(prevGameSpace => {
+            let guess = '';
+            for (let i = 0; i < pokeAnswer.length; i++)
+                guess = guess + prevGameSpace[focus[0]].boxes[i].letter;
 
-        let isValid = checkValidity(guess);
-        if ((Number(localStorage.gameMode) < 2) && isValid ||
-            Number(localStorage.gameMode) >= 2) {
-            gameSpace[focus[0]].guess = guess;
-            checkAnswer(gameSpace[focus[0]]);
-            focus[0] += 1;
-            focus[1] = 0;
-        }
+            let isValid = 
+                pokeList.some(pokemon => pokemon.name.toLowerCase() === guess);
+
+            if ((Number(localStorage.gameMode) < 2) && isValid || 
+                Number(localStorage.gameMode) >= 2) {
+                const newGameSpace = [...prevGameSpace];
+                newGameSpace[focus[0]].guess = guess;
+                const pointsWon = checkAnswer(newGameSpace[focus[0]]);
+                setPoints(pointsWon);
+                return newGameSpace;
+            }
+            return prevGameSpace; // if not valid, return the current state
+        });
+        
+        setFocus(prevFocus => [prevFocus[0] + 1, 0]);
     }
 
     function handleBackspaceKey()
     {
-        focus[1] -= 1;
-        gameSpace[focus[0]].boxes[focus[1]].state = "empty";
-        gameSpace[focus[0]].boxes[focus[1]].letter = '';
+        setFocus(prevFocus => [prevFocus[0], prevFocus[1] - 1]);
+        setGameSpace(prevGameSpace => {
+            const newGameSpace = [...prevGameSpace];
+            newGameSpace[focus[0]].boxes[focus[1] - 1].state = 'empty';
+            newGameSpace[focus[0]].boxes[focus[1] - 1].letter = '';
+            return newGameSpace;
+        });
     }
 
     function handleCharacterKey(input)
     {
-        gameSpace[focus[0]].boxes[focus[1]].letter = input;
-        gameSpace[focus[0]].boxes[focus[1]].state = "filled";
-        focus[1] += 1;
+        setGameSpace(prevGameSpace => {
+            const newGameSpace = [...prevGameSpace];
+            newGameSpace[focus[0]].boxes[focus[1]].letter = input;
+            newGameSpace[focus[0]].boxes[focus[1]].state = 'filled';
+            setFocus(prevFocus => [prevFocus[0], prevFocus[1] + 1]);
+            return newGameSpace;
+        });
     }
 
+    let ans = pokeAnswer;
 	function checkAnswer(row)
     {
 	    let lsChange = letterStates;
         let pointsWon = 0; 
         let isWinningRow = true;  // tracks if row is winning
 
+        const updateStateAndPoints = (state, points, letter) => {
+            if (!(lettersUsed.includes(letter))) {
+                lettersUsed.push(letter);
+                pointsWon += points;
+            }
+            return state;
+        };
+
         for (let i = 0; i < pokeAnswer.length; i++) {
             let currentBox = row.boxes[i];
 
             // check for duplicates in guess that are NOT in ans
-            if (currentBox.letter === pokeAnswer[i] &&  // green 
-                ans.indexOf(currentBox.letter) !== -1) 
+            if (currentBox.letter === pokeAnswer[i] &&      // green 
+                ans.includes(currentBox.letter)) 
             { 
-                currentBox.state = "correct";
+                currentBox.state = 
+                    updateStateAndPoints('correct', 20, currentBox.letter); 
                 lsChange["correctGuess"].push(currentBox.letter);
-
-                if (!(lettersUsed.includes(currentBox.letter)))
-                    pointsWon += 20;
-
-                ans = ans.replace(currentBox.letter, ''); 
             }
-            else if (isInAnswer(currentBox.letter, ans)) { // yellow
-                currentBox.state = "inWord";
+            else if (ans.includes(currentBox.letter)) {     // yellow
+                currentBox.state = 
+                    updateStateAndPoints('inWord', 5, currentBox.letter);
                 lsChange["inWord"].push(currentBox.letter);
-
-                if (!(lettersUsed.includes(currentBox.letter)))
-                    pointsWon += 5;
-
-                ans = ans.replace(currentBox.letter, ''); 
                 isWinningRow = false; 
             } else {
-                currentBox.state = "incorrect";
+                currentBox.state = 
+                    updateStateAndPoints('incorrect', 0, currentBox.letter); 
                 lsChange["notInWord"].push(currentBox.letter);
                 isWinningRow = false;
             }
-
-            if (!(lettersUsed.includes(currentBox.letter)))
-                lettersUsed.push(currentBox.letter);
+            ans = ans.replace(currentBox.letter, '');
         }
 
-        let boardState = {gameSpace: gameSpace, 
-                          letterStates: letterStates, 
-                          focus: [focus[0] + 1, 0]};
-        if (Number(localStorage.gameMode) % 2 === 0)
-            localStorage.boardState = JSON.stringify(boardState);
-
-        if (isWinningRow)
-            handleWin(row, pointsWon);
-        else {
-            if (focus[0] === 5 && focus[1] === pokeAnswer.length) {
-                props.setGameOver([true, 'loss']);
-                setGameSpace(null);
-                setFocus([-1, focus[1]]);
-            }
-            row.state = "filled";
+        if (isWinningRow) {
+            row.state = 'winner';
+            pointsWon += 200;
         }
+        else
+            row.state = 'filled';
 
         row.winnings += pointsWon;
         setLetterStates(lsChange);
-	    props.dollarHandler(pointsWon); 
-        return row;
+        return row.winnings;
 	}
-
-    function handleWin(row, pointsWon)
-    {   
-        row.state = "winner";
-
-        if (Number(localStorage.gameMode) % 2 === 0) {
-            let temp = JSON.parse(localStorage.potd);
-            temp["isWon"] = true;
-            localStorage.potd = JSON.stringify(temp);
-        }
-
-        props.setGameOver([true, 'win']);
-        setGameSpace(null);
-        setFocus([-1, focus[1]]);
-        pointsWon += 200;
-    }
-
-    function isInAnswer(letter, ans)
-    {
-        for (let i = 0; i < ans.length; i++)
-            if (letter === ans[i])
-                return true;
-        return false;
-    }
-
-    function checkValidity(guess) {
-        for (let i = 0; i < pokeList.length; i++)
-            if (pokeList[i].name.toLowerCase() === guess)
-                return true;
-        return false;
-    } 
 
 	return (
         <> { gameSpace && letterStates && 
             <div className = {classes.gsDiv}>
                 <GameSpace id = "gameSpace"
-                           gameSpace = {gameSpace}
-                           wordLength = {pokeAnswer.length}
-                           checkValidity = {checkValidity} />
-                { letterStates && 
-                    <Keyboard  id = "keyboard" 
-                               letterStates = {letterStates} 
-                               handler = {keyDownHandler}
-                               gameSpace = {gameSpace}
-                               setGameSpace = {setGameSpace} 
-                               validKeys = {validKeys}/> }
+                    gameSpace = {gameSpace}
+                />
+
+                <Keyboard  id = "keyboard" 
+                    letterStates = {letterStates} 
+                    validKeys = {validKeys}
+                /> 
             </div>
         } </>
 	)

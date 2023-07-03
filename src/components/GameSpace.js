@@ -3,21 +3,19 @@
 */
 
 import classes from "./style/GameSpace.module.css";
-import { useState, useEffect } from 'react';
 
-var bgColors = {
-    "inWord": "#f5e554",
-	"correct": "#78e22c",
-	"incorrect": "#dadada"
+const bgColors = {
+    inWord: "#f5e554",
+    correct: "#78e22c",
+    incorrect: "#dadada"
 }
 
 function GuessBox(props) 
 {
-    console.log("\t\t\tRENDERING GUESSBOX...");
     return (
         <div className = {classes.guessBox} 
-             id = {props.id} 
-             style = {{backgroundColor: bgColors[props.state]}}>
+            id = {props.id} 
+            style = {{backgroundColor: bgColors[props.state]}}>
             {props.letter}
         </div>
     )
@@ -25,33 +23,31 @@ function GuessBox(props)
 
 function GameRow(props)
 {
-    console.log("\t\tRENDERING GAMEROW...");
-
 	return (
 		<div className = {classes.gameRow}
              style = {{gridTemplateColumns: 
                 "1fr " + "40px ".repeat(props.length) + "1fr"}}>
-			{props.boxes.map((box) => (<GuessBox key = {box.id}
-			                                     state = {box.state}
-			                                     letter = {box.letter}/>))}
+            {props.boxes.map((box) => 
+                (<GuessBox key = {box.id}
+                    state = {box.state}
+                    letter = {box.letter}
+                />))
+            }
         </div>
 	);
 }
 
 function GameSpace(props)
 {
-    console.log("\tRENDERING GAMESPACE...");
-
     return (
         <div className = {classes.gameSpace} 
              style = {{gridTemplateRows: "1fr".repeat(6)}}>
             { props.gameSpace.map((row) => (
                 <GameRow key = {row.id}
-                         state = {row.state}
-                         length = {row.length}
-                         boxes = {row.boxes}
-                         guess = {row.guess} 
-                         sprite = {row.sprite}
+                    state = {row.state}
+                    length = {row.length}
+                    boxes = {row.boxes}
+                    guess = {row.guess} 
                 />
             ))}
         </div>
