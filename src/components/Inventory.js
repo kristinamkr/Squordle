@@ -5,10 +5,14 @@
 import classes from "./style/Inventory.module.css";
 import items from './Items.js';
 
-import { useState } from 'react'; // useEffect} from 'react';
+import { useState } from 'react'; 
+
+const itemColors = ['#F08030', '#F85888', '#F8D030', '#6890F0'];
 
 function Inventory(props) 
 {
+    console.log("HELLO INVENTORY");
+
     // INVENTORY ---------------------------------------------------------------
     let pokeLink = "https://cdn3.iconfinder.com/data/icons/faticons/32/";
     const [arrowSrc, setArrowSrc] = 
@@ -26,17 +30,19 @@ function Inventory(props)
     }
     // -------------------------------------------------------------------------
 
-    const mousePos = props.mousePos;
-    const itemInfo = props.itemInfo; 
+//    const mousePos = props.mousePos;
+//    const itemInfo = props.itemInfo; 
 
-    const haltInv = props.haltInv;
+//    const haltInv = props.haltInv;
 
+/*
     function selectItem(e)
     {
         var nodes = Array.prototype.slice.call(e.currentTarget.children);
         const item = nodes[0].name;
         const itemCount = JSON.parse(localStorage.inventory)[`${item}`];
     
+    /*
         if (itemCount > 0 && 
             (!haltInv || item === "lemonade")) {  // test
             props.setItemInfo([item,
@@ -45,47 +51,57 @@ function Inventory(props)
                               1]);
         }
     }
+*/
 
     function itemPreview(item, bg_color)
     {
+        console.log("PREVIEWING ITEM [" + item.props.name + "]");
         return (
             <tr className = {classes.item}>
                 <th style = {{background: bg_color}}>
                     {item.props.tag} 
-                    <div> 
+                    <> 
                     {JSON.parse(localStorage.inventory)[`${item.props.name}`]} 
-                    </div>
+                    </>
                 </th>
+            </tr> 
+        )
+    }
+/*
                 <td className = {classes.draggable}
                     onClick = {selectItem}>
                     {item}
                 </td>
-            </tr> 
-        )
-    }
+*/
 
-    // for region implementation, use map function to iterate component renders
     // RENDER ------------------------------------------------------------------
     return (
-        <div className = {classes.storageWrapper}>
-            <table className = {classes.storage}>
-                <tbody>
-                <tr className = {classes.header}>
-                    <th className = {classes.leftColumn}> Flavor </th>
-                    <th className = {classes.header1}> Items </th>
+        <>
+            <table className={classes.storage}>
+            <tbody>
+                <tr className={classes.header}>
+                    <th className={classes.leftColumn}> Flavor </th>
+                    <th className={classes.header1}> Items </th>
                 </tr>
-                { isExpanded && itemPreview(items[0], "#F08030") } 
-                { isExpanded && itemPreview(items[1], "#F85888") }
-                { isExpanded && itemPreview(items[2], "#F8D030") }
-                { isExpanded && itemPreview(items[3], "#6890F0") }
-                </tbody>
+                {items.map((item, index) => 
+                    itemPreview(item, itemColors[index]))}
+            </tbody>
             </table>
 
             <button className = {classes.expansionArrow} 
                    onClick = {expandInventory}>
                 <img src = {arrowSrc}
-                     alt = "custom arrow for inventory toggle"/>
+                     alt = 'custom arrow for inventory toggle'/>
             </button>
+        </>
+    );
+}
+
+export default Inventory;
+
+/*
+            {isExpanded && (
+
 
             { !(itemInfo[0] === '') &&
                 <div className = {classes.draggable}>
@@ -100,8 +116,21 @@ function Inventory(props)
                          onClick = {() => props.realize(itemInfo[0])}
                          decoding = "async"/>
                 </div> }
-        </div>
-    );
-}
 
-export default Inventory;
+
+
+
+            <table className = {classes.storage}>
+                <tbody>
+                <tr className = {classes.header}>
+                    <th className = {classes.leftColumn}> Flavor </th>
+                    <th className = {classes.header1}> Items </th>
+                </tr>
+                { isExpanded && itemPreview(items[0], '#F08030') } 
+                { isExpanded && itemPreview(items[1], '#F85888') }
+                { isExpanded && itemPreview(items[2], '#F8D030') }
+                { isExpanded && itemPreview(items[3], '#6890F0') }
+                </tbody>
+            </table>
+
+*/

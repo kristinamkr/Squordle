@@ -25,8 +25,8 @@ function ShuckleCursor(props)
 
     const haltInv = props.haltInv;
     const setHaltInv = props.setHaltInv;
-
     const mousePos = props.mousePos;
+
     const [shuckleChildren, setShuckleChildren] = 
         useState(JSON.parse(localStorage.shuckleInfo)["children"]);
     const [shucklePos, setShucklePos] = useState([0, 0]);

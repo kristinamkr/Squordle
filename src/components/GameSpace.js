@@ -21,18 +21,36 @@ function GuessBox(props)
     )
 }
 
+function SpriteBox({sprite})
+{
+    const componentClass = sprite.includes('unown') ? 'unown' : 'pokeSprite';
+    console.log('componentClass - ' + componentClass);
+    return (
+        <>
+            <img className = {classes.unown}
+                 src = {sprite}
+                 alt = ''
+            />
+        </>
+    )
+}
+
 function GameRow(props)
 {
+    console.log("props.sprite = " + props.sprite);
 	return (
 		<div className = {classes.gameRow}
-             style = {{gridTemplateColumns: 
-                "1fr " + "40px ".repeat(props.length) + "1fr"}}>
+             style = {{gridTemplateColumns: '40px '.repeat(props.length)}}>
+            { props.sprite !== 'NaN' && 
+                <SpriteBox sprite = {props.sprite} /> }
             {props.boxes.map((box) => 
                 (<GuessBox key = {box.id}
                     state = {box.state}
                     letter = {box.letter}
                 />))
             }
+            { props.sprite !== 'NaN' && 
+                <SpriteBox sprite = {props.sprite} /> }
         </div>
 	);
 }
@@ -48,6 +66,7 @@ function GameSpace(props)
                     length = {row.length}
                     boxes = {row.boxes}
                     guess = {row.guess} 
+                    sprite = {row.sprite}
                 />
             ))}
         </div>

@@ -24,30 +24,42 @@ function Poffin(props)
     );
 }
 
-const items = [<Poffin name = "spicyPoffin"
-                       price = "250"
-                       tag = "Spicy"
-                       id = "1" />,
-               <Poffin name = "sweetPoffin"
-                       price = "400"
-                       tag = "Sweet"
-                       id = "2" />,
-               <Poffin name = "goldPoffin"
-                       price = "995"
-                       tag = "Gold"
-                       id = "3" />,
-               <Poffin name = "lemonade"
-                       price = "100"
-                       tag = "Juice"
-                       id = "4" />,
-               <Poffin name = "ticket"
-                       price = "495"
-                       tag = "Ticket"
-                       id = "5" />,
-               <Poffin name = "soldOut"
-                       price = "N/A"
-                       tag = "soldOut"
-                       id = "6" />,
-                       ];
+const items = 
+    [<Poffin
+        name = "spicyPoffin"
+        price = "250"
+        tag = "Spicy"
+        id = "1" />,
+   <Poffin
+        name = "sweetPoffin"
+        price = "400"
+        tag = "Sweet"
+        id = "2" />,
+   <Poffin 
+        name = "goldPoffin"
+        price = "995"
+        tag = "Gold"
+        id = "3" />,
+   <Poffin
+        name = "lemonade"
+        price = "100"
+        tag = "Juice"
+        id = "4" />,
+   <Poffin
+        name = "ticket"
+        price = "495"
+        tag = "Ticket"
+        id = "5" />,
+   <Poffin
+        name = "soldOut"
+        price = "N/A"
+        tag = "soldOut"
+        id = "6" />,
+];
 
 export default items;
+
+/* NOTES TO SELF
+ PUT INVENTORY BACK IN SHUCKLE MECHANIX
+ MOVE MOUSE EVENT INTO SEPARATE GUYS
+*/

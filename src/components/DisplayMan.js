@@ -121,7 +121,10 @@ function DisplayMan(props)
                 {displayState["showBackdrop"] && <Backdrop/>}
 
                 {displayState["showShop"] && 
-                    <ShopDisplay shopHandler = {shopHandler}/>}
+                    <ShopDisplay shopHandler = {shopHandler}
+                        dollarHandler = {dollarHandler} 
+                    />
+                }
 
                 {displayState["showSettings"] && 
                     <SettingsDisplay 

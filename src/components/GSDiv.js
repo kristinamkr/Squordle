@@ -138,6 +138,8 @@ function GSDiv(props)
                 Number(localStorage.gameMode) >= 2) {
                 const newGameSpace = [...prevGameSpace];
                 newGameSpace[focus[0]].guess = guess;
+                newGameSpace[focus[0]].sprite = isValid ? 
+                    spriteLink(guess) : spriteLink(guess[0]);
                 const pointsWon = checkAnswer(newGameSpace[focus[0]]);
                 setPoints(pointsWon);
                 return newGameSpace;

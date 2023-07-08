@@ -1,3 +1,9 @@
+.why {
+    height: 50px;
+    width: 50px;
+    background-color: blue;
+}
+
 .storageWrapper {
     height: 0px;
     width: 0px;

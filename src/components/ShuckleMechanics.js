@@ -76,19 +76,21 @@ function ShuckleMechanics(props)
 
     return (
         <>
-            <Inventory mousePos = {mousePos}
-                           itemInfo = {itemInfo} 
-                           setItemInfo = {setItemInfo}
-                           haltInv = {haltInv}
-                           setHaltInv = {setHaltInv}
-                           realize = {realize} />
+            <Inventory
+                itemInfo = {itemInfo} 
+                setItemInfo = {setItemInfo}
+                haltInv = {haltInv}
+                setHaltInv = {setHaltInv}
+                realize = {realize} 
+            />
             <ShuckleCursor keyDownHandler = {props.keyDownHandler}
-                           mousePos = {mousePos}
-                           targetInfo = {itemInfo}
-                           realizeItem = {realizeItem}
-                           haltInv = {haltInv}
-                           setHaltInv = {setHaltInv}
-                           reset = {reset} />
+                mousePos = {mousePos}
+                targetInfo = {itemInfo}
+                realizeItem = {realizeItem}
+                haltInv = {haltInv}
+                setHaltInv = {setHaltInv}
+                reset = {reset} 
+            />
         </>
     )
 }
