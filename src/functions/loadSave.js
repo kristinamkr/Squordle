@@ -43,8 +43,6 @@ function loadSave()
         // USER INFO ---
         if (!(localStorage.user))
             localStorage.user = "guest";
-        if (!(localStorage.region))
-            localStorage.region = "kanto";
         if (!(localStorage.pokeDollars))
             localStorage.pokeDollars = 0;
         if (!(localStorage.shuckleInfo)) {

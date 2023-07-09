@@ -2,9 +2,8 @@ import classes from "./components/style/Squordle.module.css";
 
 import DisplayMan from "./components/DisplayMan.js";
 import ShuckleMechanics from "./components/ShuckleMechanics.js";
-// import items from './components/Items.js';
-import Inventory from './components/Inventory.js';
 import GSDiv from "./components/GSDiv.js";
+
 import loadSave from "./functions/loadSave.js";
 
 import { createContext, useState, useEffect } from 'react';
@@ -78,14 +77,10 @@ function Squordle(props)
         }}> 
             <div className = {classes.center}>
                 <DisplayMan id = "header"/>
+
+            {JSON.parse(localStorage.shuckleInfo)["adopted"] &&
+                <ShuckleMechanics/>}
             </div>
-
-            { JSON.parse(localStorage.shuckleInfo)["adopted"] &&
-                <>
-                <ShuckleMechanics/> 
-
-                </>
-            }
 
             { !(pokemon === "eddie") &&  
                 <GSDiv  id = "gsdiv"
