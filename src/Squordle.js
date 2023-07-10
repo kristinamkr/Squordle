@@ -15,13 +15,14 @@ function Squordle(props)
 {
     console.log("RELOADING SQUORDLE");
 
-    const [gameMode, setGameMode] = useState(2); // useState(JSON.parse(localStorage.gameMode));
+    const [gameMode, setGameMode] = useState(JSON.parse(localStorage.gameMode));
     const [isGameOver, setGameOver] = useState([false, '']);
 
     const [pokemon, setPokemon] = useState('eddie');
     const [usedPokemon, setUsedPokemon] = useState([]);
     const pokeList = props.pokeList;
-    const [pokeDollars, setPokeDollars] = useState(Number(localStorage.pokeDollars));
+    const [pokeDollars, setPokeDollars] = 
+        useState(Number(localStorage.pokeDollars));
 
     function toggleGameMode()
     {
@@ -38,7 +39,7 @@ function Squordle(props)
         function getDaily() 
         {
              const tempList = pokeList.filter(p => p.potd === "TRUE");
-             tempList.sort((a, b) => b.lastModified - a.lastModified); 
+             tempList.sort((a, b) => b.lastModified > a.lastModified); 
              return tempList[0].name;
         }
 
@@ -66,7 +67,7 @@ function Squordle(props)
             setPokemon(newPokemon);
             setUsedPokemon(prevPokemon => [...prevPokemon, newPokemon]);
         }
-    }, [isGameOver[0]]); // , gameMode]);
+    }, [isGameOver[0], gameMode]);
 
 	return (
         <GameContext.Provider value={{
@@ -92,23 +93,9 @@ function Squordle(props)
 }
 
 /*
-
-            { JSON.parse(localStorage.shuckleInfo)["adopted"] &&
-                <ShuckleMechanics/> && 
-                <Inventory/>
-            }
-
-                <Inventory mousePos = {mousePos}
-                    itemInfo = {itemInfo} 
-                    setItemInfo = {setItemInfo}
-                    haltInv = {haltInv}
-                    setHaltInv = {setHaltInv}
-                    realize = {realize} 
-                />
-
-                    user = {user}
-                    userHandler = {userHandler}
-                    filter = {filter}
-                    filterHandler = {filterHandler}
+user = {user}
+userHandler = {userHandler}
+filter = {filter}
+filterHandler = {filterHandler}
 */
 export default Squordle;
