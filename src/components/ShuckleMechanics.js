@@ -2,9 +2,10 @@
  * ShuckleMechanics.js
 */
 
-import itemsData from './Items.js';
+import itemsData from './ItemData.js';
 import Inventory from './Inventory.js';
-import ShuckleCursor from './ShuckleCursor.js';
+import Cursor from './Shuckle/Cursor.js';
+
 import { useState, useEffect} from 'react';
 
 function ShuckleMechanics(props)
@@ -28,6 +29,33 @@ function ShuckleMechanics(props)
     // [0] - itemRealized?, [1] - realizedItemNum
     const [realizeItem, setRealizeItem] = useState([false, -1]); 
 
+    useEffect(() => {
+        setTimeout(() => {
+            if (item && !(realizeItem[0])) {
+                setItemInfo([mousePos[0], mousePos[1], 1]);
+                // console.log('item info set!');
+                // console.log('realizeItem[0] - ' + realizeItem[0]);
+            }
+        }, 16);
+    }, [item, itemInfo]);
+
+    function realize(item)
+    {
+        let tempInv = JSON.parse(localStorage.inventory);
+        const itemCount = tempInv[`${item}`];
+        if (itemCount > 0) {
+            tempInv[`${item}`] = itemCount - 1;
+            localStorage.setItem("inventory", JSON.stringify(tempInv));
+            setRealizeItem([true, Number(getPoffinId(item))]);
+            derealize();
+        }
+    }
+    
+    function derealize()
+    {
+        setItemInfo([itemInfo[0], itemInfo[1], 0]); 
+    }
+
     function reset() {
         setItem('');
         setRealizeItem(false, -1);
@@ -35,19 +63,25 @@ function ShuckleMechanics(props)
 
     function getPoffinId(name)
     {
-        const i = itemsData.find(i => i.props.name === name);
-        return i ? i.props.id : null;
+        const i = itemsData.find(i => i.name === name);
+        return i ? i.id : null;
     }
 
     return (
         <>
             <Inventory
+                mousePos = {mousePos}
                 item = {item}
+                setItem = {setItem}
                 itemInfo = {itemInfo} 
                 setItemInfo = {setItemInfo}
+                realize = {realize}
             />
-            <ShuckleCursor 
+            <Cursor 
                 mousePos = {mousePos}
+                itemPos = {itemInfo}
+                realizeItem = {realizeItem}
+                reset = {reset}
             />
         </>
     )

@@ -1,0 +1,29 @@
+/*
+ * Item.js
+*/
+
+// import { useState } from 'react'; 
+import classes from "./style/Item.module.css";
+
+function Item(props) 
+{
+    const itemInfo = props;
+
+    var itemClass = itemInfo['name'] === 'lemonade' ? 
+        classes.lemonade : classes.item;
+
+    return (
+        <tr>
+        <td>
+            <img name = {itemInfo['name']}
+                className = {itemClass}
+                src = {require('../assets/' + itemInfo['name'] + '.png')}
+                alt = 'item png for inventory display'
+                decoding = 'async' 
+            />
+        </td>
+        </tr>
+    );
+}
+
+export default Item;

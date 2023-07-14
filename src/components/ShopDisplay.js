@@ -1,5 +1,6 @@
 import classes from "./style/ShopDisplay.module.css";
-import items from './Items.js';
+import itemData from './ItemData';
+import Item from './Item';
 
 import { ReactComponent as ExitIcon } from "../assets/exitIcon.svg";
 import { useState } from 'react'; 
@@ -134,8 +135,8 @@ function ShopDisplay(props)
     {
         return (
             <div className = {classes.item}>
-                <div className = {item.props.name === "lemonade" && 
-                    classes.lemonade || null}>
+                <div className = 
+                    {item.props.name === "lemonade" && classes.lemonade || null}>
                     {item}
                 </div>
                 <div className = {classes.attempt}>
@@ -179,19 +180,19 @@ function ShopDisplay(props)
 
                 <div className = {classes.menu}> 
                     <div className = {classes.rowDisplay}> 
-                        {display(items[0])}
-                        {display(items[1])}
+                        {display(<Item {...itemData[0]} />)}
+                        {display(<Item {...itemData[1]} />)}
                     </div>
                     <div className = {classes.rowDisplay}> 
-                        {display(items[2])}
-                        {display(items[3])}
+                        {display(<Item {...itemData[2]} />)}
+                        {display(<Item {...itemData[3]} />)}
                     </div>
                     <div className = {classes.rowDisplay}>
                         {!(JSON.parse(localStorage.inventory)["ticket"]) &&
-                            display(items[4])
+                            display(<Item {...itemData[4]} />)
                         }
                         {JSON.parse(localStorage.inventory)["ticket"] &&
-                            display(items[5])
+                            display(<Item {...itemData[5]} />)
                         }
                         <div className = {classes.icon} 
                              style = {{marginLeft: "60px"}}>

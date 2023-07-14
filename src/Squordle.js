@@ -1,10 +1,10 @@
 import classes from "./components/style/Squordle.module.css";
 
-import DisplayMan from "./components/DisplayMan.js";
-import ShuckleMechanics from "./components/ShuckleMechanics.js";
-import GSDiv from "./components/GSDiv.js";
+import DisplayMan from "./components/DisplayMan";
+import ShuckleMechanics from "./components/ShuckleMechanics";
+import GSDiv from "./components/GSDiv";
 
-import loadSave from "./functions/loadSave.js";
+import loadSave from "./functions/loadSave";
 
 import { createContext, useState, useEffect } from 'react';
 export const GameContext = createContext();
@@ -80,7 +80,7 @@ function Squordle(props)
                 <DisplayMan id = "header"/>
 
             {JSON.parse(localStorage.shuckleInfo)["adopted"] &&
-                <ShuckleMechanics/>}
+                <ShuckleMechanics />}
             </div>
 
             { !(pokemon === "eddie") &&  

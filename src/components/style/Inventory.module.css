@@ -1,14 +1,3 @@
-img.item {
-	cursor: move;
-	width: 64px;
-	height: 64px;
-}
-
-img.lemonade {
-	cursor: move;
-	height: 64px;
-}
-
 .storageWrapper {
     height: 0px;
     width: 0px;

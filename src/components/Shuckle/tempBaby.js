@@ -1,8 +1,14 @@
 /*
- * ShuckleBaby.js
+ * Baby.js
 */
 
+// remove array
+// idk
 
+import { useState, useEffect} from 'react';
+
+function Baby(props)
+{
     const [babyTargetReached, setBabyTargetReached] = 
         useState(Array(shuckleChildren.length));
 
@@ -131,3 +137,6 @@
 
             {shuckleChildren.length > 0
                 && ( <> { animBabies(shuckleChildren, babyPosList) } </> )}
+}
+
+export default Baby;
