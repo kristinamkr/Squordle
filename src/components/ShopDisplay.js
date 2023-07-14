@@ -3,10 +3,15 @@ import itemData from './ItemData';
 import Item from './Item';
 
 import { ReactComponent as ExitIcon } from "../assets/exitIcon.svg";
-import { useState } from 'react'; 
+import { useContext, useState } from 'react';
+import { GameContext } from '../Squordle.js';
 
 function ShopDisplay(props)
 {
+    const { 
+        dollarHandler,
+    } = useContext(GameContext); 
+
 	const emote = {
         HAPPY:   0,
         SAD:     1,
@@ -34,7 +39,6 @@ function ShopDisplay(props)
         "Welcome back! We can't thank you enough for adopting our Shuckle!"
     ];
 
-	const dollarHandler = props.dollarHandler;
 	const [counter, setCounter] = useState(Number(localStorage.shopState));
     const [shopDisplay, setShopDisplay] = useState(false); // 0 - shuckle, 1 - shop
     const [shuckleAdoption, setShuckleAdoption] = 

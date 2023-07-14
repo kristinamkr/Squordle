@@ -8,10 +8,6 @@
 }
 
 .typingField {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 240px;
     padding-bottom: 10px;
 }
 

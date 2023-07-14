@@ -12,6 +12,7 @@ import ShopDisplay from "./ShopDisplay.js";
 import { ReactComponent as ShopIcon } from "../assets/shopIcon.svg";
 import { ReactComponent as InfoIcon } from "../assets/infoIcon.svg";
 import { ReactComponent as SettingsIcon } from "../assets/settingsIcon.svg";
+
 import { useContext, useState, useEffect } from 'react';
 import { GameContext } from '../Squordle.js';
 
@@ -27,8 +28,6 @@ function DisplayMan(props)
         toggleGameMode,
         isGameOver, 
         setGameOver, 
-        pokemon, 
-        dollarHandler 
     } = useContext(GameContext); 
 
 	const [displayState, setDisplayState] = useState({ 
@@ -139,19 +138,13 @@ function DisplayMan(props)
                 {displayState["showBackdrop"] && <Backdrop/>}
 
                 {displayState["showShop"] && 
-                    <ShopDisplay shopHandler = {shopHandler}
-                        dollarHandler = {dollarHandler} 
-                    />
+                    <ShopDisplay shopHandler = {shopHandler}/>
                 }
 
                 {displayState["showSettings"] && 
                     <SettingsDisplay 
                         settingsHandler = {settingsHandler}
-                        toggleGameMode = {toggleGameMode}
-                        filter = {props.filter}
-                        filterHandler = {props.filterHandler}
                         reload = {reload}
-                        userHandler = {props.userHandler} 
                     />
                 } 
 

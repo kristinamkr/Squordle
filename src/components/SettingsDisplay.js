@@ -6,14 +6,20 @@ import classes from "./style/SettingsDisplay.module.css";
 import User from "./User.js";
 
 import { ReactComponent as ExitIcon } from "../assets/exitIcon.svg";
-import { useState } from 'react';
+
+import { useContext, useState } from 'react';
+import { GameContext } from '../Squordle.js';
 
 function SettingsDisplay(props)
 {
+    const { 
+        gameMode, 
+        toggleGameMode,
+    } = useContext(GameContext); 
+
     // 0 - user, 1 - gen
     const [settingsDisplay, setSettingsDisplay] = useState(false); 
-    const [easyModeChecked, setEasyModeChecked] = 
-        useState(Number(localStorage.gameMode) >= 2);
+    const [easyModeChecked, setEasyModeChecked] = useState(gameMode >= 2);
     const filter = props.filter;
     const filterHandler = props.filterHandler;
 
@@ -31,7 +37,7 @@ function SettingsDisplay(props)
 		else 
 			localStorage.gameMode = Number(localStorage.gameMode) - 1;
 
-        props.toggleGameMode();
+        toggleGameMode();
 	}
 
 	function toggleEasyMode() 
@@ -90,8 +96,7 @@ function SettingsDisplay(props)
                      src = {require("../assets/settings.png")}
                      alt = "settings header"/>
 
-                <User userHandler = {props.userHandler}
-                      setToggledGM = {props.setToggledGM}/>
+                <User userHandler = {props.userHandler}/>
 
                 {JSON.parse(localStorage.inventory)["ticket"] && 
                     <div className = {classes.freeplay}>

@@ -12,12 +12,13 @@ function App()
     let uData = {
         name: localStorage.user,
         pokeDollars: Number(localStorage.pokeDollars),
-        shuckle: JSON.parse(localStorage.shuckleInfo),
+        shuckleInfo: JSON.parse(localStorage.shuckleInfo),
         inventory: JSON.parse(localStorage.inventory)
     };  
     const [user, setUser] = useState(uData);
 
     function userHandler(data) {
+        console.log("woo! ! !");
         setUser(data);
     }
 
@@ -26,7 +27,7 @@ function App()
             localStorage.user = user.name;
             localStorage.firstTime = false;
             localStorage.pokeDollars = user.pokeDollars;
-            localStorage.shuckleInfo = JSON.stringify(user.shuckle);
+            localStorage.shuckleInfo = JSON.stringify(user.shuckleInfo);
             localStorage.inventory = JSON.stringify(user.inventory);
             if (user.shuckleInfo['adopted'] === true)
                 localStorage.shopState = 8;
