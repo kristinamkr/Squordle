@@ -7,23 +7,32 @@ import { useState } from 'react';
 
 function ShopDisplay(props)
 {
-	const emote = {HAPPY:   0,
-                   SAD:     1,
-                   WEEPY:   2,
-                   NEUTRAL: 3};
+	const emote = {
+        HAPPY:   0,
+        SAD:     1,
+        WEEPY:   2,
+        NEUTRAL: 3
+    };
     Object.freeze(emote);
 
-	var shopText = ["Would you like to adopt a Shuckle?",
-                    "Please adopt him! Look! He's so lonely.",
-                    "Please! I'm begging you!",
-                    "Okay. I understand. It's not your fault.",
-                    "It's just that our clientele has been dwindling and "
-                     + "we can't afford to feed our family much longer.",
-                    "We love our Shuckle so much, but maybe we can buy " 
-                     + "ourselves more time if someone would adopt him.",
-                    "If you know anyone who can help, "
-                     + "please send them our way.",
-                    "Thank you! Please take this spicy poffin as a gift. "] 
+	const shuckleText = [
+        "Would you like to adopt our Shuckle?",
+        "Please adopt him! Look! He's so sad.",
+        "Please! I'm begging you!",
+        "Okay. I understand. It's not your fault.",
+        "It's just that our clientele has been dwindling and "
+         + "we can't afford to feed our family much longer.",
+        "We love our Shuckle so much, but maybe we can buy " 
+         + "ourselves more time if someone would adopt him.",
+        "If you know anyone who can help, "
+         + "please send them our way.",
+        "Thank you! Please take this spicy poffin as a gift. "
+    ];
+
+    const shopText = [
+        "Welcome to Hop & Pip's! We're currently low on stock...",
+        "Welcome back! We can't thank you enough for adopting our Shuckle!"
+    ];
 
 	const dollarHandler = props.dollarHandler;
 	const [counter, setCounter] = useState(Number(localStorage.shopState));
@@ -93,7 +102,7 @@ function ShopDisplay(props)
                 <img className = {classes.header}
                      src = {require("../assets/shopHeaderLight.png")}/>
                 <div className = {classes.subheader}>
-                    {shopText[Number(localStorage.shopState)]}
+                    {shuckleText[Number(localStorage.shopState)]}
                 </div>
                 <img className = {classes.shucklePic}
                      src = {require("../assets/213Shuckle" + 
@@ -168,25 +177,41 @@ function ShopDisplay(props)
         return (
             <div className = {classes.shopDisplay}>
                 { !shuckleAdoption && 
-                <><button className={classes.shuckleTabInactive}
+                <>
+                <button className={classes.shopTabActive}/>
+                <button className={classes.shuckleTabInactive}
                         onClick= {toggleShopDisplay}/> 
-                <button className={classes.shopTabActive}/></>
+                </>
+
                 }
                 <img className = {classes.header}
                      src = {require("../assets/shopHeaderLight.png")}/>
                 <div className = {classes.subheader}>
-                    {shopText[Number(localStorage.shopState)]}
+                    {!shuckleAdoption && shopText[0]}
+                    {shuckleAdoption && shopText[1]}
                 </div>
 
                 <div className = {classes.menu}> 
-                    <div className = {classes.rowDisplay}> 
-                        {display(<Item {...itemData[0]} />)}
-                        {display(<Item {...itemData[1]} />)}
-                    </div>
-                    <div className = {classes.rowDisplay}> 
-                        {display(<Item {...itemData[2]} />)}
-                        {display(<Item {...itemData[3]} />)}
-                    </div>
+                    {shuckleAdoption && <>
+                        <div className = {classes.rowDisplay}> 
+                            {display(<Item {...itemData[0]} />)}
+                            {display(<Item {...itemData[1]} />)}
+                        </div>
+                        <div className = {classes.rowDisplay}> 
+                            {display(<Item {...itemData[2]} />)}
+                            {display(<Item {...itemData[3]} />)}
+                        </div>
+                    </>}
+                    {!shuckleAdoption && <>
+                        <div className = {classes.rowDisplay}> 
+                            {display(<Item {...itemData[5]} />)}
+                            {display(<Item {...itemData[5]} />)}
+                        </div>
+                        <div className = {classes.rowDisplay}> 
+                            {display(<Item {...itemData[5]} />)}
+                            {display(<Item {...itemData[5]} />)}
+                        </div>
+                    </>}
                     <div className = {classes.rowDisplay}>
                         {!(JSON.parse(localStorage.inventory)["ticket"]) &&
                             display(<Item {...itemData[4]} />)
@@ -195,7 +220,7 @@ function ShopDisplay(props)
                             display(<Item {...itemData[5]} />)
                         }
                         <div className = {classes.icon} 
-                             style = {{marginLeft: "60px"}}>
+                             style = {{marginLeft: "80px"}}>
                             <button onClick = {props.shopHandler}>
                                 <ExitIcon className = {classes.exitIcon}/>
                             </button>
@@ -208,10 +233,10 @@ function ShopDisplay(props)
 
 	return (
 		<>
-        { shopDisplay == 0 && !shuckleAdoption &&
-            shuckleShop() }
-        { (shopDisplay == 1 || shuckleAdoption) && 
+        { (shopDisplay == 0 || shuckleAdoption) && 
             regularShop() }
+        { shopDisplay == 1 && !shuckleAdoption &&
+            shuckleShop() }
 		</>
 	)
 }

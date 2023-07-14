@@ -24,7 +24,6 @@ function GuessBox(props)
 function SpriteBox({sprite})
 {
     const componentClass = sprite.includes('unown') ? 'unown' : 'pokeSprite';
-    console.log('componentClass - ' + componentClass);
     return (
         <>
             <img className = {classes.unown}
@@ -37,7 +36,6 @@ function SpriteBox({sprite})
 
 function GameRow(props)
 {
-    console.log("props.sprite = " + props.sprite);
 	return (
 		<div className = {classes.gameRow}
              style = {{gridTemplateColumns: '40px '.repeat(props.length)}}>

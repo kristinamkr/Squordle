@@ -12,6 +12,8 @@ function SettingsDisplay(props)
 {
     // 0 - user, 1 - gen
     const [settingsDisplay, setSettingsDisplay] = useState(false); 
+    const [easyModeChecked, setEasyModeChecked] = 
+        useState(Number(localStorage.gameMode) >= 2);
     const filter = props.filter;
     const filterHandler = props.filterHandler;
 
@@ -38,6 +40,8 @@ function SettingsDisplay(props)
             localStorage.gameMode = Number(localStorage.gameMode) + 2;
         else
             localStorage.gameMode = Number(localStorage.gameMode) - 2;
+
+        setEasyModeChecked(prevChecked => !prevChecked);
 	}
 
     function GenTileButton({genNumber, classes, filterHandler}) 
@@ -63,9 +67,10 @@ function SettingsDisplay(props)
             <div className={classes.menu}>
                 { genNumbers.map(genNumber => (
                     <div className={classes.rowDisplay} key={genNumber}>
-                        <GenTileButton genNumber = {genNumber}
-                                       classes = {classes}
-                                       filterHandler = {filterHandler}
+                        <GenTileButton 
+                            genNumber = {genNumber}
+                            classes = {classes}
+                            filterHandler = {filterHandler}
                         />
                     </div>
                 )) }
@@ -113,23 +118,17 @@ function SettingsDisplay(props)
                     </div>
                 </div>}
                 <div className = {classes.easyMode}>
-                    { (Number(localStorage.gameMode) < 2) &&
-                        <div className = {classes.modeSelect}>
-                            <label> Guess anything </label>
-                            <input type="checkbox" 
-                                   id="easyMode" 
-                                   onChange = {(e) => toggleEasyMode()}/>
-                        </div> }
-                    { (Number(localStorage.gameMode) >= 2) &&
-                        <div className = {classes.modeSelect}>
-                            <label> Guess anything </label>
-                            <input type="checkbox" 
-                                   id="easyMode" 
-                                   onChange = {(e) => toggleEasyMode()}
-                                   checked />
-                        </div> }
+                    <div className = {classes.modeSelect}>
+                        <label> Guess anything </label>
+                        <input 
+                            type="checkbox" 
+                            id="easyMode" 
+                            onChange = {(e) => toggleEasyMode()}
+                            checked={easyModeChecked} 
+                        />
+                    </div> 
                     <div className = {classes.exit}>
-                        <button onClick = {props.reload}>
+                        <button onClick={props.settingsHandler}>
                             <ExitIcon className = {classes.exitIcon}/>
                         </button>
                     </div>

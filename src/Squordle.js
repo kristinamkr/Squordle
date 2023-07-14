@@ -15,8 +15,20 @@ function Squordle(props)
 {
     console.log("RELOADING SQUORDLE");
 
+    const user = props.user;
+    const userHandler = props.userHandler;
+
     const [gameMode, setGameMode] = useState(JSON.parse(localStorage.gameMode));
     const [isGameOver, setGameOver] = useState([false, '']);
+
+    const [genFilter, setGenFilter] = useState({
+        1: false,
+        2: false,
+        3: false,
+        4: false,
+        5: false,
+        6: false 
+    });
 
     const [pokemon, setPokemon] = useState('eddie');
     const [usedPokemon, setUsedPokemon] = useState([]);
@@ -26,7 +38,7 @@ function Squordle(props)
 
     function toggleGameMode()
     {
-        setGameMode(!(gameMode));
+        setGameMode(JSON.parse(localStorage.gameMode));
     }
 
     function dollarHandler(delta) 
@@ -46,7 +58,7 @@ function Squordle(props)
         function getRandom() 
         {
             const max = pokeList.length;
-            const i = Math.floor(Math.random() * max);
+            let i = Math.floor(Math.random() * max);
             let counter = 0;
             while ((pokeList[i].name.length < 5 || 
                     pokeList[i].name.length > 8) ||  
@@ -71,10 +83,14 @@ function Squordle(props)
 
 	return (
         <GameContext.Provider value={{
+            user,
+            userHandler,
             isGameOver, 
             setGameOver, 
             pokemon, 
-            dollarHandler
+            dollarHandler,
+            gameMode,
+            toggleGameMode
         }}> 
             <div className = {classes.center}>
                 <DisplayMan id = "header"/>

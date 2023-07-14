@@ -31,12 +31,18 @@ function DisplayMan(props)
         dollarHandler 
     } = useContext(GameContext); 
 
-	const [displayState, setDisplayState] = 
-           useState({ showShop:     false,
-                      showSettings: false,
-                      showInfo:     false,
-                      showWinLose:  false,
-                      showBackdrop: false });
+	const [displayState, setDisplayState] = useState({ 
+        showShop:     false,
+        showSettings: false,
+        showInfo:     false,
+        showWinLose:  false,
+        showBackdrop: false 
+    });
+
+    if (JSON.parse(localStorage.firstTime)) {
+        localStorage.firstTime = false;
+        infoHandler();
+    }
 
     useEffect(() => {
         let enableBackdrop = false;
@@ -46,49 +52,61 @@ function DisplayMan(props)
         localStorage.backdrop = enableBackdrop;
     }, [displayState]);
 
-    if (JSON.parse(localStorage.firstTime)) {
-        localStorage.firstTime = false;
-        infoHandler();
-    }
+    useEffect(() => {
+        if (isGameOver[0])
+            winLoseHandler();
+    }, [isGameOver[0]]);
 
     function winLoseHandler()
     {   
-        setDisplayState({...displayState, 
-                         showWinLose:  true,
-                         showBackdrop: true});
+        setDisplayState({
+            ...displayState, 
+            showWinLose:  !displayState['showWinLose'],
+            showBackdrop: !displayState['showBackdrop']
+        });
     }
 
   	function shopHandler()
     {
-  		setDisplayState({...displayState,
-                         showShop:     !displayState["showShop"],
-                         showBackdrop: !displayState["showBackdrop"]});
+  		setDisplayState({
+            ...displayState,
+            showShop:     !displayState["showShop"],
+            showBackdrop: !displayState["showBackdrop"]
+        });
   	}
 
   	function settingsHandler()
     {
-  		setDisplayState({...displayState,
-                         showSettings: !displayState["showSettings"],
-                         showBackdrop: !displayState["showBackdrop"]});
+  		setDisplayState({
+            ...displayState,
+            showSettings: !displayState["showSettings"],
+            showBackdrop: !displayState["showBackdrop"]
+        });
   	}
 
 	function infoHandler()
     {
-        setDisplayState({...displayState, 
-                         showInfo:     !displayState["showInfo"],
-                         showBackdrop: !displayState["showBackdrop"]});
+        setDisplayState({
+            ...displayState, 
+            showInfo:     !displayState["showInfo"],
+            showBackdrop: !displayState["showBackdrop"]
+        });
   	}
 
     // CHANGE S.T. ONLY HEADER & GSDIV ARE RE-RENDERED
 	function reload()
     {
-		setDisplayState({showShop: false,
-                         showSettings: false,
-                         showInfo:     false,
-                         showWinLose:  false,
-                         showBackdrop: false});
+		setDisplayState({
+            showShop:     false,
+            showSettings: false,
+            showInfo:     false,
+            showWinLose:  false,
+            showBackdrop: false
+        });
+
         if (gameMode || isGameOver[0])
             toggleGameMode(false);
+
         setGameOver([false, '']);
     }
 
@@ -128,6 +146,8 @@ function DisplayMan(props)
 
                 {displayState["showSettings"] && 
                     <SettingsDisplay 
+                        settingsHandler = {settingsHandler}
+                        toggleGameMode = {toggleGameMode}
                         filter = {props.filter}
                         filterHandler = {props.filterHandler}
                         reload = {reload}
@@ -138,7 +158,7 @@ function DisplayMan(props)
                 {displayState["showInfo"] && 
                     <InfoDisplay infoHandler = {infoHandler}/>}
 
-                {isGameOver[0] && 
+                {displayState['showWinLose'] && 
                     <WinLoseDisplay 
                         winLoseHandler = {winLoseHandler}
                         reload = {reload} 

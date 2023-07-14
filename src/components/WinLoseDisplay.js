@@ -5,7 +5,7 @@
 import classes from "./style/WinLoseDisplay.module.css";
 import spriteLink from  "../functions/SpriteLink.js";
 
-import { useContext, useState, useEffect } from 'react';
+import { useContext } from 'react';
 import { GameContext } from '../Squordle.js';
 
 function WinLoseDisplay(props)
@@ -19,10 +19,6 @@ function WinLoseDisplay(props)
 	var answer = pokemon.toLowerCase();
     var spriteRef = spriteLink(answer);
     let imgName, gameOverText;
-
-    useEffect(() => {
-        props.winLoseHandler();
-    }, []);
 
     function winOrLose()
     {
@@ -45,7 +41,7 @@ function WinLoseDisplay(props)
                  src = {spriteRef}/>
             <p> {gameOverText} </p>           
             {gameMode % 2 === 0 && 
-                <button onClick = {() => props.reload()}> Close </button>}
+                <button onClick = {() => props.winLoseHandler()}> Close </button>}
             {gameMode % 2 === 1 && 
                 <button onClick = {() => props.reload()}> Play Again? </button>}
         </div>

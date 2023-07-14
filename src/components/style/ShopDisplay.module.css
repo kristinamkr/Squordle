@@ -1,3 +1,7 @@
+/* 
+ * ShopDisplay.module.css
+*/
+
 .header {
     width: 80%;
     padding-top: 2em;
@@ -128,11 +132,13 @@ button.shuckleTabActive {
     background-image: url(../../assets/shuckle_tab_ACTIVE.png); 
     background-repeat: no-repeat;
     background-position: 50% 50%;
-    height: 100px;
+
     width: 121px;
+    height: 100px;
 
     margin-top: -18%;
-    margin-left: -74.20%;
+    margin-left: -19%;
+
     cursor: pointer;
 }
 
@@ -148,7 +154,7 @@ button.shuckleTabInactive {
     width: 120px;
 
     margin-top: -18%;
-    margin-left: -74.5%;
+    margin-left: -19%;
     cursor: pointer;
 }
 
@@ -164,7 +170,7 @@ button.shopTabActive {
     width: 120px;
 
     margin-top: -18%;
-    margin-left: -19%;
+    margin-left: -74.2%;
     cursor: pointer;
 }
 
@@ -179,8 +185,8 @@ button.shopTabInactive {
     height: 100px;
     width: 120px;
 
-    margin-top: -17.5%;
-    margin-left: -19%;
+    margin-top: -18%;
+    margin-left: -74%;
     cursor: pointer;
 }
 

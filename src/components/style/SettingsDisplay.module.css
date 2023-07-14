@@ -2,10 +2,10 @@
  * SettingsDisplay.module.css
 */
 
+
 .settingsDisplay {
     composes: display from "./DisplayMan.module.css";
-    width: 400px;
-    height: 490px;
+    height: 485px;
 }
 
 .settingsDisplay img {
@@ -145,7 +145,7 @@ button.genTabInactive {
     height: 100px;
     width: 120px;
 
-    margin-top: -17.5%;
+    margin-top: -18%;
     margin-left: -19%;
     cursor: pointer;
 }

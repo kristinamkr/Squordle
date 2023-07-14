@@ -13,16 +13,12 @@ function Item(props)
         classes.lemonade : classes.item;
 
     return (
-        <tr>
-        <td>
-            <img name = {itemInfo['name']}
-                className = {itemClass}
-                src = {require('../assets/' + itemInfo['name'] + '.png')}
-                alt = 'item png for inventory display'
-                decoding = 'async' 
-            />
-        </td>
-        </tr>
+        <img name = {itemInfo['name']}
+            className = {itemClass}
+            src = {require('../assets/' + itemInfo['name'] + '.png')}
+            alt = 'item png for inventory display'
+            decoding = 'async' 
+        />
     );
 }
 

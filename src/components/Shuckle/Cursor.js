@@ -16,8 +16,6 @@ import action, {
     chooseKey, 
     destroy, 
     becomeSatiated, 
-    // createBaby
-    goOffScreen,
 } from './Actions';
 
 const FRAME_DELAY_MS = 16;
@@ -29,14 +27,13 @@ function Cursor(props)
     const [shuckle, setShuckle] = useState({ 
         focus: 0, 
         action: 0, 
-        children: 0
+        children: 0, // JSON.parse(localStorage.shuckleInfo)['children'],
     });
-
-    const [homePos, setHomePos] = useState([0, 0]);
 
 // mobile: [0, 0],
     const [position, setPosition] = useState({
         shuckle: [0, 0],
+        home: [0, 0],
         target: [0, 0],
         key: [0, 0],
         reached: false
@@ -49,16 +46,12 @@ function Cursor(props)
     });
     const [isDestroyingKey, setIsDestroyingKey] = useState(false);
 
-/*
-    const [shuckleChildren, setShuckleChildren] = 
-        useState(JSON.parse(localStorage.shuckleInfo)["children"]);
-*/
-
     const getTargetPosition = (
         focusType, 
         mousePos, 
         keyPos,
         itemPos,
+        homePos,
     ) => {
         switch(focusType) {
             case focus.MOUSE:
@@ -67,6 +60,8 @@ function Cursor(props)
                 return itemPos;
             case focus.KEY:
                 return keyPos;
+            case focus.HOME:
+                return homePos;
             default:
                 return null;
         }
@@ -77,19 +72,17 @@ function Cursor(props)
                 return mobileTargetPos;
 */
 
-
     // USE EFFECTS -------------------------------------------------------------
     // SHUCKLE FOCUS
     useEffect(() => {
-        if (realizeItem[0] && keys.selected === '') // !)busy)  // set to item 
+        if (realizeItem[0] && keys.selected === '')  // set to item 
             setShuckle({
                 ...shuckle, 
                 focus: focus.ITEM, 
                 action: shuckle['action']
             });
 
-
-        if (shuckle['focus'] === focus.KEY && keys.selected === '') { // !busy) {  // angry 
+        if (shuckle['focus'] === focus.KEY && keys.selected === '') {  // angry 
             if (keys['remaining'].length <= 0)
                 becomeSatiated(shuckle, setShuckle, position, setPosition);
             else {
@@ -107,6 +100,7 @@ function Cursor(props)
                 mousePos, 
                 position.key, 
                 itemPos,
+                position.home,
             );
 
             if (currPos) {
@@ -120,7 +114,7 @@ function Cursor(props)
                   ...prevPosition,
                   shuckle: pos,
                   target: updatedTargetPos,
-                  reached: isReached, // Set targetReached to true
+                  reached: isReached,
                 }));
             }
         }); 
@@ -133,6 +127,8 @@ function Cursor(props)
             let currFocus = focus.MOUSE;
             if (realizeItem[1] === 1)
                 currFocus = focus.KEY;
+            else if (realizeItem[1] === 2)
+                currFocus = focus.HOME;
 
             eat(currFocus,
                 realizeItem, 
@@ -168,7 +164,6 @@ function Cursor(props)
                 isDestroyingKey, 
                 setIsDestroyingKey
             );
-
         };
 
         if (shuckle['focus'] === focus.ITEM) {
@@ -180,7 +175,7 @@ function Cursor(props)
                 !isDestroyingKey)
                 destroyKey();
         }
-    }, [position.reached, keys.selected, shuckle]); //, busy]);
+    }, [position.reached, keys.selected, shuckle]);
 
     // EMOTION PROCESSING 
     useEffect(() => {
@@ -190,6 +185,10 @@ function Cursor(props)
         }
 
         switch (shuckle['action']) {
+            case action.BIRTHING:
+                // goOffScreen(position, setPosition);
+            case action.LAY_EGG:
+                // layEgg();
             case action.HAPPY:
             case action.SING:
             case action.CONFUSED:
@@ -206,6 +205,16 @@ function Cursor(props)
                 break;
         }
     }, [shuckle['action']]);
+
+/*
+        else if (shuckleInfo[1] === action.LAY_EGG) {
+            if(props.realizeItem[0]){
+                setShuckleInfo([focus.ITEM, action.NONPLUSSED]);
+            } else {
+                layEgg();
+            }
+        }
+*/
 
     // RENDER ------------------------------------------------------------------
 	return (
@@ -238,10 +247,6 @@ export default Cursor;
                 }));
         }
     }, [mousePos, position['key'], shuckle]);
-
-
-            case action.BIRTHING:
-                goOffScreen(shuckle, setShuckle, position, setPosition);
 
 function createBaby()
 {

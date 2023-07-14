@@ -13,13 +13,12 @@ import { GameContext } from '../Squordle.js';
 
 const MAX_GUESSES = 6;
 
-let lettersUsed = []; // NOT PERSISTING BTW PAGE RELOADS 
+let lettersUsed = []; // NOT PERSISTING BTW PAGE RELOADS LOCALSTORAGE? 
 
 function GSDiv(props) 
 {
-    console.log("RENDERING GSDIV...");
-
     const { 
+        gameMode,
         isGameOver, 
         setGameOver, 
         pokemon, 
@@ -33,6 +32,7 @@ function GSDiv(props)
     const validKeySet = new Set(validKeys); 
 
 	const [gameSpace, setGameSpace] = useState(null);
+//    const [lettersUsed, setLettersUsed] = useState();
 	const [letterStates, setLetterStates] = useState(null);
     const [focus, setFocus] = useState([0, 0]) // (row #, box #)
     const [points, setPoints] = useState(0);
@@ -43,8 +43,18 @@ function GSDiv(props)
     });
 
     useEffect(() => { 
-        boardInit(pokeAnswer);
-    }, [pokeAnswer, isGameOver]);
+        let potd = JSON.parse(localStorage.potd);
+        if (gameMode % 2 === 0 && isGameOver[0]) { 
+            potd['isWon'] = true;
+            localStorage.potd = JSON.stringify(potd);
+        }  
+
+        if (gameMode % 2 == 0 && potd['isWon']) {
+            // load boardState
+            loadBoard();
+        }
+        else boardInit(); 
+    }, [pokeAnswer, isGameOver, gameMode]);
 
     useEffect(() => { 
         dollarHandler(points);
@@ -97,6 +107,11 @@ function GSDiv(props)
         setLetterStates(lsInit);
     };
 
+    function loadBoard()
+    {
+        console.log('loading board...');
+    }
+
     // KEY DOWN HANDLER -------------------------------------------------------
     function keyDownHandler(e)
     {
@@ -107,8 +122,8 @@ function GSDiv(props)
         const isPOTDWon = JSON.parse(localStorage.potd)['isWon'];
         const isFreeplayMode = Number(localStorage.gameMode) % 2 === 1;
 
-        if (!(isGameOver[0]) && !isBackdropActive &&
-            !isPOTDWon || isFreeplayMode) 
+        if (!isGameOver[0] && !isBackdropActive &&
+            (!isPOTDWon || isFreeplayMode)) 
         {
             if (input === 'Enter' && focus[1] === pokeAnswer.length)
                 handleEnterKey();
@@ -134,20 +149,28 @@ function GSDiv(props)
             let isValid = 
                 pokeList.some(pokemon => pokemon.name.toLowerCase() === guess);
 
-            if ((Number(localStorage.gameMode) < 2) && isValid || 
-                Number(localStorage.gameMode) >= 2) {
+            if (Number(localStorage.gameMode) >= 2 || isValid) {
                 const newGameSpace = [...prevGameSpace];
                 newGameSpace[focus[0]].guess = guess;
                 newGameSpace[focus[0]].sprite = isValid ? 
                     spriteLink(guess) : spriteLink(guess[0]);
                 const pointsWon = checkAnswer(newGameSpace[focus[0]]);
                 setPoints(pointsWon);
+
+                setFocus(prevFocus => [prevFocus[0] + 1, 0]);
+
+                if (gameMode % 2 === 0)  // save board state (here?)
+                    console.log('saved!');
+
                 return newGameSpace;
             }
             return prevGameSpace; // if not valid, return the current state
         });
-        
-        setFocus(prevFocus => [prevFocus[0] + 1, 0]);
+    }
+
+    function saveBoard()
+    {
+        // localStorage.boardState = JSON.stringify(boardState);
     }
 
     function handleBackspaceKey()
@@ -233,6 +256,7 @@ function GSDiv(props)
 
                 <Keyboard  id = "keyboard" 
                     letterStates = {letterStates} 
+                    keyDownHandler = {keyDownHandler}
                     validKeys = {validKeys}
                 /> 
             </div>

@@ -7,7 +7,6 @@ import classes from "./style/User.module.css";
 import { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
-
 function saveKeyGen() 
 {
     return Math.floor(Math.random() * 1000000000000).toString()
@@ -32,12 +31,13 @@ function User(props)
     const handleSubmit = (event) => { event.preventDefault(); };
 
     function signUp() {
-        let data = { user: username,
-                     pass: pwd,
-                     inventory: JSON.parse(localStorage.inventory),
-                     pokeDollars: Number(localStorage.pokeDollars),
-                     region: localStorage.region,
-                     shuckleInfo: JSON.parse(localStorage.shuckleInfo) };
+        let data = { 
+            user: username,
+            pass: pwd,
+            inventory: JSON.parse(localStorage.inventory),
+            pokeDollars: Number(localStorage.pokeDollars),
+            shuckleInfo: JSON.parse(localStorage.shuckleInfo) 
+        };
 
         async function postUser() {
             return await fetch(`/.netlify/functions/signUp`, {
@@ -57,17 +57,21 @@ function User(props)
 
     function signIn() 
     {
+        console.log('signing in...');
+
         //generate and store save-validating string of pseudorandom characters.
         //protects against people saving over a user's data just by changing 
         //localStorage.user and pressing save.
         let saveKey = saveKeyGen();
         localStorage.saveKey = saveKey;
 
+        console.log('\tuser: ' + username + '\n\tpassword: ' + pwd);
+
         async function fetchUser() {
             return await fetch(`/.netlify/functions/signIn`, {
                 method: "POST",
                 body: JSON.stringify({ user: username, 
-                                       pass: pwd,
+                                       pass: pwd, 
                                        saveKey: saveKey }), 
             }).then(res => res.json())
               .catch((err) => console.error(err));
@@ -84,12 +88,13 @@ function User(props)
 
     function saveData()
     {
-        let data = { user: username,
-                     inventory: JSON.parse(localStorage.inventory),
-                     pokeDollars: Number(localStorage.pokeDollars),
-                     region: localStorage.region,
-                     shuckleInfo: JSON.parse(localStorage.shuckleInfo),
-                     saveKey: localStorage.saveKey };
+        let data = { 
+            user: username,
+            inventory: JSON.parse(localStorage.inventory),
+            pokeDollars: Number(localStorage.pokeDollars),
+            shuckleInfo: JSON.parse(localStorage.shuckleInfo),
+            saveKey: localStorage.saveKey 
+        };
 
         async function updateUserInfo() {
             return await fetch(`/.netlify/functions/save`, {
@@ -109,8 +114,7 @@ function User(props)
     {
         localStorage.user = "guest";
         localStorage.saveKey = "";
-        props.userHandler({ name: localStorage.user, 
-                            saveKey: localStorage.saveKey });
+        props.userHandler({ name: localStorage.user, saveKey: localStorage.saveKey });
         setUserErr(5);
     }
 

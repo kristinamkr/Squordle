@@ -8,6 +8,31 @@ import { useState, useEffect } from 'react';
 
 function App()
 { 
+    // USER AUTH ---------------------------------------------------------------
+    let uData = {
+        name: localStorage.user,
+        pokeDollars: Number(localStorage.pokeDollars),
+        shuckle: JSON.parse(localStorage.shuckleInfo),
+        inventory: JSON.parse(localStorage.inventory)
+    };  
+    const [user, setUser] = useState(uData);
+
+    function userHandler(data) {
+        setUser(data);
+    }
+
+    useEffect(() => {
+        if (!(user.name === "guest")) {
+            localStorage.user = user.name;
+            localStorage.firstTime = false;
+            localStorage.pokeDollars = user.pokeDollars;
+            localStorage.shuckleInfo = JSON.stringify(user.shuckle);
+            localStorage.inventory = JSON.stringify(user.inventory);
+            if (user.shuckleInfo['adopted'] === true)
+                localStorage.shopState = 8;
+        } 
+    }, [user]);
+
     // FETCH POKELIST... SHOULD ONLY EXECUTE ONCE ------------------------------
     const [pokeList, setPokeList] = useState(null);
 
@@ -37,7 +62,10 @@ function App()
         <div>
             { pokeList && 
                 <Squordle id='squordle' 
-                          pokeList = {pokeList} /> }
+                    user={user} 
+                    userHandler={userHandler}
+                    pokeList={pokeList} /> 
+            }
         </div>
     );
 }

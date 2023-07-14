@@ -29,7 +29,7 @@ function KeyBox(props)
             className={buttonClass}
             style={buttonStyle}
             value={props.id}
-            onClick={props.handler}>
+            onClick={props.keyDownHandler}>
             {buttonContent}
         </button>
     );
@@ -46,15 +46,18 @@ function KeyRow(props)
 
 	return (
         <div className = {classes.keyRow} 
-             style = {{paddingLeft: props.padding, 
-                       paddingRight: props.padding, 
-                       gridTemplateColumns: "1fr ".repeat(props.keys.length)}}>
-            { props.keys.map((item) => 
-                (<KeyBox key = {item}
-                         id = {item}
-                         state = {keyInWord(props.letterStates, item)} 
-                />))
-            }
+            style = {{
+                paddingLeft: props.padding, 
+                paddingRight: props.padding, 
+                gridTemplateColumns: "1fr ".repeat(props.keys.length)
+            }}>
+            { props.keys.map((item) => ( 
+                <KeyBox key = {item}
+                   id = {item}
+                   state = {keyInWord(props.letterStates, item)} 
+                   keyDownHandler={props.keyDownHandler}
+                />
+            )) }
 		</div>
 	)
 };
@@ -71,6 +74,7 @@ function Keyboard(props)
                 padding={padding}
                 letterStates={props.letterStates}
                 keys={keys}
+                keyDownHandler={props.keyDownHandler}
             />
         )
     }

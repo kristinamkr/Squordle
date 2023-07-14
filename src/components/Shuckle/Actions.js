@@ -4,7 +4,7 @@
 
 import focus from './Focus';
 import { resolveOnceTimeOut } from '../utils';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 const action = { 
     NONPLUSSED: 0, 
@@ -28,7 +28,6 @@ function eat(
     setPosition, 
     reset
 ) {
-    console.log('eat function - ' + position['target']);
     setShuckle({...shuckle, focus: currFocus, action: realizeItem[1]});
     reset(); 
     setPosition({...position, reached: false});
@@ -36,10 +35,8 @@ function eat(
 
 function chooseKey(position, setPosition, keys, setKeys) 
 {
-    if (keys['selected'] !== '') {
-        console.log('key selection already in progress...');
+    if (keys['selected'] !== '')
         return;
-    }
 
     const rand = Math.floor(Math.random() * keys['remaining'].length);
     const keyId = keys['remaining'][rand]; 
@@ -51,8 +48,6 @@ function chooseKey(position, setPosition, keys, setKeys)
         selected: keyId,
     });
 
-    console.log("KEY POS - " + keyPosition.top + ", " + keyPosition.left);
-
     setPosition({
         ...position, 
         key: [keyPosition.top, keyPosition.left], 
@@ -60,15 +55,16 @@ function chooseKey(position, setPosition, keys, setKeys)
     });
 }
 
-function destroy(position, setPosition, keys, setKeys, isDestroyingKey, setIsDestroyingKey)
-{
-    if (isDestroyingKey || keys['selected'] === '') {
-        console.log('destruction already in progress...');
+function destroy(
+    position, 
+    setPosition, 
+    keys, 
+    setKeys, 
+    isDestroyingKey, 
+    setIsDestroyingKey
+) {
+    if (isDestroyingKey || keys['selected'] === '')
         return; 
-    }
-
-    console.log('in destroy - key[selection] = ' + keys.selected);
-    console.log('\tis destroying key ? - ' + isDestroyingKey);
 
     const key = document.getElementById(keys['selected']);
     const rand = Math.floor(Math.random() * damageList.length);
@@ -86,7 +82,6 @@ function destroy(position, setPosition, keys, setKeys, isDestroyingKey, setIsDes
         key: [0, 0],
     }); 
 
-    console.log("selected key was DESTROYED!");
     setIsDestroyingKey(false);
 }
 
@@ -106,7 +101,7 @@ function calmDown(
     keys, 
     setKeys
 ) {
-    setKeys({...keys, key: ''});
+    setKeys({...keys, selected: ''});
     setPosition({...position, key: [0, 0], reached: false});
     setShuckle({...shuckle, focus: currFocus, action: action.SING});
 }
@@ -120,10 +115,19 @@ function becomeSatiated(shuckle, setShuckle, position, setPosition)
 }
 
 /*
+function createBaby(shuckle, setShuckle)
+{
+    let babyCount = shuckle['children'];
+    setShuckle({...shuckle, children: babyCount + 1});
+    return {number: babyCount,
+            state:  "shuckleEgg0",
+            shiny:  0}
+}
+
 function layEgg()
 { 
     const baby = createBaby();
-    const newFamily = shuckleChildren.concat([baby]);
+    // const newFamily = shuckleChildren.concat([baby]);
 
     // updates the game save 
     // (you had a baby! you wanna remember you had a baby right?)
@@ -135,17 +139,32 @@ function layEgg()
     setShuckleChildren(newFamily);
 
     //brings back onscreen
-    setHaltInv(false);
-    setMobileTargetPos([0,0]);
+    // setHaltInv(false);
+    // setMobileTargetPos([0,0]);
     setShuckleInfo([focus.MOUSE, action.SING]);
 }
-*/
 
-//                goOffScreen(shuckle, setShuckle, position, setPosition);
-function goOffScreen(shuckle, setShuckle, position, setPosition)
+function goOffScreen(position, setPosition)
 {
-//    const windowWidth = window.innerWidth;
-//    const windowHeight = window.innerHeight;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    console.log('wWidth - '+windowWidth+'\nwHeight - '+windowHeight);
+
+    const topLeft = [0, 0];
+    const topRight = [windowWidth, 0];
+    const bottomLeft = [0, windowHeight];
+    const bottomRight = [windowWidth, windowHeight];
+
+    let distW = Math.min
+        (position['shuckle'][0], windowWidth - position['shuckle'][0]);
+    let distH = Math.min
+        (position['shuckle'][1], windowHeight - position['shuckle'][1]);
+    let minDist = distW > distH ? 
+        [position['shuckle'][0], distH] : [distW, position['shuckle'][1]];
+
+    console.log("HOME = " + minDist);
+
+    setPosition({...position, home: minDist, reached: false}); 
 //    setMobileTargetPos([300,-200]);
 //    setShuckleInfo([focus.MOBILE, shuckleInfo[1]]);
 
@@ -153,23 +172,13 @@ function goOffScreen(shuckle, setShuckle, position, setPosition)
 //    setShuckle([shuckleInfo[0], action.LAY_EGG]);
 
 //    await resolveOnceTimedOut(6000);
+/*
     console.log('shuckle leaving...');
     setShuckle({...shuckle, focus: focus.HOME, action: action.LAY_EGG});
     setPosition({
         ...position, 
         reached: false
     });
-}
-
-/*
-function createBaby(shuckle, setShuckle)
-{
-    let babyCount = shuckle['children'];
-    setShuckle({...shuckle, children: babyCount + 1});
-/*
-    return {number: shuckleChildren.length,
-            state:  "shuckleEgg0",
-            shiny:  0}
 */
 // }
 

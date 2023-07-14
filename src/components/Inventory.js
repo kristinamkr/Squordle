@@ -53,10 +53,10 @@ function Inventory(props)
         return (
             <tr className = {classes.item}
                 key = {item.props.id}>
-                <th style = {{background: bg_color}}>
+                <td style = {{background: bg_color}}>
                     {item.props.tag} 
                     <div>{itemCount}</div>
-                </th>
+                </td>
                 <td className = {classes.draggable}
                     onClick = {() => selectItem(item.props.name)}>
                     {item}

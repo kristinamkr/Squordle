@@ -4,10 +4,6 @@
 
 function spriteLink(pokeString)
 {
-    console.log("---------------------------")
-    console.log("--------SPRITE-LINK--------")
-    console.log("---------------------------")
-
     const hyphenator = {
         "jangmoo"  : "jangmo-o",
         "hakamoo"  : "hakamo-o",
