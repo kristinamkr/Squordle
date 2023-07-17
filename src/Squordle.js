@@ -19,6 +19,7 @@ function Squordle(props)
     const userHandler = props.userHandler;
 
     const [gameMode, setGameMode] = useState(JSON.parse(localStorage.gameMode));
+    console.log('gameMode - ' + gameMode);
     const [isGameOver, setGameOver] = useState([false, '']);
 
     const [genFilter, setGenFilter] = useState({
@@ -36,9 +37,10 @@ function Squordle(props)
     const [pokeDollars, setPokeDollars] = 
         useState(Number(localStorage.pokeDollars));
 
-    function toggleGameMode()
+    function toggleGameMode(x)
     {
-        setGameMode(JSON.parse(localStorage.gameMode));
+        console.log('gameMode - ' + x);
+        setGameMode(x);
     }
 
     function dollarHandler(delta) 
@@ -48,6 +50,7 @@ function Squordle(props)
     }
 
     useEffect(() => {
+        console.log('GAMEMODE - ' + gameMode);
         function getDaily() 
         {
              const tempList = pokeList.filter(p => p.potd === "TRUE");
@@ -74,7 +77,7 @@ function Squordle(props)
         }
 
         if (!isGameOver[0]) {
-            const newPokemon = Number(localStorage.gameMode) % 2 === 0 ? 
+            const newPokemon = gameMode % 2 === 0 ? 
                 getDaily() : getRandom();
             setPokemon(newPokemon);
             setUsedPokemon(prevPokemon => [...prevPokemon, newPokemon]);

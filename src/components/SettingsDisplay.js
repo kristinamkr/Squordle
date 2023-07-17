@@ -32,21 +32,12 @@ function SettingsDisplay(props)
 
     function toggleFreeplay() 
     {
-		if (Number(localStorage.gameMode) % 2 === 0)
-			localStorage.gameMode = Number(localStorage.gameMode) + 1;
-		else 
-			localStorage.gameMode = Number(localStorage.gameMode) - 1;
-
-        toggleGameMode();
+        toggleGameMode(gameMode + (gameMode % 2 === 0 ? 1 : -1));
 	}
 
 	function toggleEasyMode() 
     {
-        if (Number(localStorage.gameMode) < 2)
-            localStorage.gameMode = Number(localStorage.gameMode) + 2;
-        else
-            localStorage.gameMode = Number(localStorage.gameMode) - 2;
-
+        toggleGameMode(gameMode + (gameMode < 2 ? 2 : -2));
         setEasyModeChecked(prevChecked => !prevChecked);
 	}
 
@@ -103,8 +94,8 @@ function SettingsDisplay(props)
                     <p> Click the ticket to toggle between Daily Mode
                         and Freeplay Mode </p>
                     <div className = {classes.modeSelect}>
-                        {Number(localStorage.gameMode) % 2 === 0 && <a>Daily</a>}
-                        {Number(localStorage.gameMode) % 2 === 1 && <a>Freeplay</a>}
+                        {gameMode % 2 === 0 && <a>Daily</a>}
+                        {gameMode % 2 === 1 && <a>Freeplay</a>}
                         <button onClick = {toggleFreeplay}>
                             <img src = {require("../assets/ticket0.png")}
                                  alt = "ticket"/>

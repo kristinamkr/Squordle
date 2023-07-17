@@ -3,6 +3,8 @@
 */
 
 import classes from "./style/Keyboard.module.css";
+import { useContext } from 'react';
+import { KeyContext } from './GSDiv.js';
 
 const validKeys = 'qwertyuiopasdfghjklzxcvbnm'.split('');
 
@@ -15,6 +17,10 @@ var bgColors = {
 
 function KeyBox(props)
 {
+    const { 
+        keyDownHandler
+    } = useContext(KeyContext); 
+
     const buttonContent = props.id === 'Enter' ? 
         '↵' : props.id === 'Backspace' ? 'BACK' : props.id;
 
@@ -29,7 +35,7 @@ function KeyBox(props)
             className={buttonClass}
             style={buttonStyle}
             value={props.id}
-            onClick={props.keyDownHandler}>
+            onClick={keyDownHandler}>
             {buttonContent}
         </button>
     );
@@ -37,6 +43,10 @@ function KeyBox(props)
 
 function KeyRow(props)
 {
+    const { 
+        letterStates,
+    } = useContext(KeyContext); 
+
 	const keyInWord = (letterStates, id) => {
         if (letterStates.correctGuess.includes(id)) return 'correct';
         if (letterStates.inWord.includes(id)) return 'inWord';
@@ -54,8 +64,7 @@ function KeyRow(props)
             { props.keys.map((item) => ( 
                 <KeyBox key = {item}
                    id = {item}
-                   state = {keyInWord(props.letterStates, item)} 
-                   keyDownHandler={props.keyDownHandler}
+                   state = {keyInWord(letterStates, item)} 
                 />
             )) }
 		</div>
@@ -72,9 +81,7 @@ function Keyboard(props)
         return (
             <KeyRow id={rowID}
                 padding={padding}
-                letterStates={props.letterStates}
                 keys={keys}
-                keyDownHandler={props.keyDownHandler}
             />
         )
     }

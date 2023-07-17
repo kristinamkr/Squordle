@@ -8,8 +8,10 @@ import GameSpace from "./GameSpace.js";
 import Keyboard from "./Keyboard.js";
 import spriteLink from  "../functions/SpriteLink.js";
 
-import { useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { GameContext } from '../Squordle.js';
+
+export const KeyContext = createContext();
 
 const MAX_GUESSES = 6;
 
@@ -120,7 +122,7 @@ function GSDiv(props)
 
         const isBackdropActive = JSON.parse(localStorage.backdrop);
         const isPOTDWon = JSON.parse(localStorage.potd)['isWon'];
-        const isFreeplayMode = Number(localStorage.gameMode) % 2 === 1;
+        const isFreeplayMode = gameMode % 2 === 1;
 
         if (!isGameOver[0] && !isBackdropActive &&
             (!isPOTDWon || isFreeplayMode)) 
@@ -149,7 +151,7 @@ function GSDiv(props)
             let isValid = 
                 pokeList.some(pokemon => pokemon.name.toLowerCase() === guess);
 
-            if (Number(localStorage.gameMode) >= 2 || isValid) {
+            if (gameMode >= 2 || isValid) {
                 const newGameSpace = [...prevGameSpace];
                 newGameSpace[focus[0]].guess = guess;
                 newGameSpace[focus[0]].sprite = isValid ? 
@@ -253,12 +255,14 @@ function GSDiv(props)
                 <GameSpace id = "gameSpace"
                     gameSpace = {gameSpace}
                 />
-
+            <KeyContext.Provider value={{
+                keyDownHandler,
+                letterStates,    
+            }}> 
                 <Keyboard  id = "keyboard" 
-                    letterStates = {letterStates} 
-                    keyDownHandler = {keyDownHandler}
                     validKeys = {validKeys}
                 /> 
+            </KeyContext.Provider>
             </div>
         } </>
 	)
