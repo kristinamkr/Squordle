@@ -13,12 +13,13 @@
     width: 80%;
     text-align: center;
     padding-top: 10px;
+    padding-bottom: 25px;
 }
 
 .shuckleDisplay {
     composes: display from "./DisplayMan.module.css";
     width: 400px;
-    height: 545px;
+    height: 575px;
 }
 
 .shucklePic {
@@ -48,16 +49,25 @@
     height: 25px;
 }
 
-.exit1 {
-    margin-left: 20%;
+.exitIcon button{
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 60px;
+    height: 75px;
+    margin-left: 65%;
+    margin-top: -2.5%;
 }
 
 .shopDisplay {
     composes: display from "./DisplayMan.module.css";
+    width: 400px;
+    height: 575px;
 }
 
 .menu {
     width: 100%;
+    margin-top: 3.5%;
     justify-content: space-between;
 }
 

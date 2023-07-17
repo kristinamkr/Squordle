@@ -36,6 +36,9 @@ function ShopDisplay(props)
 
     const shopText = [
         "Welcome to Hop & Pip's! We're currently low on stock...",
+        "Thank you! While we wait for our next shipment, have you considered " 
+        + "adopting our Shuckle? He's really very sweet and you'd really be "
+        + "helping us out...", 
         "Welcome back! We can't thank you enough for adopting our Shuckle!"
     ];
 
@@ -191,12 +194,18 @@ function ShopDisplay(props)
                 <img className = {classes.header}
                      src = {require("../assets/shopHeaderLight.png")}/>
                 <div className = {classes.subheader}>
-                    {!shuckleAdoption && shopText[0]}
-                    {shuckleAdoption && shopText[1]}
+                    {!JSON.parse(localStorage.shuckleInfo)['adopted'] && 
+                        !JSON.parse(localStorage.inventory)['ticket'] && 
+                        shopText[0]}
+                    {!JSON.parse(localStorage.shuckleInfo)['adopted'] && 
+                        JSON.parse(localStorage.inventory)['ticket'] && 
+                        shopText[1]}
+                    {JSON.parse(localStorage.shuckleInfo)['adopted'] && 
+                        shopText[2]}
                 </div>
 
                 <div className = {classes.menu}> 
-                    {shuckleAdoption && <>
+                    {JSON.parse(localStorage.shuckleInfo)['adopted'] && <>
                         <div className = {classes.rowDisplay}> 
                             {display(<Item {...itemData[0]} />)}
                             {display(<Item {...itemData[1]} />)}
@@ -206,7 +215,7 @@ function ShopDisplay(props)
                             {display(<Item {...itemData[3]} />)}
                         </div>
                     </>}
-                    {!shuckleAdoption && <>
+                    {!JSON.parse(localStorage.shuckleInfo)['adopted'] && <>
                         <div className = {classes.rowDisplay}> 
                             {display(<Item {...itemData[5]} />)}
                             {display(<Item {...itemData[5]} />)}
@@ -223,13 +232,13 @@ function ShopDisplay(props)
                         {JSON.parse(localStorage.inventory)["ticket"] &&
                             display(<Item {...itemData[5]} />)
                         }
-                        <div className = {classes.icon} 
+                    </div>
+                        <div className = {classes.exitIcon} 
                              style = {{marginLeft: "80px"}}>
                             <button onClick = {props.shopHandler}>
                                 <ExitIcon className = {classes.exitIcon}/>
                             </button>
                         </div>
-                    </div>
                 </div>
             </div>
         )
