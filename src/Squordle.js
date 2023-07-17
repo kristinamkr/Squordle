@@ -13,13 +13,11 @@ loadSave();
 
 function Squordle(props) 
 {
-    console.log("RELOADING SQUORDLE");
-
+    console.log("RENDERING SQUORDLE...");
     const user = props.user;
     const userHandler = props.userHandler;
 
     const [gameMode, setGameMode] = useState(JSON.parse(localStorage.gameMode));
-    console.log('gameMode - ' + gameMode);
     const [isGameOver, setGameOver] = useState([false, '']);
 
     const [genFilter, setGenFilter] = useState({
@@ -39,7 +37,6 @@ function Squordle(props)
 
     function toggleGameMode(x)
     {
-        console.log('gameMode - ' + x);
         setGameMode(x);
     }
 
@@ -50,12 +47,18 @@ function Squordle(props)
     }
 
     useEffect(() => {
-        console.log('GAMEMODE - ' + gameMode);
         function getDaily() 
         {
-             const tempList = pokeList.filter(p => p.potd === "TRUE");
-             tempList.sort((a, b) => b.lastModified > a.lastModified); 
-             return tempList[0].name;
+            const tempList = pokeList.filter(p => p.potd === "TRUE");
+            tempList.sort((a, b) => b.lastModified > a.lastModified); 
+            let potd = JSON.parse(localStorage.potd);
+            if (potd['daily'] !== tempList[0].name) {
+                potd['daily'] = tempList[0].name;
+                potd['isStarted'] = false;
+                potd['isWon'] = false;
+            }
+            localStorage.potd = JSON.stringify(potd);
+            return tempList[0].name;
         }
 
         function getRandom() 
@@ -77,8 +80,7 @@ function Squordle(props)
         }
 
         if (!isGameOver[0]) {
-            const newPokemon = gameMode % 2 === 0 ? 
-                getDaily() : getRandom();
+            const newPokemon = gameMode % 2 === 0 ? getDaily() : getRandom();
             setPokemon(newPokemon);
             setUsedPokemon(prevPokemon => [...prevPokemon, newPokemon]);
         }
@@ -112,8 +114,6 @@ function Squordle(props)
 }
 
 /*
-user = {user}
-userHandler = {userHandler}
 filter = {filter}
 filterHandler = {filterHandler}
 */

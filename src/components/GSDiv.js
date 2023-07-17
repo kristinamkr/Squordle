@@ -15,10 +15,11 @@ export const KeyContext = createContext();
 
 const MAX_GUESSES = 6;
 
-let lettersUsed = []; // NOT PERSISTING BTW PAGE RELOADS LOCALSTORAGE? 
+let lettersUsed = []; // NOT PERSISTING BTW PAGE RELOADS
 
 function GSDiv(props) 
 {
+    console.log('RENDERING GAMESPACE...');
     const { 
         gameMode,
         isGameOver, 
@@ -30,11 +31,10 @@ function GSDiv(props)
     const pokeList = props.pokeList;
     const pokeAnswer = pokemon.toLowerCase(); 
 
-    const validKeys = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm".split('');
+    const validKeys = "qwertyuiopasdfghjklzxcvbnm".split('');
     const validKeySet = new Set(validKeys); 
 
 	const [gameSpace, setGameSpace] = useState(null);
-//    const [lettersUsed, setLettersUsed] = useState();
 	const [letterStates, setLetterStates] = useState(null);
     const [focus, setFocus] = useState([0, 0]) // (row #, box #)
     const [points, setPoints] = useState(0);
@@ -45,38 +45,64 @@ function GSDiv(props)
     });
 
     useEffect(() => { 
-        let potd = JSON.parse(localStorage.potd);
-        if (gameMode % 2 === 0 && isGameOver[0]) { 
-            potd['isWon'] = true;
-            localStorage.potd = JSON.stringify(potd);
-        }  
-
-        if (gameMode % 2 == 0 && potd['isWon']) {
-            // load boardState
-            loadBoard();
-        }
-        else boardInit(); 
-    }, [pokeAnswer, isGameOver, gameMode]);
-
-    useEffect(() => { 
         dollarHandler(points);
     }, [points]);
 
     useEffect(() => { 
+        let potd = JSON.parse(localStorage.potd);
+
+        console.log('gameMode - ' + gameMode);
+        if (gameMode % 2 === 0 && (potd['isSaved'] || potd['isWon'])) {
+            console.log('loading board...');
+            loadBoard();
+        }
+        else {
+            console.log('initializing board...');
+            boardInit(); 
+        }
+    }, [pokeAnswer]);
+
+    useEffect(() => {
+        // SAVE POINT
+        let potd = JSON.parse(localStorage.potd);
+        if (gameMode % 2 === 0 && potd['isSaved'] && !potd['isWon']) {
+            console.log('SAVING...');
+            let saveState = JSON.parse(localStorage.boardState);
+            saveState['focus'] = focus;
+            saveState['gameSpace'] = gameSpace;
+            saveState['letterStates'] = letterStates;
+            localStorage.boardState = JSON.stringify(saveState);
+        }
+    }, [focus[0]]);
+
+    useEffect(() => { 
         if (gameSpace) { 
+            let isOver;
             let isWinningGuess = gameSpace?.some(r => r.state === 'winner');
 
-            if (isWinningGuess)
+            if (gameMode % 2 === 0 && JSON.parse(localStorage.potd)['isWon'])
+                return;
+                 
+            if (isWinningGuess) {
                 setGameOver([true, 'win']);
-            else if (!isWinningGuess && focus[0] === MAX_GUESSES) 
+                isOver = true;
+            }
+            else if (!isWinningGuess && focus[0] === MAX_GUESSES) { 
                 setGameOver([true, 'loss']);
+                isOver = true;
+            }
+
+            if (isOver && gameMode % 2 === 0) {
+                let potd = JSON.parse(localStorage.potd);
+                potd['isWon'] = true;
+                localStorage.potd = JSON.stringify(potd);
+            }
         }
     }, [gameSpace]);
 
     // BOARD SET-UP ------------------------------------------------------------
     function boardInit(pkmn)
     {
-        console.log("BOARD INIT...");
         const gsInit = Array.from({ length: MAX_GUESSES }, (_, i) => {
             const row = {
                 id: 'r' + i,
@@ -111,13 +137,17 @@ function GSDiv(props)
 
     function loadBoard()
     {
-        console.log('loading board...');
+        console.log('LOADING...');
+        let saveState = JSON.parse(localStorage.boardState);
+        setFocus(saveState['focus']);
+        setGameSpace(saveState['gameSpace']);
+        setLetterStates(saveState['letterStates']);
     }
 
     // KEY DOWN HANDLER -------------------------------------------------------
     function keyDownHandler(e)
     {
-        console.log(pokeAnswer);
+        console.log(pokeAnswer + 'isOver? - ' + isGameOver[0]);
         const input = e.key || e.target.value;
 
         const isBackdropActive = JSON.parse(localStorage.backdrop);
@@ -144,6 +174,13 @@ function GSDiv(props)
     function handleEnterKey()
     {
         setGameSpace(prevGameSpace => {
+            // tracks if any guesses have been made in daily (save/load)
+            let potd = JSON.parse(localStorage.potd);
+            if (gameMode % 2 === 0 && !potd['isSaved']) {
+                potd['isSaved'] = true;
+                localStorage.potd = JSON.stringify(potd);
+            }
+
             let guess = '';
             for (let i = 0; i < pokeAnswer.length; i++)
                 guess = guess + prevGameSpace[focus[0]].boxes[i].letter;
@@ -161,18 +198,10 @@ function GSDiv(props)
 
                 setFocus(prevFocus => [prevFocus[0] + 1, 0]);
 
-                if (gameMode % 2 === 0)  // save board state (here?)
-                    console.log('saved!');
-
                 return newGameSpace;
             }
             return prevGameSpace; // if not valid, return the current state
         });
-    }
-
-    function saveBoard()
-    {
-        // localStorage.boardState = JSON.stringify(boardState);
     }
 
     function handleBackspaceKey()

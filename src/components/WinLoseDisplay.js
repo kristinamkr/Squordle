@@ -41,7 +41,7 @@ function WinLoseDisplay(props)
                  src = {spriteRef}/>
             <p> {gameOverText} </p>           
             {gameMode % 2 === 0 && 
-                <button onClick = {() => props.winLoseHandler()}> Close </button>}
+                <button onClick = {() => props.reload()}> Close </button>}
             {gameMode % 2 === 1 && 
                 <button onClick = {() => props.reload()}> Play Again? </button>}
         </div>

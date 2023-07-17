@@ -25,7 +25,6 @@ function DisplayMan(props)
 {
     const { 
         gameMode, 
-        toggleGameMode,
         isGameOver, 
         setGameOver, 
     } = useContext(GameContext); 
@@ -102,9 +101,6 @@ function DisplayMan(props)
             showWinLose:  false,
             showBackdrop: false
         });
-
-        if (gameMode || isGameOver[0])
-            toggleGameMode(false);
 
         setGameOver([false, '']);
     }

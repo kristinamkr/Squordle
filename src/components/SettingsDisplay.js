@@ -23,7 +23,7 @@ function SettingsDisplay(props)
     const filter = props.filter;
     const filterHandler = props.filterHandler;
 
-    console.log("FILTER ---- ! " + JSON.stringify(filter) + "---------------\n");
+    // console.log("FILTER ---- ! " + JSON.stringify(filter) + "---------------\n");
 
     function toggleSettingsDisplay()
     {

@@ -32,7 +32,7 @@ function loadSave()
             localStorage.genFilter = JSON.stringify(filter);
         }
         if (!(localStorage.potd)) {
-            let info = { daily: "", isWon: false };
+            let info = { daily: '', isSaved: false, isWon: false };
             localStorage.potd = JSON.stringify(info);
         }
         if (!(localStorage.boardState)) {
