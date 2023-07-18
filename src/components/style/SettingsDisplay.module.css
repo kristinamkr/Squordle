@@ -17,6 +17,12 @@
     padding-bottom: 20px;
 }
 
+.subheader {
+    width: 80%;
+    text-align: center;
+    margin-bottom: -15px;
+}
+
 .freeplay {
     display: flex;
     justify-content: space-around;
@@ -140,6 +146,22 @@ button.genTabInactive {
     position: absolute;
 
     background-image: url(../../assets/gen_tab_INACTIVE.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 120px;
+
+    margin-top: -18%;
+    margin-left: -19%;
+    cursor: pointer;
+}
+
+button.genTabGrayed {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/gen_tab_GRAYED.png); 
     background-repeat: no-repeat;
     background-position: 50% 50%;
     height: 100px;

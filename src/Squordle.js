@@ -13,21 +13,13 @@ loadSave();
 
 function Squordle(props) 
 {
-    console.log("RENDERING SQUORDLE...");
     const user = props.user;
     const userHandler = props.userHandler;
 
     const [gameMode, setGameMode] = useState(JSON.parse(localStorage.gameMode));
     const [isGameOver, setGameOver] = useState([false, '']);
 
-    const [genFilter, setGenFilter] = useState({
-        1: false,
-        2: false,
-        3: false,
-        4: false,
-        5: false,
-        6: false 
-    });
+    const [genFilter, setGenFilter] = useState(JSON.parse(localStorage.genFilter)); 
 
     const [pokemon, setPokemon] = useState('eddie');
     const [usedPokemon, setUsedPokemon] = useState([]);
@@ -35,15 +27,31 @@ function Squordle(props)
     const [pokeDollars, setPokeDollars] = 
         useState(Number(localStorage.pokeDollars));
 
+    const [ticketPurchased, setTicketPurchased] =  
+        useState(JSON.parse(localStorage.inventory)['ticket']); 
+
     function toggleGameMode(x)
     {
         setGameMode(x);
+    }
+
+    function toggleGenFilter(x)
+    {
+        setGenFilter({
+            ...genFilter,
+            [x]: !genFilter[`${x}`]
+        });
     }
 
     function dollarHandler(delta) 
     { 
         setPokeDollars(Number(localStorage.pokeDollars) + delta);
         localStorage.pokeDollars = Number(localStorage.pokeDollars) + delta;
+    }
+
+    function purchaseTicket()
+    {
+        setTicketPurchased(true);
     }
 
     useEffect(() => {
@@ -63,12 +71,20 @@ function Squordle(props)
 
         function getRandom() 
         {
-            const max = pokeList.length;
+            let filteredPkmn; 
+            if (Object.values(genFilter).every(value => value === false))
+                filteredPkmn = pokeList;
+            else
+                filteredPkmn = pokeList.filter(p => genFilter[p.generation]);
+            const max = filteredPkmn.length;
+
+            // console.log("===FILTER===\n" + JSON.stringify(filteredPkmn));
+
             let i = Math.floor(Math.random() * max);
             let counter = 0;
-            while ((pokeList[i].name.length < 5 || 
-                    pokeList[i].name.length > 8) ||  
-                usedPokemon.includes(pokeList[i].name)) 
+            while ((filteredPkmn[i].name.length < 5 || 
+                    filteredPkmn[i].name.length > 8) ||  
+                usedPokemon.includes(filteredPkmn[i].name)) 
             {
                 // case where all Pokemon names are in usedPokemon || 
                 // have inappropriate length...
@@ -76,7 +92,7 @@ function Squordle(props)
                 i = Math.floor(Math.random() * max);
                 counter++;
             }
-            return pokeList[i].name;
+            return filteredPkmn[i].name;
         }
 
         if (!isGameOver[0]) {
@@ -84,7 +100,10 @@ function Squordle(props)
             setPokemon(newPokemon);
             setUsedPokemon(prevPokemon => [...prevPokemon, newPokemon]);
         }
-    }, [isGameOver[0], gameMode]);
+
+        localStorage.gameMode = JSON.stringify(gameMode);
+        localStorage.genFilter = JSON.stringify(genFilter);
+    }, [isGameOver[0], gameMode, genFilter]);
 
 	return (
         <GameContext.Provider value={{
@@ -95,7 +114,11 @@ function Squordle(props)
             pokemon, 
             dollarHandler,
             gameMode,
-            toggleGameMode
+            toggleGameMode,
+            genFilter,
+            toggleGenFilter,
+            ticketPurchased,
+            purchaseTicket,
         }}> 
             <div className = {classes.center}>
                 <DisplayMan id = "header"/>
@@ -113,8 +136,4 @@ function Squordle(props)
 	)
 }
 
-/*
-filter = {filter}
-filterHandler = {filterHandler}
-*/
 export default Squordle;

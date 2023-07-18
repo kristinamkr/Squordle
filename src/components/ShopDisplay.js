@@ -10,6 +10,7 @@ function ShopDisplay(props)
 {
     const { 
         dollarHandler,
+        purchaseTicket,
     } = useContext(GameContext); 
 
 	const emote = {
@@ -170,8 +171,10 @@ function ShopDisplay(props)
     {
 		if (Number(localStorage.pokeDollars) >= item.props.price) {
             let tempItems = JSON.parse(localStorage.inventory);
-            if (item.props.name === "ticket")
+            if (item.props.name === "ticket") {
                 tempItems[`${item.props.name}`] = true;
+                purchaseTicket();
+            }
             else
                 tempItems[`${item.props.name}`] = tempItems[`${item.props.name}`] + 1;
             localStorage.setItem("inventory", JSON.stringify(tempItems)); 

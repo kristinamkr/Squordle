@@ -51,22 +51,16 @@ function GSDiv(props)
     useEffect(() => { 
         let potd = JSON.parse(localStorage.potd);
 
-        console.log('gameMode - ' + gameMode);
-        if (gameMode % 2 === 0 && (potd['isSaved'] || potd['isWon'])) {
-            console.log('loading board...');
+        if (gameMode % 2 === 0 && (potd['isSaved'] || potd['isWon']))
             loadBoard();
-        }
-        else {
-            console.log('initializing board...');
+        else
             boardInit(); 
-        }
     }, [pokeAnswer]);
 
     useEffect(() => {
         // SAVE POINT
         let potd = JSON.parse(localStorage.potd);
         if (gameMode % 2 === 0 && potd['isSaved'] && !potd['isWon']) {
-            console.log('SAVING...');
             let saveState = JSON.parse(localStorage.boardState);
             saveState['focus'] = focus;
             saveState['gameSpace'] = gameSpace;
@@ -137,7 +131,6 @@ function GSDiv(props)
 
     function loadBoard()
     {
-        console.log('LOADING...');
         let saveState = JSON.parse(localStorage.boardState);
         setFocus(saveState['focus']);
         setGameSpace(saveState['gameSpace']);
@@ -147,7 +140,7 @@ function GSDiv(props)
     // KEY DOWN HANDLER -------------------------------------------------------
     function keyDownHandler(e)
     {
-        console.log(pokeAnswer + 'isOver? - ' + isGameOver[0]);
+        console.log(pokeAnswer);
         const input = e.key || e.target.value;
 
         const isBackdropActive = JSON.parse(localStorage.backdrop);

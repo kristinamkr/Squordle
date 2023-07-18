@@ -18,7 +18,6 @@ function App()
     const [user, setUser] = useState(uData);
 
     function userHandler(data) {
-        console.log("woo! ! !");
         setUser(data);
     }
 
@@ -41,7 +40,6 @@ function App()
         if (!pokeList) {
             if (localStorage.pokeList === 'null') { 
                 pokePromise().then((res) => {
-                    console.log("ACQUIRING POKELIST...");
                     localStorage.pokeList = JSON.stringify(res);
                     setPokeList(res);
                 }).catch(err => console.error(err));

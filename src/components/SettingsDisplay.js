@@ -15,15 +15,16 @@ function SettingsDisplay(props)
     const { 
         gameMode, 
         toggleGameMode,
+        genFilter,
+        toggleGenFilter,
+        ticketPurchased,
     } = useContext(GameContext); 
+
+    console.log('ticketPurchased? - ' + ticketPurchased);
 
     // 0 - user, 1 - gen
     const [settingsDisplay, setSettingsDisplay] = useState(false); 
     const [easyModeChecked, setEasyModeChecked] = useState(gameMode >= 2);
-    const filter = props.filter;
-    const filterHandler = props.filterHandler;
-
-    // console.log("FILTER ---- ! " + JSON.stringify(filter) + "---------------\n");
 
     function toggleSettingsDisplay()
     {
@@ -41,22 +42,23 @@ function SettingsDisplay(props)
         setEasyModeChecked(prevChecked => !prevChecked);
 	}
 
-    function GenTileButton({genNumber, classes, filterHandler}) 
+    function GenTileButton({genNumber, classes, toggleGenFilter}) 
     {
-        const genFilter = JSON.parse(localStorage.getItem('genFilter'))[`g${genNumber}`];
-        const imgName = genFilter ? `${genNumber}_INACTIVE.png` : `${genNumber}.png`;
+        // console.log('===FILTER===\n'+JSON.stringify(genFilter));
+        const imgName = genFilter[`${genNumber}`] ? 
+            `${genNumber}.png` : `${genNumber}_INACTIVE.png`;
 
         const imgPath = require(`../assets/genTiles/${imgName}`);
         
         return (
             <button className = {classes[`genTile${genNumber}`]}
                 style = {{ backgroundImage: `url(${imgPath})` }}
-                onClick = {() => filterHandler(genNumber)}
+                onClick = {() => toggleGenFilter(genNumber)}
             />
         );
     }
 
-    function GenTiles({ classes, filterHandler}) 
+    function GenTiles({classes, filterHandler}) 
     {
         const genNumbers = [1, 2, 3, 4, 5, 6];
 
@@ -65,9 +67,9 @@ function SettingsDisplay(props)
                 { genNumbers.map(genNumber => (
                     <div className={classes.rowDisplay} key={genNumber}>
                         <GenTileButton 
-                            genNumber = {genNumber}
-                            classes = {classes}
-                            filterHandler = {filterHandler}
+                            genNumber={genNumber}
+                            classes={classes}
+                            toggleGenFilter={toggleGenFilter}
                         />
                     </div>
                 )) }
@@ -81,8 +83,12 @@ function SettingsDisplay(props)
             <div className = {classes.settingsDisplay}>
                 <p/>
                 <button className={classes.userTabActive}/>
-                <button className={classes.genTabInactive}
-                        onClick= {toggleSettingsDisplay}/> 
+                {!ticketPurchased && 
+                    <button className={classes.genTabGrayed}/>}
+                {ticketPurchased && 
+                    <button className={classes.genTabInactive}
+                        onClick= {toggleSettingsDisplay}/> }
+
                 <img className = {classes.header} 
                      src = {require("../assets/settings.png")}
                      alt = "settings header"/>
@@ -147,8 +153,12 @@ function SettingsDisplay(props)
                      src = {require("../assets/settings.png")}
                      alt = "settings header"/>
 
+                <div className = {classes.subheader}>
+                    <p>Select a generation (or multiple) for freeplay</p>
+                </div>
+
                 <div className = {classes.menu}> 
-                    { GenTiles({ classes, filterHandler})}  
+                    { GenTiles({classes, toggleGenFilter})}  
                 </div>
                 <div className = {classes.exit}>
                     <button onClick = {props.reload}>
