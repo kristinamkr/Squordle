@@ -2,7 +2,6 @@
  * Item.js
 */
 
-// import { useState } from 'react'; 
 import classes from "./style/Item.module.css";
 
 function Item(props) 

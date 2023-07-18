@@ -5,13 +5,18 @@
 import classes from './style/Animations.module.css';
 import action from './Actions';
 
-import Baby from './Baby';
-
 import { useState } from 'react';
 
 function Animations(props)
 {
-    const { focus, shuckle, shucklePos, targetPos, targetReached } = props;
+    const { 
+        focus, 
+        shuckle, 
+        shucklePos, 
+        targetPos, 
+        targetReached,
+        babyPositions, 
+    } = props;
 
     function animate(name, pos, offset) 
     {
@@ -23,9 +28,27 @@ function Animations(props)
         )
     }
 
+    function animateChildren()
+    {
+        if (babyPositions.length === 0) return;
+
+        return (
+            <>{ shuckle['children'].map((child) => (
+                <img className = {classes.shuckle}
+                    style = {{
+                        top: babyPositions[child.number][0] + "px",
+                        left: babyPositions[child.number][1] + "px" 
+                    }}
+                    src = {require("../../assets/" + child.state + ".gif")}
+                    key = {child.number}
+                />
+            )) }</>
+        )
+    }
+
     return (
         <>
-            {!(JSON.parse(localStorage.shuckleInfo)['shiny']) && 
+            {!JSON.parse(localStorage.shuckleInfo)['shiny'] && 
                 animate('shuckle', shucklePos, [16, 32])}
             {JSON.parse(localStorage.shuckleInfo)['shiny'] && 
                 animate('shuckleShiny', shucklePos, [16, 32])}
@@ -45,15 +68,11 @@ function Animations(props)
                 && animate('anger', shucklePos, [36, 2])}
             {shuckle['action'] === action.BIRTHING
                 && animate('love', shucklePos, [26, 26])}
+
             {shuckle['children'].length > 0
-                && <Baby />} 
+                && ( <> { animateChildren() } </> )}
         </>
     )
 }
-
-/*
-            {shuckleChildren.length > 0
-                && ( <> { animBabies(shuckleChildren, babyPosList) } </> )}
-*/
 
 export default Animations;

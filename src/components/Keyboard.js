@@ -4,7 +4,7 @@
 
 import classes from "./style/Keyboard.module.css";
 import { useContext } from 'react';
-import { KeyContext } from './GSDiv.js';
+import { KeyContext } from './GSDiv';
 
 const validKeys = 'qwertyuiopasdfghjklzxcvbnm'.split('');
 

@@ -4,7 +4,7 @@ import Item from './Item';
 
 import { ReactComponent as ExitIcon } from "../assets/exitIcon.svg";
 import { useContext, useState } from 'react';
-import { GameContext } from '../Squordle.js';
+import { GameContext } from '../Squordle';
 
 function ShopDisplay(props)
 {
@@ -171,10 +171,8 @@ function ShopDisplay(props)
     {
 		if (Number(localStorage.pokeDollars) >= item.props.price) {
             let tempItems = JSON.parse(localStorage.inventory);
-            if (item.props.name === "ticket") {
+            if (item.props.name === "ticket")
                 tempItems[`${item.props.name}`] = true;
-                purchaseTicket();
-            }
             else
                 tempItems[`${item.props.name}`] = tempItems[`${item.props.name}`] + 1;
             localStorage.setItem("inventory", JSON.stringify(tempItems)); 

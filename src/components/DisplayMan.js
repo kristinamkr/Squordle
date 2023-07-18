@@ -4,17 +4,17 @@
 
 import classes from "./style/DisplayMan.module.css";
 
-import WinLoseDisplay from "./WinLoseDisplay.js";
-import InfoDisplay from "./InfoDisplay.js";   
-import SettingsDisplay from "./SettingsDisplay.js";
-import ShopDisplay from "./ShopDisplay.js";
+import WinLoseDisplay from "./WinLoseDisplay";
+import InfoDisplay from "./InfoDisplay";   
+import SettingsDisplay from "./SettingsDisplay";
+import ShopDisplay from "./ShopDisplay";
 
 import { ReactComponent as ShopIcon } from "../assets/shopIcon.svg";
 import { ReactComponent as InfoIcon } from "../assets/infoIcon.svg";
 import { ReactComponent as SettingsIcon } from "../assets/settingsIcon.svg";
 
 import { useContext, useState, useEffect } from 'react';
-import { GameContext } from '../Squordle.js';
+import { GameContext } from '../Squordle';
 
 function Backdrop() 
 {

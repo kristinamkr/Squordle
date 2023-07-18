@@ -31,11 +31,8 @@ function ShuckleMechanics(props)
 
     useEffect(() => {
         setTimeout(() => {
-            if (item && !(realizeItem[0])) {
+            if (item && !(realizeItem[0]))
                 setItemInfo([mousePos[0], mousePos[1], 1]);
-                // console.log('item info set!');
-                // console.log('realizeItem[0] - ' + realizeItem[0]);
-            }
         }, 16);
     }, [item, itemInfo]);
 

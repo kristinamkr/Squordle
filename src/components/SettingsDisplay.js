@@ -3,12 +3,12 @@
 */ 
 
 import classes from "./style/SettingsDisplay.module.css";
-import User from "./User.js";
+import User from "./User";
 
 import { ReactComponent as ExitIcon } from "../assets/exitIcon.svg";
 
-import { useContext, useState } from 'react';
-import { GameContext } from '../Squordle.js';
+import { useContext, useState, useEffect } from 'react';
+import { GameContext } from '../Squordle';
 
 function SettingsDisplay(props)
 {
@@ -17,10 +17,7 @@ function SettingsDisplay(props)
         toggleGameMode,
         genFilter,
         toggleGenFilter,
-        ticketPurchased,
     } = useContext(GameContext); 
-
-    console.log('ticketPurchased? - ' + ticketPurchased);
 
     // 0 - user, 1 - gen
     const [settingsDisplay, setSettingsDisplay] = useState(false); 
@@ -83,9 +80,9 @@ function SettingsDisplay(props)
             <div className = {classes.settingsDisplay}>
                 <p/>
                 <button className={classes.userTabActive}/>
-                {!ticketPurchased && 
+                {!JSON.parse(localStorage.inventory)['ticket'] && 
                     <button className={classes.genTabGrayed}/>}
-                {ticketPurchased && 
+                {JSON.parse(localStorage.inventory)['ticket'] && 
                     <button className={classes.genTabInactive}
                         onClick= {toggleSettingsDisplay}/> }
 

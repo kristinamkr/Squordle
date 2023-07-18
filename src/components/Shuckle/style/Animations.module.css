@@ -6,6 +6,10 @@
     position: absolute;
 }
 
+.egg {
+    position: absolute;
+}
+
 .underbite {
 	transform: rotate(180deg);
 }

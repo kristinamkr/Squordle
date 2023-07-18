@@ -3,17 +3,16 @@
 */
 
 import focus from './Focus';
-import { resolveOnceTimeOut } from '../utils';
-// import { useState } from 'react';
+import { resolveOnceTimeOut } from '../../functions/utils';
 
 const action = { 
     NONPLUSSED: 0, 
     ANGRY:      1,
-    BIRTHING:   2,
+    LAY_EGG:    2,
     SHINY:      3,     // ACTIVE, no animation
     SING:       4,
     HAPPY:      5,
-    LAY_EGG:    6};
+};
 Object.freeze(action);
 
 const damageList = ["#131313", "#242424", "#303030", "#404040"];
@@ -28,7 +27,13 @@ function eat(
     setPosition, 
     reset
 ) {
-    setShuckle({...shuckle, focus: currFocus, action: realizeItem[1]});
+    if (shuckle['action'] !== action.ANGRY)
+        setShuckle({...shuckle, focus: currFocus, action: realizeItem[1]});
+    else
+        setShuckle({...shuckle, focus: focus.KEY});
+
+
+
     reset(); 
     setPosition({...position, reached: false});
 }
@@ -115,19 +120,27 @@ function becomeSatiated(shuckle, setShuckle, position, setPosition)
 }
 
 /*
-function createBaby(shuckle, setShuckle)
-{
-    let babyCount = shuckle['children'];
-    setShuckle({...shuckle, children: babyCount + 1});
-    return {number: babyCount,
-            state:  "shuckleEgg0",
-            shiny:  0}
+const offscreen = async () => {
+    setMobileTargetPos([300,-200]);
+    setShuckleInfo([focus.MOBILE, shuckleInfo[1]]);
+    await resolveOnceTimedOut(6000);
+    if (shuckleInfo[1] === action.BIRTHING) {
+        setShuckleInfo([shuckleInfo[0], action.LAY_EGG]);
+    }
+    else {
+        processEmotion();
+    }
 }
+*/
 
-function layEgg()
-{ 
-    const baby = createBaby();
-    // const newFamily = shuckleChildren.concat([baby]);
+function layEgg(shuckle, setShuckle, babyPositions, setBabyPositions)
+{
+    const baby = {
+        number: shuckle['children'].length,
+        state: 'shuckleEgg0',
+        shiny: 0,
+    }; 
+    const newFamily = shuckle['children'].concat([baby]);
 
     // updates the game save 
     // (you had a baby! you wanna remember you had a baby right?)
@@ -135,52 +148,50 @@ function layEgg()
     tempInfo["children"] = newFamily;
     localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
 
-    setBabyPosList([[400,-200]].concat(babyPosList));
-    setShuckleChildren(newFamily);
+    setBabyPositions({
+        ...babyPositions,
+        [baby.number]: [0, 0]
+    });
+    setShuckle({focus: focus.MOUSE, action: action.SING, children: newFamily});
 
-    //brings back onscreen
+    // brings back onscreen
     // setHaltInv(false);
     // setMobileTargetPos([0,0]);
-    setShuckleInfo([focus.MOUSE, action.SING]);
+    // setShuckle([focus.MOUSE, action.SING]);
 }
 
-function goOffScreen(position, setPosition)
-{
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-    console.log('wWidth - '+windowWidth+'\nwHeight - '+windowHeight);
+function updateHatching(shuckle, setShuckle){
+    const childrenn = shuckle["children"]; 
 
-    const topLeft = [0, 0];
-    const topRight = [windowWidth, 0];
-    const bottomLeft = [0, windowHeight];
-    const bottomRight = [windowWidth, windowHeight];
+    for (let i = 0; i < childrenn.length; i++) {
+        const currentState = String(childrenn[i].state);
+        console.log('currentState - ' + currentState);
+        if (currentState.startsWith('shuckleEgg')) {
+            const newState = 
+                parseInt(currentState.replace('shuckleEgg', ''), 10) + 1;
+            childrenn[i].state = newState < 3
+                ? `shuckleEgg${newState}` : 'shuckle';
+            break;
+        }
+    }
 
-    let distW = Math.min
-        (position['shuckle'][0], windowWidth - position['shuckle'][0]);
-    let distH = Math.min
-        (position['shuckle'][1], windowHeight - position['shuckle'][1]);
-    let minDist = distW > distH ? 
-        [position['shuckle'][0], distH] : [distW, position['shuckle'][1]];
+    // updates the game save 
+    // (you had a baby! you wanna remember you had a baby right?)
+    let tempInfo = JSON.parse(localStorage.shuckleInfo);
+    tempInfo["children"] = childrenn;
+    localStorage.setItem("shuckleInfo", JSON.stringify(tempInfo));
 
-    console.log("HOME = " + minDist);
-
-    setPosition({...position, home: minDist, reached: false}); 
-//    setMobileTargetPos([300,-200]);
-//    setShuckleInfo([focus.MOBILE, shuckleInfo[1]]);
-
-
-//    setShuckle([shuckleInfo[0], action.LAY_EGG]);
-
-//    await resolveOnceTimedOut(6000);
-/*
-    console.log('shuckle leaving...');
-    setShuckle({...shuckle, focus: focus.HOME, action: action.LAY_EGG});
-    setPosition({
-        ...position, 
-        reached: false
-    });
-*/
-// }
+    setShuckle({...shuckle, children: childrenn }); 
+}
 
 export default action;
-export { eat, process, calmDown, chooseKey, destroy, becomeSatiated };
+export { 
+    eat, 
+    process, 
+    calmDown, 
+    chooseKey, 
+    destroy, 
+    becomeSatiated, 
+    layEgg, 
+    updateHatching 
+};

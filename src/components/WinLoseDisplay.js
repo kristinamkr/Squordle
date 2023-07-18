@@ -3,10 +3,10 @@
 */
 
 import classes from "./style/WinLoseDisplay.module.css";
-import spriteLink from  "../functions/SpriteLink.js";
+import spriteLink from  "../functions/spriteLink";
 
 import { useContext } from 'react';
-import { GameContext } from '../Squordle.js';
+import { GameContext } from '../Squordle';
 
 function WinLoseDisplay(props)
 {

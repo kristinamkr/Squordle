@@ -27,9 +27,6 @@ function Squordle(props)
     const [pokeDollars, setPokeDollars] = 
         useState(Number(localStorage.pokeDollars));
 
-    const [ticketPurchased, setTicketPurchased] =  
-        useState(JSON.parse(localStorage.inventory)['ticket']); 
-
     function toggleGameMode(x)
     {
         setGameMode(x);
@@ -47,11 +44,6 @@ function Squordle(props)
     { 
         setPokeDollars(Number(localStorage.pokeDollars) + delta);
         localStorage.pokeDollars = Number(localStorage.pokeDollars) + delta;
-    }
-
-    function purchaseTicket()
-    {
-        setTicketPurchased(true);
     }
 
     useEffect(() => {
@@ -117,8 +109,6 @@ function Squordle(props)
             toggleGameMode,
             genFilter,
             toggleGenFilter,
-            ticketPurchased,
-            purchaseTicket,
         }}> 
             <div className = {classes.center}>
                 <DisplayMan id = "header"/>

@@ -3,9 +3,11 @@
 */ 
 
 import classes from "./style/Cursor.module.css";
-import { useState, useEffect, useCallback } from 'react';
 
-import { isNear, translateSprite, resolveOnceTimedOut } from '../utils';
+import { useContext, useState, useEffect } from 'react';
+import { GameContext } from '../../Squordle';
+
+import { isNear, translateSprite, resolveOnceTimedOut } from '../../functions/utils';
 import ShuckleAnimations from './Animations';
 
 import focus from './Focus';
@@ -16,21 +18,24 @@ import action, {
     chooseKey, 
     destroy, 
     becomeSatiated, 
+    layEgg,
+    updateHatching,
 } from './Actions';
 
 const FRAME_DELAY_MS = 16;
 
 function Cursor(props)
 {
+    const { isGameOver } = useContext(GameContext); 
+
     const { mousePos, itemPos, realizeItem, reset } = props;
 
     const [shuckle, setShuckle] = useState({ 
         focus: 0, 
         action: 0, 
-        children: 0, // JSON.parse(localStorage.shuckleInfo)['children'],
+        children: JSON.parse(localStorage.shuckleInfo)['children'],
     });
 
-// mobile: [0, 0],
     const [position, setPosition] = useState({
         shuckle: [0, 0],
         home: [0, 0],
@@ -45,6 +50,13 @@ function Cursor(props)
             .concat('qwertyuiopasdfghjklzxcvbnm'.split(''))
     });
     const [isDestroyingKey, setIsDestroyingKey] = useState(false);
+
+    const babyPosInit = 
+        Array.from({ length: shuckle['children'].length }, () => [0, 0]);
+    const [babyPositions, setBabyPositions] = useState(babyPosInit);
+
+    const [babyTargetReached, setBabyTargetReached] = 
+        useState(Array(shuckle['children'].length));
 
     const getTargetPosition = (
         focusType, 
@@ -67,12 +79,14 @@ function Cursor(props)
         }
     }
 
-/*
-            case focus.MOBILE:
-                return mobileTargetPos;
-*/
-
     // USE EFFECTS -------------------------------------------------------------
+    useEffect(() => {
+        if (isGameOver[1] === 'win')
+            updateHatching(shuckle, setShuckle);
+    }, [isGameOver[1]]); 
+
+
+    
     // SHUCKLE FOCUS
     useEffect(() => {
         if (realizeItem[0] && keys.selected === '')  // set to item 
@@ -85,9 +99,8 @@ function Cursor(props)
         if (shuckle['focus'] === focus.KEY && keys.selected === '') {  // angry 
             if (keys['remaining'].length <= 0)
                 becomeSatiated(shuckle, setShuckle, position, setPosition);
-            else {
+            else
                 chooseKey(position, setPosition, keys, setKeys);
-            }
         }
     }, [realizeItem[0], keys.selected]); 
 
@@ -120,6 +133,34 @@ function Cursor(props)
         }); 
     }, [position.reached, position.target, position.shuckle, shuckle]);
 
+    // BABY MOVEMENTS (IF APPLICABLE)
+    useEffect(() => {
+        if (babyPositions.length === 0) return;
+
+        requestAnimationFrame(() => {
+            let babyPositionsList = Object.values(babyPositions);
+            let currPositions = [position['shuckle'], ...babyPositionsList];
+            let newPositions = [];
+            let targetsReached = [];
+
+            for (let i = 0; i < currPositions.length; i++) {
+                const isReached = isNear(babyPositions[i], currPositions[i]);
+                targetsReached.push(isReached ? 1 : 0);
+                const pos = isReached 
+                    ? babyPositions[i] 
+                    : translateSprite(
+                        [currPositions[i][0], currPositions[i][1] - 32],
+                        babyPositions[i],
+                        6
+                      );
+                newPositions.push(pos);
+            }
+
+            setBabyPositions(newPositions);
+            setBabyTargetReached(targetsReached);
+        }); 
+    }, [babyPositions, position['shuckle']]);
+
     useEffect(() => {
         const eatItem = async () => {
             await resolveOnceTimedOut(5000); 
@@ -127,8 +168,10 @@ function Cursor(props)
             let currFocus = focus.MOUSE;
             if (realizeItem[1] === 1)
                 currFocus = focus.KEY;
+            /*
             else if (realizeItem[1] === 2)
                 currFocus = focus.HOME;
+            */
 
             eat(currFocus,
                 realizeItem, 
@@ -140,7 +183,7 @@ function Cursor(props)
             );
     
             // lemonade case
-            if (shuckle['action'] === action.ANGRY && realizeItem[1] === 4)
+            if (shuckle['action'] === action.ANGRY && realizeItem[1] === 4) {
                 calmDown(
                     currFocus, 
                     shuckle, 
@@ -150,6 +193,7 @@ function Cursor(props)
                     keys, 
                     setKeys
                 );
+            }
         };
 
         const destroyKey = async () =>
@@ -185,10 +229,8 @@ function Cursor(props)
         }
 
         switch (shuckle['action']) {
-            case action.BIRTHING:
-                // goOffScreen(position, setPosition);
             case action.LAY_EGG:
-                // layEgg();
+                layEgg(shuckle, setShuckle, babyPositions, setBabyPositions);
             case action.HAPPY:
             case action.SING:
             case action.CONFUSED:
@@ -206,16 +248,6 @@ function Cursor(props)
         }
     }, [shuckle['action']]);
 
-/*
-        else if (shuckleInfo[1] === action.LAY_EGG) {
-            if(props.realizeItem[0]){
-                setShuckleInfo([focus.ITEM, action.NONPLUSSED]);
-            } else {
-                layEgg();
-            }
-        }
-*/
-
     // RENDER ------------------------------------------------------------------
 	return (
         <ShuckleAnimations
@@ -224,48 +256,9 @@ function Cursor(props)
             shucklePos={position['shuckle']}
             targetPos={position['target']}
             targetReached={position['reached']}
+            babyPositions={babyPositions}
         />
     );
 }
 
 export default Cursor;
-
-/*
-    useEffect(() => {
-        console.log('hello');
-
-        let isReached = isNear(position['shuckle'], mousePos);
-        console.log('isReached (???) - ' + isReached);
-
-        if (shuckle['focus'] === focus.MOUSE && 
-            !(isNear(position['shuckle'], mousePos))) {
-                console.log('anyone there?');
-
-                setPosition(prevPosition => ({
-                  ...prevPosition,
-                  targetReached: false, // Set targetReached to true
-                }));
-        }
-    }, [mousePos, position['key'], shuckle]);
-
-function createBaby()
-{
-    return {number: shuckleChildren.length,
-            state:  "shuckleEgg0",
-            shiny:  0}
-}
-
-
-        else if (shuckleInfo[1] === action.BIRTHING) {
-            setHaltInv(true);
-            offscreen();
-        }
-        else if (shuckleInfo[1] === action.LAY_EGG) {
-            if(props.realizeItem[0]){
-                setShuckleInfo([focus.ITEM, action.NONPLUSSED]);
-            } else {
-                layEgg();
-            }
-        }
-
-*/

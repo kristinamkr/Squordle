@@ -4,12 +4,12 @@
 
 import classes from "./style/GSDiv.module.css";
 
-import GameSpace from "./GameSpace.js";
-import Keyboard from "./Keyboard.js";
-import spriteLink from  "../functions/SpriteLink.js";
+import GameSpace from "./GameSpace";
+import Keyboard from "./Keyboard";
+import spriteLink from  "../functions/spriteLink";
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { GameContext } from '../Squordle.js';
+import { GameContext } from '../Squordle';
 
 export const KeyContext = createContext();
 
@@ -19,7 +19,6 @@ let lettersUsed = []; // NOT PERSISTING BTW PAGE RELOADS
 
 function GSDiv(props) 
 {
-    console.log('RENDERING GAMESPACE...');
     const { 
         gameMode,
         isGameOver, 
@@ -57,8 +56,8 @@ function GSDiv(props)
             boardInit(); 
     }, [pokeAnswer]);
 
+    // SAVE POINT
     useEffect(() => {
-        // SAVE POINT
         let potd = JSON.parse(localStorage.potd);
         if (gameMode % 2 === 0 && potd['isSaved'] && !potd['isWon']) {
             let saveState = JSON.parse(localStorage.boardState);
@@ -270,6 +269,8 @@ function GSDiv(props)
         setLetterStates(lsChange);
         return row.winnings;
 	}
+
+
 
 	return (
         <> { gameSpace && letterStates && 

@@ -35,10 +35,8 @@ function Inventory(props)
     function selectItem(item)
     {
         const itemCount = JSON.parse(localStorage.inventory)[`${item}`];
-        console.log("ITEM NAME - " + item + " | " + itemCount);
     
         if (itemCount > 0 ) {  // test
-            console.log("woo");
             props.setItem(item);
             props.setItemInfo([mousePos[0], mousePos[1], 1]);
         }
