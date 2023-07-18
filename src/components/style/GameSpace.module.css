@@ -16,6 +16,19 @@ img.unown {
     object-fit: cover;
 }
 
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(10);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.bounceAnimation {
+    animation: bounce 1s infinite;
+}
+
 .guessBox {
 	display: inline-flex;
 	border: 2px solid #c2c3c5;
