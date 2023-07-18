@@ -2,10 +2,10 @@
  * SettingsDisplay.module.css
 */
 
+
 .settingsDisplay {
     composes: display from "./DisplayMan.module.css";
-    width: 400px;
-    height: 490px;
+    height: 565px;
 }
 
 .settingsDisplay img {
@@ -15,6 +15,12 @@
 .header {
     border-bottom: 2px solid #808080;
     padding-bottom: 20px;
+}
+
+.subheader {
+    width: 80%;
+    text-align: center;
+    margin-bottom: -15px;
 }
 
 .freeplay {
@@ -84,4 +90,131 @@
     height: 75px;
     margin-bottom: 20px;
     padding-top: 20px;
+}
+
+button.userTabActive {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/user_tab_ACTIVE.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 121px;
+
+    margin-top: -18%;
+    margin-left: -74.20%;
+    cursor: pointer;
+}
+
+button.userTabInactive {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/user_tab_INACTIVE.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 120px;
+
+    margin-top: -18%;
+    margin-left: -74.5%;
+    cursor: pointer;
+}
+
+button.genTabActive {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/gen_tab_ACTIVE.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 120px;
+
+    margin-top: -18%;
+    margin-left: -19%;
+    cursor: pointer;
+}
+
+button.genTabInactive {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/gen_tab_INACTIVE.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 120px;
+
+    margin-top: -18%;
+    margin-left: -19%;
+    cursor: pointer;
+}
+
+button.genTabGrayed {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-image: url(../../assets/gen_tab_GRAYED.png); 
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100px;
+    width: 120px;
+
+    margin-top: -18%;
+    margin-left: -19%;
+    cursor: pointer;
+}
+
+[class *= "genTile"] {
+    background: none;
+    border: none;
+    position: absolute;
+
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 64px;
+    width: 120px;
+
+    transform: scale(1.25);
+
+    cursor: pointer;
+}
+
+button.genTile1 {
+    margin-top: 7.5%;
+    margin-left: -35%;
+}
+
+button.genTile2 {
+    margin-top: 7.5%;
+    margin-left: 4.5%;
+}
+
+button.genTile3 {
+    margin-top: 32.5%;
+    margin-left: -35%;
+}
+
+button.genTile4 {
+    margin-top: 32.5%;
+    margin-left: 4.5%;
+}
+
+button.genTile5 {
+    margin-top: 56.65%;
+    margin-left: -35%;
+}
+
+button.genTile6 {
+    margin-top: 53.5%;
+    height: 90px;
+    width: 160px;
+    transform: scale(0.875);
 }

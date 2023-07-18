@@ -1,4 +1,4 @@
-img.poffin {
+img.item {
 	cursor: move;
 	width: 64px;
 	height: 64px;
@@ -8,3 +8,4 @@ img.lemonade {
 	cursor: move;
 	height: 64px;
 }
+

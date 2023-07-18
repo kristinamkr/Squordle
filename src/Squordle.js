@@ -1,58 +1,44 @@
 import classes from "./components/style/Squordle.module.css";
 
-import DisplayMan from "./components/DisplayMan.js";
-import GSDiv from "./components/GSDiv.js";
-import ShuckleMechanics from "./components/ShuckleMechanics.js";
+import DisplayMan from "./components/DisplayMan";
+import ShuckleMechanics from "./components/ShuckleMechanics";
+import GSDiv from "./components/GSDiv";
 
-import loadSave from "./functions/loadSave.js";
+import loadSave from "./functions/loadSave";
 
-import { useReducer, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
+export const GameContext = createContext();
 
 loadSave();
 
-let usedPokemon = []; 
 function Squordle(props) 
 {
-    console.log("RELOADING SQUORDLE");
-
-    // USER AUTH ---------------------------------------------------------------
-    let uData = { name: localStorage.user,
-                  region: localStorage.region,
-                  pokeDollars: Number(localStorage.pokeDollars),
-                  shuckleInfo: JSON.parse(localStorage.shuckleInfo),
-                  inventory: JSON.parse(localStorage.inventory) };
-    const [user, setUser] = useState(uData);
-
-    function userHandler(data) 
-    { 
-        setUser(data); 
-    }
-
-    useEffect(() => {
-        if (!(user.name === "guest")) {
-            localStorage.user = user.name;
-            localStorage.firstTime = false;
-            localStorage.region = user.region;
-            localStorage.pokeDollars = user.pokeDollars;
-            localStorage.shuckleInfo = JSON.stringify(user.shuckleInfo);
-            localStorage.inventory = JSON.stringify(user.inventory);
-            if (user.shuckleInfo['adopted'] === true)
-                localStorage.shopState = 8;
-        } 
-    }, [user]);
-    // -------------------------------------------------------------------------
+    const user = props.user;
+    const userHandler = props.userHandler;
 
     const [gameMode, setGameMode] = useState(JSON.parse(localStorage.gameMode));
-
-    function toggleGameMode()
-    {
-        setGameMode(!(gameMode));
-    }
-
     const [isGameOver, setGameOver] = useState([false, '']);
 
+    const [genFilter, setGenFilter] = useState(JSON.parse(localStorage.genFilter)); 
+
+    const [pokemon, setPokemon] = useState('eddie');
+    const [usedPokemon, setUsedPokemon] = useState([]);
+    const pokeList = props.pokeList;
     const [pokeDollars, setPokeDollars] = 
         useState(Number(localStorage.pokeDollars));
+
+    function toggleGameMode(x)
+    {
+        setGameMode(x);
+    }
+
+    function toggleGenFilter(x)
+    {
+        setGenFilter({
+            ...genFilter,
+            [x]: !genFilter[`${x}`]
+        });
+    }
 
     function dollarHandler(delta) 
     { 
@@ -60,65 +46,83 @@ function Squordle(props)
         localStorage.pokeDollars = Number(localStorage.pokeDollars) + delta;
     }
 
-    const [pokemon, setPokemon] = useState('eddie');
-    const pokeList = props.pokeList;
-
     useEffect(() => {
         function getDaily() 
         {
-             let tempList = pokeList.filter(p => p.potd === "TRUE");
-             tempList = tempList.sort(
-                function(a, b) { return b.lastModified > a.lastModified }
-             );
-             return tempList[0].name;
+            const tempList = pokeList.filter(p => p.potd === "TRUE");
+            tempList.sort((a, b) => b.lastModified > a.lastModified); 
+            let potd = JSON.parse(localStorage.potd);
+            if (potd['daily'] !== tempList[0].name) {
+                potd['daily'] = tempList[0].name;
+                potd['isStarted'] = false;
+                potd['isWon'] = false;
+            }
+            localStorage.potd = JSON.stringify(potd);
+            return tempList[0].name;
         }
 
         function getRandom() 
         {
-            const max = Object.keys(pokeList).length;
+            let filteredPkmn; 
+            if (Object.values(genFilter).every(value => value === false))
+                filteredPkmn = pokeList;
+            else
+                filteredPkmn = pokeList.filter(p => genFilter[p.generation]);
+            const max = filteredPkmn.length;
+
+            // console.log("===FILTER===\n" + JSON.stringify(filteredPkmn));
+
             let i = Math.floor(Math.random() * max);
-            // REPEAT IF POKEMON ALREADY CYCLED || INAPPROPRIATE LENGTH
-            while ((pokeList[i].name.length < 5 || pokeList[i].name.length > 8) ||  
-                usedPokemon.includes(pokeList[i].name)) {
+            let counter = 0;
+            while ((filteredPkmn[i].name.length < 5 || 
+                    filteredPkmn[i].name.length > 8) ||  
+                usedPokemon.includes(filteredPkmn[i].name)) 
+            {
+                // case where all Pokemon names are in usedPokemon || 
+                // have inappropriate length...
+                if (counter > max) break;
                 i = Math.floor(Math.random() * max);
+                counter++;
             }
-            return pokeList[i].name;
+            return filteredPkmn[i].name;
         }
 
         if (!isGameOver[0]) {
-            if (Number(localStorage.gameMode) % 2 === 0)
-                setPokemon(getDaily());
-            else
-                setPokemon(getRandom());
+            const newPokemon = gameMode % 2 === 0 ? getDaily() : getRandom();
+            setPokemon(newPokemon);
+            setUsedPokemon(prevPokemon => [...prevPokemon, newPokemon]);
         }
-        usedPokemon.push(pokemon);
-    }, [isGameOver[0], gameMode]);  // ? ? ?
+
+        localStorage.gameMode = JSON.stringify(gameMode);
+        localStorage.genFilter = JSON.stringify(genFilter);
+    }, [isGameOver[0], gameMode, genFilter]);
 
 	return (
-        <>
+        <GameContext.Provider value={{
+            user,
+            userHandler,
+            isGameOver, 
+            setGameOver, 
+            pokemon, 
+            dollarHandler,
+            gameMode,
+            toggleGameMode,
+            genFilter,
+            toggleGenFilter,
+        }}> 
             <div className = {classes.center}>
-                <DisplayMan id = "header"
-                        user = {user}
-                        userHandler = {userHandler}
-                        gameMode = {gameMode}
-                        toggleGameMode = {toggleGameMode}
-                        pokemon = {pokemon}
-                        dollarHandler = {dollarHandler}
-                        isGameOver = {isGameOver}
-                        setGameOver = {setGameOver} />
+                <DisplayMan id = "header"/>
 
-                { JSON.parse(localStorage.shuckleInfo)["adopted"] &&
-                    <ShuckleMechanics/> }
+            {JSON.parse(localStorage.shuckleInfo)["adopted"] &&
+                <ShuckleMechanics />}
             </div>
 
-			{ !(pokemon === "eddie") &&  
+            { !(pokemon === "eddie") &&  
                 <GSDiv  id = "gsdiv"
-                        pokemon = {pokemon} 
-                        pokeList = {pokeList}
-                        dollarHandler = {dollarHandler}                        
-                        isGameOver = {isGameOver} 
-                        setGameOver = {setGameOver}/>}
-        </>
+                    pokeList = {pokeList}
+                />
+            }
+        </GameContext.Provider>
 	)
 }
 

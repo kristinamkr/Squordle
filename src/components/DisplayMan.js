@@ -4,15 +4,17 @@
 
 import classes from "./style/DisplayMan.module.css";
 
-import WinLoseDisplay from "./WinLoseDisplay.js";
-import InfoDisplay from "./InfoDisplay.js";   
-import SettingsDisplay from "./SettingsDisplay.js";
-import ShopDisplay from "./ShopDisplay.js";
+import WinLoseDisplay from "./WinLoseDisplay";
+import InfoDisplay from "./InfoDisplay";   
+import SettingsDisplay from "./SettingsDisplay";
+import ShopDisplay from "./ShopDisplay";
 
 import { ReactComponent as ShopIcon } from "../assets/shopIcon.svg";
 import { ReactComponent as InfoIcon } from "../assets/infoIcon.svg";
 import { ReactComponent as SettingsIcon } from "../assets/settingsIcon.svg";
-import { useState, useEffect } from 'react';
+
+import { useContext, useState, useEffect } from 'react';
+import { GameContext } from '../Squordle';
 
 function Backdrop() 
 {
@@ -21,14 +23,24 @@ function Backdrop()
 
 function DisplayMan(props)
 {
-    const gameMode = props.gameMode;
-    const toggleGameMode = props.toggleGameMode;
-	const [displayState, setDisplayState] = 
-           useState({ showShop:     false,
-                      showSettings: false,
-                      showInfo:     false,
-                      showWinLose:  false,
-                      showBackdrop: false });
+    const { 
+        gameMode, 
+        isGameOver, 
+        setGameOver, 
+    } = useContext(GameContext); 
+
+	const [displayState, setDisplayState] = useState({ 
+        showShop:     false,
+        showSettings: false,
+        showInfo:     false,
+        showWinLose:  false,
+        showBackdrop: false 
+    });
+
+    if (JSON.parse(localStorage.firstTime)) {
+        localStorage.firstTime = false;
+        infoHandler();
+    }
 
     useEffect(() => {
         let enableBackdrop = false;
@@ -38,52 +50,59 @@ function DisplayMan(props)
         localStorage.backdrop = enableBackdrop;
     }, [displayState]);
 
-    if (JSON.parse(localStorage.firstTime)) {
-        localStorage.firstTime = false;
-        infoHandler();
-    }
+    useEffect(() => {
+        if (isGameOver[0])
+            winLoseHandler();
+    }, [isGameOver[0]]);
 
     function winLoseHandler()
     {   
-        setDisplayState({...displayState, 
-                         showWinLose:  true,
-                         showBackdrop: true});
+        setDisplayState({
+            ...displayState, 
+            showWinLose:  !displayState['showWinLose'],
+            showBackdrop: !displayState['showBackdrop']
+        });
     }
 
   	function shopHandler()
     {
-  		setDisplayState({...displayState,
-                         showShop:     !displayState["showShop"],
-                         showBackdrop: !displayState["showBackdrop"]});
+  		setDisplayState({
+            ...displayState,
+            showShop:     !displayState["showShop"],
+            showBackdrop: !displayState["showBackdrop"]
+        });
   	}
 
   	function settingsHandler()
     {
-  		setDisplayState({...displayState,
-                         showSettings: !displayState["showSettings"],
-                         showBackdrop: !displayState["showBackdrop"]});
+  		setDisplayState({
+            ...displayState,
+            showSettings: !displayState["showSettings"],
+            showBackdrop: !displayState["showBackdrop"]
+        });
   	}
 
 	function infoHandler()
     {
-        setDisplayState({...displayState, 
-                         showInfo:     !displayState["showInfo"],
-                         showBackdrop: !displayState["showBackdrop"]});
+        setDisplayState({
+            ...displayState, 
+            showInfo:     !displayState["showInfo"],
+            showBackdrop: !displayState["showBackdrop"]
+        });
   	}
 
     // CHANGE S.T. ONLY HEADER & GSDIV ARE RE-RENDERED
 	function reload()
     {
-		setDisplayState({showShop: false,
-                         showSettings: false,
-                         showInfo:     false,
-                         showWinLose:  false,
-                         showBackdrop: false});
-        if (gameMode || props.isGameOver[0]) {
-            toggleGameMode(false);
-            // props.forceNewPokemon();
-        }
-        props.setGameOver([false, '']);
+		setDisplayState({
+            showShop:     false,
+            showSettings: false,
+            showInfo:     false,
+            showWinLose:  false,
+            showBackdrop: false
+        });
+
+        setGameOver([false, '']);
     }
 
     return (
@@ -115,21 +134,25 @@ function DisplayMan(props)
                 {displayState["showBackdrop"] && <Backdrop/>}
 
                 {displayState["showShop"] && 
-                    <ShopDisplay dollarHandler = {props.dollarHandler} 
-                                 shopHandler = {shopHandler}/>}
+                    <ShopDisplay shopHandler = {shopHandler}/>
+                }
+
                 {displayState["showSettings"] && 
-                    <SettingsDisplay gameMode = {gameMode}
-                                     toggleGameMode = {toggleGameMode}
-                                     reload = {reload}
-                                     userHandler = {props.userHandler} />} 
+                    <SettingsDisplay 
+                        settingsHandler = {settingsHandler}
+                        reload = {reload}
+                    />
+                } 
+
                 {displayState["showInfo"] && 
                     <InfoDisplay infoHandler = {infoHandler}/>}
 
-                {props.isGameOver[0] && 
-                    <WinLoseDisplay winLoseHandler = {winLoseHandler}
-                                    pokeAnswer = {props.pokemon} 
-                                    isGameOver = {props.isGameOver}
-                                    reload = {reload} />}
+                {displayState['showWinLose'] && 
+                    <WinLoseDisplay 
+                        winLoseHandler = {winLoseHandler}
+                        reload = {reload} 
+                    />
+                }
             </header>
         </div>
     )

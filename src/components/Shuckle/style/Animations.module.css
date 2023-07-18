@@ -1,12 +1,12 @@
-.ShuckleCursor {
-
-}
-
 .shuckle {
     position: absolute;
 }
 
 .shuckleShiny {
+    position: absolute;
+}
+
+.egg {
     position: absolute;
 }
 

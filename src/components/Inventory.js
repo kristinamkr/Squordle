@@ -3,9 +3,10 @@
 */
 
 import classes from "./style/Inventory.module.css";
-import items from './Items.js';
+import itemData from './ItemData';
+import Item from './Item';
 
-import { useState } from 'react'; // useEffect} from 'react';
+import { useState } from 'react'; 
 
 function Inventory(props) 
 {
@@ -15,6 +16,7 @@ function Inventory(props)
         useState(pokeLink + "arrow-down-01-512.png")
 
     const [isExpanded, setIsExpanded] = useState(false);
+    const itemColors = ['#F08030', '#F85888', '#F8D030', '#6890F0'];
 
     function expandInventory()
     {
@@ -27,79 +29,78 @@ function Inventory(props)
     // -------------------------------------------------------------------------
 
     const mousePos = props.mousePos;
-    const itemInfo = props.itemInfo; 
+    const item = props.item;
+    const itemInfo = props.itemInfo;
 
-    const haltInv = props.haltInv;
-
-    function selectItem(e)
+    function selectItem(item)
     {
-        var nodes = Array.prototype.slice.call(e.currentTarget.children);
-        const item = nodes[0].name;
         const itemCount = JSON.parse(localStorage.inventory)[`${item}`];
-        console.log("ITEMCOUNT - " + itemCount);
-
-        if (itemCount > 0 && itemInfo[0] === '' && 
-            (!haltInv || item === "lemonade")) {  // test
-            props.setItemInfo([item,
-                              mousePos[0], 
-                              mousePos[1],
-                              1]);
+    
+        if (itemCount > 0 ) {  // test
+            props.setItem(item);
+            props.setItemInfo([mousePos[0], mousePos[1], 1]);
         }
     }
 
     function itemPreview(item, bg_color)
     {
+        let inventory = JSON.parse(localStorage.inventory);
+        let itemCount = inventory && inventory[item.props.name] ? 
+            inventory[item.props.name] : 0;
+
         return (
-            <tr className = {classes.item}>
-                <th style = {{background: bg_color}}>
+            <tr className = {classes.item}
+                key = {item.props.id}>
+                <td style = {{background: bg_color}}>
                     {item.props.tag} 
-                    <div> 
-                    {JSON.parse(localStorage.inventory)[`${item.props.name}`]} 
-                    </div>
-                </th>
+                    <div>{itemCount}</div>
+                </td>
                 <td className = {classes.draggable}
-                    onClick = {selectItem}>
+                    onClick = {() => selectItem(item.props.name)}>
                     {item}
                 </td>
             </tr> 
         )
     }
 
-    // for region implementation, use map function to iterate component renders
     // RENDER ------------------------------------------------------------------
     return (
         <div className = {classes.storageWrapper}>
-            <table className = {classes.storage}>
-                <tbody>
-                <tr className = {classes.header}>
-                    <th className = {classes.leftColumn}> Flavor </th>
-                    <th className = {classes.header1}> Items </th>
+            <table className={classes.storage}>
+            <thead>
+                <tr className={classes.header}>
+                    <th className={classes.leftColumn}> Flavor </th>
+                    <th className={classes.header1}> Items </th>
                 </tr>
-                { isExpanded && itemPreview(items[0], "#F08030") } 
-                { isExpanded && itemPreview(items[1], "#F85888") }
-                { isExpanded && itemPreview(items[2], "#F8D030") }
-                { isExpanded && itemPreview(items[3], "#6890F0") }
-                </tbody>
+            </thead>
+            <tbody>
+                {isExpanded && 
+                    itemData
+                        .slice(0, itemData.length - 2)
+                        .map((item, index) => 
+                            itemPreview(<Item {...item} />, itemColors[index]))}
+            </tbody>
             </table>
-
             <button className = {classes.expansionArrow} 
                    onClick = {expandInventory}>
                 <img src = {arrowSrc}
-                     alt = "custom arrow for inventory toggle"/>
+                     alt = 'custom arrow for inventory toggle'/>
             </button>
 
-            { !(itemInfo[0] === '') &&
+            { !(item === '') &&
                 <div className = {classes.draggable}>
-                    <img id = "draggable_item"
-                         src = {require("../assets/" + itemInfo[0] + ".png")}
-                         alt = "item for dragging"
-                         style = {{cursor: "move",
-                                   position: "absolute",
-                                   top: String(itemInfo[1]) - 32 + "px",
-                                   left: String(itemInfo[2]) - 32 + "px",
-                                   zIndex: String(itemInfo[3])}}
-                         onClick = {() => props.realize(itemInfo[0])}
-                         decoding = "async"/>
+                    <img 
+                        id = "draggable_item"
+                        src = {require("../assets/" + item + ".png")}
+                        alt = "item for dragging"
+                        style = {{
+                            cursor: "move",
+                            position: "absolute",
+                            top: String(itemInfo[0]) - 32 + "px",
+                            left: String(itemInfo[1]) - 32 + "px",
+                            zIndex: String(itemInfo[2])}}
+                        onClick = {() => props.realize(item)}
+                        decoding = "async"/>
                 </div> }
         </div>
     );

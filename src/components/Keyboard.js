@@ -3,112 +3,96 @@
 */
 
 import classes from "./style/Keyboard.module.css";
+import { useContext } from 'react';
+import { KeyContext } from './GSDiv';
+
+const validKeys = 'qwertyuiopasdfghjklzxcvbnm'.split('');
 
 var bgColors = {
-	"inWord": "#f5e554",
-	"correct": "#78e22c",
-	"normal": "#dadada",
-	"incorrect": "#939393"
+	inWord: "#f5e554",
+	correct: "#78e22c",
+	normal: "#dadada",
+	incorrect: "#939393"
 }
 
 function KeyBox(props)
 {
+    const { 
+        keyDownHandler
+    } = useContext(KeyContext); 
 
-    if (props.id === "Enter") {
-        return (
-            <button id = {props.id} 
-                    className = {classes.keyBoxLong} 
-                    style = {{fontSize: "24px"}} 
-                    value = {props.id} 
-                    onClick = {props.handler}>
-                {'↵'}
-            </button>
-        );
-    }
-    else if (props.id === "Backspace") {
-        return (
-            <button id = {props.id} 
-                    className = {classes.keyBoxLong} 
-                    value = {props.id} 
-                    onClick = {props.handler}>
-                {"BACK"}
-            </button>
-        );
-    }
-    else {
-        return (
-            <button id = {props.id}
-                    className = {classes.keyBox} 
-                    style = {{backgroundColor: bgColors[props.state]}} 
-                    value = {props.id} 
-                    onClick = {props.handler}>
-                {props.id}
-            </button>
-        );
-    }
+    const buttonContent = props.id === 'Enter' ? 
+        '↵' : props.id === 'Backspace' ? 'BACK' : props.id;
+
+    const buttonStyle = props.id !== 'Enter' && props.id !== 'Backspace' ? 
+        {backgroundColor: bgColors[props.state]} : {fontSize: '12px'};
+
+    const buttonClass = props.id === 'Enter' || props.id === 'Backspace' ? 
+        classes.keyBoxLong : classes.keyBox; 
+    
+    return (
+        <button id={props.id}
+            className={buttonClass}
+            style={buttonStyle}
+            value={props.id}
+            onClick={keyDownHandler}>
+            {buttonContent}
+        </button>
+    );
 }
 
 function KeyRow(props)
 {
-	function keyInWord(letterStates, id)
-    {
-        for(let i = 0; i < letterStates.correctGuess.length; i++) {
-            if (letterStates.correctGuess[i] === id)
-                return "correct";
-        }
-        for(let i = 0; i < letterStates.inWord.length; i++) {
-            if (letterStates.inWord[i] === id)
-                return "inWord";
-        }
-        for(let i = 0; i < letterStates.notInWord.length; i++) {
-            if (letterStates.notInWord[i] === id)
-                return "incorrect";
-        }
-        return "normal";
-	}
+    const { 
+        letterStates,
+    } = useContext(KeyContext); 
+
+	const keyInWord = (letterStates, id) => {
+        if (letterStates.correctGuess.includes(id)) return 'correct';
+        if (letterStates.inWord.includes(id)) return 'inWord';
+        if (letterStates.notInWord.includes(id)) return 'incorrect';
+        return 'normal';
+    }
 
 	return (
         <div className = {classes.keyRow} 
-             style = {{paddingLeft: props.padding, 
-                       paddingRight: props.padding, 
-                       gridTemplateColumns: "1fr ".repeat(props.keys.length)}}>
-            { props.keys.map((item) => 
-                (<KeyBox key = {item}
-                         id = {item}
-                         handler = {props.handler}
-                         gameSpace = {props.gameSpace}
-                         setGameSpace = {props.setGameSpace}
-                         state = {keyInWord(props.letterStates, item)} />))}
+            style = {{
+                paddingLeft: props.padding, 
+                paddingRight: props.padding, 
+                gridTemplateColumns: "1fr ".repeat(props.keys.length)
+            }}>
+            { props.keys.map((item) => ( 
+                <KeyBox key = {item}
+                   id = {item}
+                   state = {keyInWord(letterStates, item)} 
+                />
+            )) }
 		</div>
 	)
 };
 
 function Keyboard(props)
 {
-    function createRow(rowID, padding, range)
-    {
-        let keys = props.validKeys.slice(range[0], range[1]);
-        if (rowID === "3")
-            keys = ["Backspace"].concat(keys).concat("Enter");
-        
+    const createRow = (rowID, padding, range) => {
+        let keys = validKeys.slice(range[0], range[1]);
+        if (rowID === '3')
+            keys = ['Backspace'].concat(keys).concat('Enter');
+
         return (
-            <KeyRow id = {rowID} 
-                    padding = {padding} 
-                    handler = {props.handler} 
-                    gameSpace = {props.gameSpace} 
-                    setGameSpace = {props.setGameSpace} 
-                    letterStates = {props.letterStates} 
-                    keys = {keys} />
+            <KeyRow id={rowID}
+                padding={padding}
+                keys={keys}
+            />
         )
     }
-
-	return (
-		<div className = {classes.keyboard}>
-            { createRow("1", "125px", [0, 10]) }
-            { createRow("2", "150px", [10, 19]) }
-            { createRow("3", "126px", [19, 27]) }
-		</div>
-	)
+    
+    return (
+        <div className={classes.keyboard}>
+            { createRow('1', '125px', [0, 10]) }
+            { createRow('2', '150px', [10, 19]) }
+            { createRow('3', '126px', [19, 27]) }
+        </div>
+    )
 }
 
 export default Keyboard;

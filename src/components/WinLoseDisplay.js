@@ -3,34 +3,33 @@
 */
 
 import classes from "./style/WinLoseDisplay.module.css";
-import spriteLink from  "../functions/SpriteLink.js";
+import spriteLink from  "../functions/spriteLink";
 
-import {useState, useEffect} from 'react';
+import { useContext } from 'react';
+import { GameContext } from '../Squordle';
 
 function WinLoseDisplay(props)
 {
-	var answer = props.pokeAnswer.toLowerCase();
-    var spriteRef = spriteLink(answer);
-    let imgName, gameOverTxt;
+    const { 
+        gameMode, 
+        isGameOver, 
+        pokemon, 
+    } = useContext(GameContext); 
 
-    useEffect(() => {
-        props.winLoseHandler();
-    }, []);
+	var answer = pokemon.toLowerCase();
+    var spriteRef = spriteLink(answer);
+    let imgName, gameOverText;
 
     function winOrLose()
     {
-        let dailyText = ".";
-        if (Number(localStorage.gameMode) % 2 === 0)
-            dailyText = ". Check back again tomorrow for a new pokémon!"
-        if (props.isGameOver[1] === 'win') {
-            imgName = "WinTextLight";
-            gameOverTxt = "The pokémon was " + answer[0].toUpperCase() + 
-                answer.slice(1) + dailyText;
-        } else {
-            imgName = "LoseTextLight";
-            gameOverTxt = "The correct pokémon was " + answer[0].toUpperCase() +
-                answer.slice(1) + dailyText;
-        }
+        let dailyText = gameMode % 2 === 0 ? 
+            '. Check back again tomorrow for a new pokémon!' : '.'; 
+        const wonGame = isGameOver[1] === 'win';
+        imgName = wonGame ? 'WinTextLight' : 'LoseTextLight';
+        const actionText = wonGame ? 
+            'The pokémon was' : 'The correct pokémon was';
+        gameOverText = `${actionText} ${answer.charAt(0).toUpperCase() + 
+            answer.slice(1)}${dailyText}`;  
     }
 
 	return (
@@ -40,10 +39,10 @@ function WinLoseDisplay(props)
                  src = {require("../assets/" + imgName + ".png")}/>
             <img className = {classes.spriteDisplay}
                  src = {spriteRef}/>
-            <p> {gameOverTxt} </p>           
-            {Number(localStorage.gameMode) % 2 === 0 && 
+            <p> {gameOverText} </p>           
+            {gameMode % 2 === 0 && 
                 <button onClick = {() => props.reload()}> Close </button>}
-            {Number(localStorage.gameMode) % 2 === 1 && 
+            {gameMode % 2 === 1 && 
                 <button onClick = {() => props.reload()}> Play Again? </button>}
         </div>
 	);

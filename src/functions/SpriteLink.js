@@ -4,9 +4,6 @@
 
 function spriteLink(pokeString)
 {
-    console.log("---------------------------")
-    console.log("--------SPRITE-LINK--------")
-    console.log("---------------------------")
     const hyphenator = {
         "jangmoo"  : "jangmo-o",
         "hakamoo"  : "hakamo-o",
@@ -26,33 +23,28 @@ function spriteLink(pokeString)
         "enamorus" : "enamorus-incarnate"
     }
 
-    var pokeLink = "https://img.pokemondb.net/";
-    var pokePath = "";
+    const pokeLink = "https://img.pokemondb.net/";
+    let pokePath = "";
 
     if (hyphenator[pokeString])
         pokeString = hyphenator[pokeString];
 
     var pkmnHomeOnly = new Set(["wyrdeer", "kleavor", "ursaluna",
                                 "sneasler", "overqwil", "enamorus-incarnate"]);
-
-
-    if (pkmnHomeOnly.has(pokeString))
-        pokePath = "home/normal/1x/";
-    else
-        pokePath = "sword-shield/icon/";
+    pokePath = pkmnHomeOnly.has(pokeString) ? 
+        'home/normal/1x/' : 'sword-shield/icon/';
     
     // UNOWN
     if (pokeString.length === 1) {
-        pokePath = "sprites/heartgold-soulsilver/normal/unown-" + 
-            pokeString + ".png";  
-        return (pokeLink + pokePath);   
+        pokePath = `sprites/heartgold-soulsilver/normal/unown-${pokeString}.png`;
+        return `${pokeLink}${pokePath}`;
     }
 
     if (pokeString !== "") {
-        pokePath = "sprites/" + pokePath + pokeString + ".png";
+        pokePath = `sprites/${pokePath}${pokeString}.png`;
         return(pokeLink + pokePath);
     }
-    return(pokeLink + "s.png"); 
+    return `${pokeLink}s.png`; 
 }
 
 export default spriteLink;

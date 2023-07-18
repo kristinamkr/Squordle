@@ -2,10 +2,11 @@
  * ShuckleMechanics.js
 */
 
-import items from './Items.js';
+import itemsData from './ItemData.js';
 import Inventory from './Inventory.js';
-import ShuckleCursor from './ShuckleCursor.js';
-import { useState, useReducer, useEffect} from 'react';
+import Cursor from './Shuckle/Cursor.js';
+
+import { useState, useEffect} from 'react';
 
 function ShuckleMechanics(props)
 {
@@ -22,23 +23,18 @@ function ShuckleMechanics(props)
     });
     // -------------------------------------------------------------------------
 
+    const [item, setItem] = useState('');
     // [0] - itemName, [1] - xPos, [2] - yPos, [3] - isMoving?
-    const [itemInfo, setItemInfo] = useState(['', 0, 0, -1]);
+    const [itemInfo, setItemInfo] = useState([0, 0, -1]);
     // [0] - itemRealized?, [1] - realizedItemNum
     const [realizeItem, setRealizeItem] = useState([false, -1]); 
 
-    const [haltInv, setHaltInv] = useState(false);
-
-    useEffect(() => {       
+    useEffect(() => {
         setTimeout(() => {
-            if (itemInfo[0] && !(realizeItem[0])) {
-                setItemInfo([itemInfo[0], 
-                            mousePos[0],    
-                            mousePos[1], 
-                            1]);  // poffin moving
-            }
+            if (item && !(realizeItem[0]))
+                setItemInfo([mousePos[0], mousePos[1], 1]);
         }, 16);
-    }, [itemInfo]);
+    }, [item, itemInfo]);
 
     function realize(item)
     {
@@ -47,47 +43,43 @@ function ShuckleMechanics(props)
         if (itemCount > 0) {
             tempInv[`${item}`] = itemCount - 1;
             localStorage.setItem("inventory", JSON.stringify(tempInv));
-            setRealizeItem([true, Number(getPoffinId(itemInfo[0]))]);
+            setRealizeItem([true, Number(getPoffinId(item))]);
             derealize();
         }
     }
     
     function derealize()
     {
-        setItemInfo([itemInfo[0], 
-                     itemInfo[1], 
-                     itemInfo[2], 
-                     0]); 
+        setItemInfo([itemInfo[0], itemInfo[1], 0]); 
     }
 
     function reset() {
-        setItemInfo(['', ...itemInfo]); 
+        setItem('');
         setRealizeItem(false, -1);
     }
 
     function getPoffinId(name)
     {
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].props.name === name)
-                return items[i].props.id;
-        }
+        const i = itemsData.find(i => i.name === name);
+        return i ? i.id : null;
     }
 
     return (
         <>
-            <Inventory mousePos = {mousePos}
-                           itemInfo = {itemInfo} 
-                           setItemInfo = {setItemInfo}
-                           haltInv = {haltInv}
-                           setHaltInv = {setHaltInv}
-                           realize = {realize} />
-            <ShuckleCursor keyDownHandler = {props.keyDownHandler}
-                           mousePos = {mousePos}
-                           targetInfo = {itemInfo}
-                           realizeItem = {realizeItem}
-                           haltInv = {haltInv}
-                           setHaltInv = {setHaltInv}
-                           reset = {reset} />
+            <Inventory
+                mousePos = {mousePos}
+                item = {item}
+                setItem = {setItem}
+                itemInfo = {itemInfo} 
+                setItemInfo = {setItemInfo}
+                realize = {realize}
+            />
+            <Cursor 
+                mousePos = {mousePos}
+                itemPos = {itemInfo}
+                realizeItem = {realizeItem}
+                reset = {reset}
+            />
         </>
     )
 }
