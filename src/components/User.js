@@ -173,7 +173,7 @@ function User(props)
                     />
                 </div>
                 <div className = {classes.typingField}>
-                    <label>save key: </label>
+                    <label> save key:</label>
                     <input
                         value = {pwd}
                         onChange = {(e) => setPwd(e.target.value)}

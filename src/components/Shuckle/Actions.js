@@ -165,7 +165,6 @@ function updateHatching(shuckle, setShuckle){
 
     for (let i = 0; i < childrenn.length; i++) {
         const currentState = String(childrenn[i].state);
-        console.log('currentState - ' + currentState);
         if (currentState.startsWith('shuckleEgg')) {
             const newState = 
                 parseInt(currentState.replace('shuckleEgg', ''), 10) + 1;
